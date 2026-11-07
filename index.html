@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="auto">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SEMNEST</title>
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Nunito:wght@500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="audio.js"></script>
+</head>
+<body>
+
+<div id="app">
+  <!-- ==================== HUD ==================== -->
+  <header id="hud">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 40 32" aria-hidden="true">
+        <ellipse class="bm-egg a" cx="15" cy="13" rx="6.2" ry="7.6"/>
+        <ellipse class="bm-egg b" cx="25.5" cy="13.5" rx="5.6" ry="7"/>
+        <path class="bm-nest" d="M3 15 Q20 34 37 15 Q35 27 20 29 Q5 27 3 15 Z"/>
+        <path class="bm-twig" d="M5 18 Q20 26 35 18 M7 22 Q20 28 33 22"/>
+      </svg>
+      <span class="brand-name">SEMNEST</span>
+    </div>
+    <div class="hud-stats">
+      <div class="stat play-only"><span class="stat-label">LEVEL</span><span id="hud-level" class="stat-val small">Easy</span></div>
+      <div class="stat play-only"><span class="stat-label">ROUND</span><span id="hud-eggs" class="eggs" aria-label="Rounds"></span></div>
+      <div class="stat play-only"><span class="stat-label">SCORE</span><span id="hud-score" class="stat-val">0</span></div>
+      <div class="stat learn-only"><span class="stat-label">MODE</span><span class="stat-val small">Learn</span></div>
+    </div>
+    <div class="hud-btns">
+      <button id="btn-help" class="icon-btn" aria-label="How to play" title="How to play">?</button>
+      <button id="btn-theme" class="icon-btn" aria-label="Theme" title="Theme: auto">
+        <svg viewBox="0 0 24 24" class="th-icon"><circle cx="12" cy="12" r="7.5" fill="none"/><path class="th-half" d="M12 4.5 A7.5 7.5 0 0 1 12 19.5 Z"/></svg>
+      </button>
+      <button id="btn-mute" class="icon-btn" aria-label="Mute" title="Sound on/off">&#9834;</button>
+      <button id="btn-home" class="icon-btn" aria-label="Quit to title" title="Quit to title">&#10005;</button>
+    </div>
+  </header>
+
+  <!-- ==================== PLAY ==================== -->
+  <main id="play" class="mode-main">
+    <section class="pair">
+      <figure class="model-card" id="card-a" data-side="A">
+        <figcaption><span class="badge a">A</span><span class="mc-title">Model A</span><span class="mc-meta" id="meta-a"></span></figcaption>
+        <div class="paper"><svg class="diagram" id="svg-a" role="img" aria-label="Path diagram of model A"></svg></div>
+      </figure>
+
+      <div class="answers" id="answers" role="group" aria-label="Your answer">
+        <div class="ans-q">How are <b class="ta">A</b> and <b class="tb">B</b> related?</div>
+        <button class="ans" data-ans="equiv"><svg class="venn" viewBox="0 0 64 40"><ellipse class="v-b" cx="32" cy="20" rx="17" ry="15.5"/><ellipse class="v-a dash" cx="32" cy="20" rx="17" ry="15.5"/></svg>
+          <span class="ans-t"><b>Equivalent</b><small>A&nbsp;&equiv;&nbsp;B: same fit on every dataset</small></span><kbd>1</kbd></button>
+        <button class="ans" data-ans="AinB"><svg class="venn" viewBox="0 0 64 40"><ellipse class="v-b" cx="32" cy="20" rx="25" ry="17.5"/><ellipse class="v-a" cx="27" cy="21" rx="12" ry="10"/></svg>
+          <span class="ans-t"><b>A nested in B</b><small>A&nbsp;&sub;&nbsp;B: A is a special case of B</small></span><kbd>2</kbd></button>
+        <button class="ans" data-ans="BinA"><svg class="venn" viewBox="0 0 64 40"><ellipse class="v-a" cx="32" cy="20" rx="25" ry="17.5"/><ellipse class="v-b" cx="37" cy="21" rx="12" ry="10"/></svg>
+          <span class="ans-t"><b>B nested in A</b><small>B&nbsp;&sub;&nbsp;A: B is a special case of A</small></span><kbd>3</kbd></button>
+        <button class="ans" data-ans="neither"><svg class="venn" viewBox="0 0 64 40"><ellipse class="v-a" cx="23" cy="20" rx="15" ry="14"/><ellipse class="v-b" cx="41" cy="20" rx="15" ry="14"/></svg>
+          <span class="ans-t"><b>Neither</b><small>each fits patterns the other cannot</small></span><kbd>4</kbd></button>
+      </div>
+
+      <figure class="model-card" id="card-b" data-side="B">
+        <figcaption><span class="badge b">B</span><span class="mc-title">Model B</span><span class="mc-meta" id="meta-b"></span></figcaption>
+        <div class="paper"><svg class="diagram" id="svg-b" role="img" aria-label="Path diagram of model B"></svg></div>
+      </figure>
+    </section>
+
+    <!-- feedback after answering -->
+    <section id="feedback" class="feedback hidden" aria-live="polite">
+      <div class="fb-head">
+        <span class="fb-verdict" id="fb-verdict">Correct!</span>
+        <span class="fb-points" id="fb-points">+20</span>
+      </div>
+      <div class="fb-body">
+        <svg class="venn big" id="fb-venn" viewBox="0 0 64 40"></svg>
+        <div class="fb-text">
+          <div class="fb-rel" id="fb-rel"></div>
+          <p class="fb-why" id="fb-why"></p>
+          <div class="fb-facts" id="fb-facts"></div>
+        </div>
+      </div>
+      <div class="fb-foot">
+        <span class="fb-hint">Highlighted: what differs between the two models.</span>
+        <button class="pill-btn" id="btn-next">NEXT</button>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== LEARN ==================== -->
+  <main id="learn" class="mode-main">
+    <div class="toolbar" role="toolbar" aria-label="Drawing tools">
+      <div class="tool-group">
+        <button class="tool on" data-tool="select" title="Select / move (V)">
+          <svg viewBox="0 0 24 24"><path d="M6 3 L6 19 L10.5 14.8 L13.6 21 L16.2 19.8 L13.2 13.7 L19 13.4 Z"/></svg><span>Move</span></button>
+        <button class="tool" data-tool="factor" title="Add a factor (F), or double-click a canvas">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none"/><path d="M12 8.5 V15.5 M8.5 12 H15.5"/></svg><span>Factor</span></button>
+        <button class="tool" data-tool="arrow" title="Draw a loading (factor → item) or a structural effect (factor → factor) (A)">
+          <svg viewBox="0 0 24 24"><path d="M4 20 L17 7" fill="none"/><path d="M19.5 4.5 L11.5 7.5 L16.5 12.5 Z"/></svg><span>Path</span></button>
+        <button class="tool" data-tool="cov" title="Draw a covariance: between two residuals or two factors (C)">
+          <svg viewBox="0 0 24 24"><path d="M6.5 16 Q12 4 17.5 16" fill="none"/><path d="M3.5 17.5 L9.5 18.5 L6.5 12.5 Z M20.5 17.5 L14.5 18.5 L17.5 12.5 Z"/></svg><span>Covary</span></button>
+        <button class="tool" data-tool="erase" title="Erase factors and paths (E)">
+          <svg viewBox="0 0 24 24"><path d="M4 16 L12.5 7.5 L18.5 13.5 L12 20 H7 Z" fill="none"/><path d="M12 20 H20"/></svg><span>Erase</span></button>
+      </div>
+      <div class="tool-group actions">
+        <button class="act" id="btn-item-add" title="Add an item to both models"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" fill="none"/><path d="M12 8.5 V15.5 M8.5 12 H15.5"/></svg><span>+ Item</span></button>
+        <button class="act" id="btn-item-del" title="Remove the last item from both models"><svg viewBox="0 0 24 24"><rect x="4.5" y="4.5" width="15" height="15" fill="none"/><path d="M8.5 12 H15.5"/></svg><span>&minus; Item</span></button>
+        <button class="act" id="btn-params" aria-pressed="false" title="Give the models numbers: set parameter values and watch the other model follow"><svg viewBox="0 0 24 24"><path d="M4 7 H20 M4 17 H20" fill="none"/><circle cx="9" cy="7" r="2.6"/><circle cx="15" cy="17" r="2.6"/></svg><span>Values</span></button>
+      </div>
+    </div>
+
+    <section class="lpair">
+      <div class="lpane" id="lpane-a" data-side="A">
+        <div class="lhead"><span class="badge a">A</span><span class="mc-title">Model A</span><span class="mc-meta" id="lmeta-a"></span>
+          <span class="lacts"><button class="mini" data-act="copy" data-from="B" title="Copy model B into A">&#8592; copy B</button><button class="mini" data-act="undo" title="Undo">undo</button><button class="mini" data-act="tidy" title="Tidy layout">tidy</button><button class="mini" data-act="clear" title="Remove all factors and paths">clear</button></span></div>
+        <div class="canvas-wrap"><svg class="lcanvas" id="lsvg-a"></svg></div>
+      </div>
+
+      <div class="lrel" id="lrel" aria-live="polite">
+        <svg class="venn big" id="lrel-venn" viewBox="0 0 64 40"></svg>
+        <div class="lrel-sym" id="lrel-sym">A &equiv; B</div>
+        <div class="lrel-text" id="lrel-text">Equivalent</div>
+        <div class="lrel-sub" id="lrel-sub"></div>
+        <button class="link-btn" id="lrel-how">how is this decided?</button>
+      </div>
+
+      <div class="lpane" id="lpane-b" data-side="B">
+        <div class="lhead"><span class="badge b">B</span><span class="mc-title">Model B</span><span class="mc-meta" id="lmeta-b"></span>
+          <span class="lacts"><button class="mini" data-act="copy" data-from="A" title="Copy model A into B">copy A &#8594;</button><button class="mini" data-act="undo" title="Undo">undo</button><button class="mini" data-act="tidy" title="Tidy layout">tidy</button><button class="mini" data-act="clear" title="Remove all factors and paths">clear</button></span></div>
+        <div class="canvas-wrap"><svg class="lcanvas" id="lsvg-b"></svg></div>
+      </div>
+    </section>
+    <div class="lnote" id="lnote"></div>
+
+    <!-- shared popups (moved into the active canvas) -->
+    <div id="pick-pop" class="pick-pop hidden" role="dialog" aria-label="Indicators of this factor">
+      <div class="pp-title">Select its indicators</div>
+      <div class="pp-text">Click the items this factor measures.</div>
+      <div class="pp-row"><span id="pp-count">0 items</span><span class="pp-links"><button class="link-btn" id="pp-all">All</button> &middot; <button class="link-btn" id="pp-none">None</button></span></div>
+      <div class="pp-btns"><button class="pill-btn ghost" id="pp-cancel">Cancel</button><button class="pill-btn" id="pp-ok">OK</button></div>
+    </div>
+    <div id="param-pop" class="param-pop hidden" role="dialog" aria-label="Parameter value">
+      <div class="pp-title" id="pr-title">Factor loading</div>
+      <div class="pr-sub" id="pr-sub"></div>
+      <div class="pr-row"><span class="pr-zero" id="pr-zero"></span><input type="range" id="pr-range" aria-label="Value"><input type="number" id="pr-num" aria-label="Value"></div>
+      <div class="pp-btns"><button class="pill-btn ghost" id="pr-reset">Default</button><button class="pill-btn" id="pr-done">Done</button></div>
+    </div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </main>
+</div>
+
+<!-- ==================== TITLE ==================== -->
+<section id="screen-title" class="screen show">
+  <h1 class="sr-only">SEMNEST</h1>
+  <div class="title-hero">
+    <picture>
+      <source media="(orientation: portrait) and (max-width: 860px)" srcset="assets/title-mobile.webp">
+      <img src="assets/title-wide.webp" alt="SEMNEST: two birds and a nest woven from path diagrams">
+    </picture>
+  </div>
+  <div class="title-ui">
+    <p class="title-tag">Nested, equivalent, or neither? Learn to see how structural equation models relate.</p>
+    <div class="title-btns">
+      <button class="big-btn" id="btn-play">PLAY</button>
+      <button class="big-btn ghost" id="btn-learn">LEARN</button>
+    </div>
+    <p class="title-foot">PL5225 Structural Equation Modeling &middot; Sacha Epskamp</p>
+  </div>
+</section>
+
+<!-- ==================== LEVEL ==================== -->
+<section id="screen-level" class="screen">
+  <div class="level-box">
+    <h2>Choose a level</h2>
+    <p class="level-sub">Five pairs of models per game. Score 60 of 100 for a certificate.</p>
+    <div class="level-grid">
+      <button class="level-card" data-level="1"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Easy</b><small>Small path models and factor models</small><span class="lc-best" data-best="1"></span></button>
+      <button class="level-card" data-level="2"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Medium</b><small>Larger models and a few surprises</small><span class="lc-best" data-best="2"></span></button>
+      <button class="level-card" data-level="3"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Hard</b><small>Hidden equivalences and counting traps</small><span class="lc-best" data-best="3"></span></button>
+      <button class="level-card" data-level="4"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Psychometrika</b><small>Networks, latent networks and worse</small><span class="lc-best" data-best="4"></span></button>
+    </div>
+    <button class="link-btn" id="level-back">&#8592; back</button>
+  </div>
+</section>
+
+<!-- ==================== TUTORIAL ==================== -->
+<section id="screen-tutorial" class="screen">
+  <div class="tut-box">
+    <button class="tut-close" id="tut-close" aria-label="Close">&#10005;</button>
+    <h2 class="tut-header">HOW TO PLAY</h2>
+    <div id="tut-cards"></div>
+    <button class="big-btn" id="tut-continue">START</button>
+  </div>
+</section>
+
+<!-- ==================== FINAL ==================== -->
+<section id="screen-final" class="screen">
+  <div class="final-box">
+    <div class="diploma" id="diploma">
+      <div class="dip-corner tl"></div><div class="dip-corner tr"></div><div class="dip-corner bl"></div><div class="dip-corner br"></div>
+      <div class="dip-brand">SEMNEST</div>
+      <h2 class="dip-title" id="dip-title">Certificate in Model Nesting</h2>
+      <p class="dip-line" id="dip-line1">This certifies that</p>
+      <input class="dip-name" id="dip-name" placeholder="your name" maxlength="40" aria-label="Your name">
+      <p class="dip-line" id="dip-line2">sorted five pairs of structural equation models at the level</p>
+      <div class="dip-level" id="dip-level">Easy</div>
+      <div class="dip-mid">
+        <svg class="egg-medal big" id="dip-medal" viewBox="0 0 60 72"><use href="#egg"/></svg>
+        <div class="dip-score"><span id="final-score">0</span><small>/ 100</small><div class="dip-stars" id="dip-stars"></div><div class="dip-rank" id="final-rank"></div></div>
+      </div>
+      <table class="dip-table" id="final-table"></table>
+      <div class="dip-date" id="dip-date"></div>
+      <div class="dip-stamp" id="dip-stamp">NOT YET<br>HATCHED</div>
+    </div>
+    <div class="final-btns">
+      <button class="pill-btn ghost" id="btn-save-img">Save as image</button>
+      <button class="pill-btn ghost" id="btn-print">Print</button>
+      <button class="pill-btn" id="btn-again">Play again</button>
+      <button class="pill-btn ghost" id="btn-menu">Menu</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== MODALS ==================== -->
+<div id="modal-quit" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-box">
+    <h3>Leave this game?</h3>
+    <p>Your score for this game will be lost.</p>
+    <div class="modal-foot"><button class="pill-btn ghost" id="quit-no">Keep playing</button><button class="pill-btn" id="quit-yes">Leave</button></div>
+  </div>
+</div>
+<div id="modal-how" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-box wide">
+    <h3>How does LEARN decide?</h3>
+    <p>Model <b>A</b> is <b>nested</b> in model <b>B</b> when every covariance matrix A can produce, B can produce too: fit B to the covariance matrix implied by A and you get a perfect fit (&chi;&sup2; = 0). The models are <b>equivalent</b> when this works both ways.</p>
+    <p>LEARN checks this numerically, like you would in lavaan: it draws random parameter values for one model, computes the covariance matrix it implies, fits the other model to it (from several starting values) and looks whether the fit is perfect. It does this both ways, for a few random draws (the <i>NET</i> idea of Bentler &amp; Satorra, 2010).</p>
+    <p class="muted">Parameters are free real numbers, as in lavaan: a variance may become negative (a Heywood case). A numerical check is not a proof. It can miss nesting in rare cases, for example when the optimizer gets stuck. The items in PLAY are proven mathematically.</p>
+    <div class="modal-foot"><button class="pill-btn" id="how-ok">OK</button></div>
+  </div>
+</div>
+<div id="modal-save" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-box wide">
+    <h3>Your certificate</h3>
+    <p id="save-note">Right-click the image (or press and hold on a phone) and choose <b>Save image</b>.</p>
+    <img id="save-img" alt="Certificate">
+    <div class="modal-foot"><button class="pill-btn" id="save-ok">Close</button></div>
+  </div>
+</div>
+<div id="card-layer"></div>
+
+<!-- shared SVG symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <radialGradient id="egg-grad" cx="36%" cy="30%" r="78%">
+      <stop offset="0" stop-color="var(--m-hi, #f6e7c8)"/><stop offset=".55" stop-color="var(--m-mid, #d9a65a)"/><stop offset="1" stop-color="var(--m-lo, #8a5a20)"/>
+    </radialGradient>
+    <symbol id="egg" viewBox="0 0 60 72">
+      <path d="M30 3 C48 3 57 30 57 44 C57 60 45 69 30 69 C15 69 3 60 3 44 C3 30 12 3 30 3 Z" fill="url(#egg-grad)" stroke="var(--m-lo, #8a5a20)" stroke-width="1.6"/>
+      <path d="M17 22 C20 14 25 10 30 9" stroke="#fff" stroke-opacity=".7" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <circle cx="21" cy="40" r="2.1" fill="var(--m-lo, #8a5a20)" opacity=".35"/><circle cx="38" cy="31" r="1.6" fill="var(--m-lo, #8a5a20)" opacity=".3"/><circle cx="41" cy="50" r="2.4" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="28" cy="56" r="1.4" fill="var(--m-lo, #8a5a20)" opacity=".3"/>
+    </symbol>
+  </defs>
+</svg>
+
+<script src="linalg.js"></script>
+<script src="sem.js"></script>
+<script src="bank.js"></script>
+<script src="diagram.js"></script>
+<script src="editor.js"></script>
+<script src="tutorial.js"></script>
+<script src="diploma.js"></script>
+<script src="game.js"></script>
+<script src="learn.js"></script>
+</body>
+</html>

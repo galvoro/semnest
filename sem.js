@@ -102,7 +102,9 @@
 
     // markers: first unlabelled, unfixed outgoing effect of every latent
     const marker = new Set();
-    for (const l of (copts.markers === false ? [] : spec.lat)) {
+    // copts.stdlv: latent (residual) variances fixed to 1, all loadings free
+    // (lavaan's std.lv = TRUE; used for the parameter values in LEARN)
+    for (const l of (copts.markers === false || copts.stdlv ? [] : spec.lat)) {
       const out = spec.paths.filter(e => e.from === l);
       const mk = out.find(e => e.label === undefined && e.fixed === undefined);
       if (mk) marker.add(mk);
@@ -132,6 +134,7 @@
     const covFixed = [];
     for (let k = 0; k < n; k++) {
       if (blockOf[k] >= 0) continue;
+      if (copts.stdlv && k >= p) { S0[k][k] = 1; continue; }
       const selfFixed = spec.covs.find(c => c.a === vars[k] && c.b === vars[k] && c.fixed !== undefined);
       if (selfFixed) { S0[k][k] = selfFixed.fixed; continue; }
       const selfLab = spec.covs.find(c => c.a === vars[k] && c.b === vars[k]);
