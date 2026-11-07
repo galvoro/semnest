@@ -331,7 +331,7 @@
     $('dip-stars').innerHTML = [0, 1, 2].map(k => `<span class="${k < stars ? '' : 'off'}">&#9733;</span>`).join('');
     $('final-rank').textContent = rankOf(s);
     $('dip-name').value = store('name') || '';
-    $('final-table').innerHTML = g.results.map((r, k) =>
+    $('final-table').innerHTML = '<tr class="th"><td>#</td><td>item</td><td>your answer</td><td>truth</td><td class="pts">points</td></tr>' + g.results.map((r, k) =>
       `<tr><td>${k + 1}</td><td>${r.item.id}</td><td>${SHORT[r.ans]}</td><td>${SHORT[r.item.rel]}</td><td class="pts ${r.cls === 'good' ? 'ok' : r.cls === 'half' ? 'hf' : 'no'}">+${r.pts}</td></tr>`).join('');
     $('dip-date').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
     $('btn-save-img').classList.toggle('hidden', !passed);
