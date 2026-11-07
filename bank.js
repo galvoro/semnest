@@ -14,6 +14,7 @@
 //   pos    optional positions of observed / latent variables, in grid units
 //          (posA / posB for one side only); default: observed in a row,
 //          factors above their indicators, higher-order factors above those
+//   res    optional residual directions in degrees (0 = right, 90 = down)
 //   why    the short explanation shown after answering
 (function (global) {
   'use strict';
@@ -31,8 +32,13 @@
   const bif4x2 = 'S1 =~ y1 + y2; S2 =~ y3 + y4; S3 =~ y5 + y6; S4 =~ y7 + y8; G =~ ' + sum(1, 8);
   const macA = 'X3 ~ X1 + X2; X4 ~ X1 + X2 + X3; X5 ~ X4 + X2; X1 ~~ X2';
   const macPos = { X1: [0, 0], X2: [0, 2], X3: [1.7, 0], X4: [1.7, 1], X5: [1.7, 2] };
+  const macRes = { X3: 0, X4: 0, X5: 0 };
   const tri = { A: [0, 1.25], B: [1.1, 0], C: [2.2, 1.25] };
   const sq = { y1: [0, 0], y2: [1.6, 0], y3: [1.6, 1.6], y4: [0, 1.6] };
+  // network sides drawn as clusters (the factor side keeps the row layout)
+  const tri2 = { y1: [1, 1.15], y2: [0.25, 2.3], y3: [1.75, 2.3], y4: [4, 1.15], y5: [3.25, 2.3], y6: [4.75, 2.3] };
+  const sq2 = { y1: [0.4, 0.95], y2: [2.0, 0.95], y3: [2.0, 2.3], y4: [0.4, 2.3], y5: [4.6, 0.95], y6: [6.2, 0.95], y7: [6.2, 2.3], y8: [4.6, 2.3] };
+  const star = { y1: [1.5, 1.15], y2: [0.2, 2.3], y3: [1.5, 2.3], y4: [2.8, 2.3] };
 
   const items = [
     // ================================================================
@@ -114,7 +120,7 @@
     { id: 'M03', level: 2, rel: 'equiv', obs: ys(5),
       A: 'F1 =~ y1 + y2; F2 =~ y3 + y4 + y5; F1 ~~ F2', B: 'F =~ ' + sum(1, 5) + '; y1 ~~ y2',
       why: 'A factor with only two indicators adds exactly one free covariance (between those two items) on top of a single common factor. That is what the residual covariance y1 ↔ y2 does in B.' },
-    { id: 'M04', level: 2, rel: 'equiv', obs: ['A', 'B', 'C', 'D'], pos: { A: [0, 0], B: [0, 1.7], C: [1.6, 0], D: [3.2, 0.85] },
+    { id: 'M04', level: 2, rel: 'equiv', obs: ['A', 'B', 'C', 'D'], pos: { A: [0, 0], B: [0, 1.7], C: [1.6, 0], D: [3.2, 0.85] }, res: { C: -90, D: -45 },
       A: 'A ~~ B; C ~ A; D ~ C + A + B', B: 'A ~~ B; C ~ A; D ~ A + B; C ~~ D',
       why: 'Replacing rule (Lee & Hershberger): C → D may be replaced by a residual covariance C ↔ D because the predictors of D include all predictors of C. Both models only claim that C and B are independent given A.' },
     { id: 'M05', level: 2, rel: 'equiv', obs: ys(6),
@@ -127,7 +133,7 @@
     { id: 'M07', level: 2, rel: 'AinB', obs: ys(6),
       A: cfa2 + '; F1 ~~ F2', B: 'F =~ ' + sum(1, 6) + '; y4 ~~ y5 + y6; y5 ~~ y6',
       why: 'Surprise: one factor plus free residual covariances among y4–y6 can mimic the second factor. The part of y4–y6 that F1 does not explain goes into those residual covariances. B has two more parameters, so A is nested in B.' },
-    { id: 'M08', level: 2, rel: 'AinB', obs: ys(6), posA: { F1: [2.5, 0.25], F2: [2.5, 1.1] },
+    { id: 'M08', level: 2, rel: 'AinB', obs: ys(6), posA: { F1: [2.5, -0.3], F2: [2.5, 1.12] },
       A: 'F1 =~ y1 + y2 + y5 + y6; F2 =~ y3 + y4; F1 ~~ F2', B: cfa3x2 + '; ' + corr3,
       why: 'Merge the first and third factor of B (correlation 1) and you get A. So A, with its non-adjacent indicators, is nested in the three-factor model.' },
     { id: 'M09', level: 2, rel: 'AinB', obs: ['A', 'B', 'C', 'D'], pos: { A: [0, 0], B: [0, 1.7], C: [1.6, 0.85], D: [3.2, 0.85] },
@@ -137,7 +143,7 @@
       A: 'F1 =~ a*y1 + b*y2 + c*y3; F2 =~ a*y4 + b*y5 + c*y6; F1 ~~ F2', B: cfa2 + '; F1 ~~ F2',
       why: 'A forces the same loading pattern (a, b, c) on both factors; B leaves all loadings free. A is a constrained version of B.' },
 
-    { id: 'M11', level: 2, rel: 'BinA', obs: ys(4),
+    { id: 'M11', level: 2, rel: 'BinA', obs: ys(4), pos: Object.assign({ F: [0.8, 0.8] }, sq),
       A: 'y2 ~ y1; y3 ~ y1 + y2; y4 ~ y1 + y2 + y3', B: 'F =~ ' + sum(1, 4),
       why: 'A is a saturated path model (all six paths). Every model on these four variables, also a factor model, is nested in it.' },
     { id: 'M12', level: 2, rel: 'BinA', obs: ['X', 'y1', 'y2', 'y3', 'Y'], pos: { X: [0, 0.9], y1: [1.1, 2.1], y2: [2.1, 2.1], y3: [3.1, 2.1], Y: [4.2, 0.9], F: [2.1, 0.9] },
@@ -210,7 +216,7 @@
     { id: 'H12', level: 3, rel: 'BinA', obs: ['X', 'y1', 'y2', 'y3'], pos: { X: [0, 2], y1: [1, 2], y2: [2, 2], y3: [3, 2], F: [1.5, 1] },
       A: 'F =~ X + y1 + y2 + y3; X ~~ y1', B: 'F =~ y1 + y2 + y3; F ~ X',
       why: 'B (X predicts F) is equivalent to the one-factor model with X as fourth indicator. A is that same model plus a residual covariance, so B is nested in A.' },
-    { id: 'H13', level: 3, rel: 'BinA', obs: ['X1', 'X2', 'X3', 'X4', 'X5'], pos: macPos,
+    { id: 'H13', level: 3, rel: 'BinA', obs: ['X1', 'X2', 'X3', 'X4', 'X5'], pos: macPos, res: macRes,
       A: macA, B: 'X3 ~ X1 + X2; X4 ~ X1 + X2; X5 ~ X4; X1 ~~ X2; X3 ~~ X4',
       why: 'Swapping X3 → X4 for the residual covariance X3 ↔ X4 is allowed (same predictors), so that change alone gives an equivalent model. B also drops X2 → X5, which makes it nested in A.' },
     { id: 'H14', level: 3, rel: 'BinA', obs: ys(6),
@@ -223,7 +229,7 @@
     { id: 'H16', level: 3, rel: 'neither', obs: ys(4),
       A: 'y2 ~ y1; y3 ~ y2; y4 ~ y3', B: 'F =~ ' + sum(1, 4),
       why: 'The chain makes y1 and y3 independent given y2; the factor model never makes items conditionally independent given another item. The factor model implies tetrads, which the chain violates.' },
-    { id: 'H17', level: 3, rel: 'neither', obs: ['X1', 'X2', 'X3', 'X4', 'X5'], pos: macPos,
+    { id: 'H17', level: 3, rel: 'neither', obs: ['X1', 'X2', 'X3', 'X4', 'X5'], pos: macPos, res: macRes,
       A: macA, B: 'X3 ~ X1 + X2; X4 ~ X1 + X2 + X3; X5 ~ X2; X1 ~~ X2; X4 ~~ X5',
       why: 'An illegal use of the replacing rule: X4 → X5 cannot become X4 ↔ X5, because X5\'s predictors (X2) do not include those of X4. The models make different independence claims about X5.' },
     { id: 'H18', level: 3, rel: 'neither', obs: ys(9),
@@ -242,7 +248,7 @@
     { id: 'P01', level: 4, rel: 'equiv', obs: ys(4),
       A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4', B: 'y2 ~ y1; y3 ~ y2; y4 ~ y3',
       why: 'A Gaussian graphical model (GGM) whose graph is a path has the same conditional independencies as the directed chain: both are exactly the covariance matrices with a tridiagonal inverse.' },
-    { id: 'P02', level: 4, rel: 'equiv', obs: ys(6),
+    { id: 'P02', level: 4, rel: 'equiv', obs: ys(6), posB: tri2,
       A: cfa2, B: 'network ' + ys(6).join(' ') + '; y1 -- y2 + y3; y2 -- y3; y4 -- y5 + y6; y5 -- y6',
       why: 'Orthogonal factors make the covariance matrix block-diagonal, and so is its inverse (two separate cliques in the GGM). With three indicators each factor is saturated within its block.' },
     { id: 'P03', level: 4, rel: 'equiv', obs: ys(6),
@@ -255,10 +261,10 @@
       A: 'F =~ ' + sum(1, 6) + '; network y1 y2 y3; y1 -- y2 + y3; y2 -- y3', B: 'F =~ ' + sum(1, 6) + '; y1 ~~ y2 + y3; y2 ~~ y3',
       why: 'A residual network model (RNM): a fully connected block of residual partial correlations is the same as a fully free block of residual covariances (the inverse of a block-diagonal matrix is block-diagonal).' },
 
-    { id: 'P06', level: 4, rel: 'AinB', obs: ys(4),
+    { id: 'P06', level: 4, rel: 'AinB', obs: ys(4), posA: star,
       A: 'network y1 y2 y3 y4; y1 -- y2 + y3 + y4', B: 'F =~ ' + sum(1, 4),
       why: 'In the star network y1 explains all associations. Make y1 a perfect indicator of F (no residual variance) and the factor model reproduces the star: A is nested in B.' },
-    { id: 'P07', level: 4, rel: 'AinB', obs: ys(8),
+    { id: 'P07', level: 4, rel: 'AinB', obs: ys(8), posB: sq2,
       A: 'F1 =~ y1 + y2 + y3 + y4; F2 =~ y5 + y6 + y7 + y8', B: 'network ' + ys(8).join(' ') + '; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4; y5 -- y6 + y7 + y8; y6 -- y7 + y8; y7 -- y8',
       why: 'Orthogonal factors give a block-diagonal covariance matrix, so its inverse is block-diagonal too: two fully connected clusters in the GGM. The GGM leaves each block free, the factors do not.' },
     { id: 'P08', level: 4, rel: 'AinB', obs: ys(6),
@@ -277,7 +283,7 @@
     { id: 'P12', level: 4, rel: 'BinA', obs: ys(4), pos: sq,
       A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4; y4 -- y1', B: 'y2 ~ y1; y3 ~ y2; y4 ~ y3',
       why: 'The directed chain equals the GGM with the path y1 — y2 — y3 — y4. The cycle network adds the edge y4 — y1, so it contains the chain.' },
-    { id: 'P13', level: 4, rel: 'BinA', obs: ys(6),
+    { id: 'P13', level: 4, rel: 'BinA', obs: ys(6), posB: tri2,
       A: cfa2 + '; F1 ~~ F2', B: 'network ' + ys(6).join(' ') + '; y1 -- y2 + y3 + y4; y4 -- y5 + y6',
       why: 'Give y1 and y4 zero residual variance and they become F1 and F2 themselves. The two-factor model then becomes this tree-shaped network, so B is nested in A.' },
     { id: 'P14', level: 4, rel: 'BinA', obs: ys(9),
@@ -293,7 +299,7 @@
     { id: 'P17', level: 4, rel: 'neither', obs: ys(6),
       A: 'F =~ ' + sum(1, 6) + '; network y1 y2 y3; y1 -- y2; y2 -- y3', B: 'F =~ ' + sum(1, 6) + '; y1 ~~ y2; y2 ~~ y3',
       why: 'A residual chain network sets a residual partial correlation to zero (y1, y3); the residual covariances in B set the residual covariance itself to zero. Same picture, different restriction.' },
-    { id: 'P18', level: 4, rel: 'neither', obs: ys(8),
+    { id: 'P18', level: 4, rel: 'neither', obs: ys(8), posB: sq2,
       A: 'F1 =~ y1 + y2 + y3 + y4; F2 =~ y5 + y6 + y7 + y8; F1 ~~ F2', B: 'network ' + ys(8).join(' ') + '; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4; y5 -- y6 + y7 + y8; y6 -- y7 + y8; y7 -- y8',
       why: 'Correlated factors connect the clusters (the GGM cannot); the GGM leaves each cluster saturated (the factors impose tetrads). Neither is nested.' },
     { id: 'P19', level: 4, rel: 'neither', obs: ys(3), pos: { y1: [0, 1.3], y3: [1.2, 0], y2: [2.4, 1.3] },
