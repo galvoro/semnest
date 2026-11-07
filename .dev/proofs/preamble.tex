@@ -1,0 +1,147 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\DeclareUnicodeCharacter{2192}{\ensuremath{\to}}
+\DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}}
+\DeclareUnicodeCharacter{2261}{\ensuremath{\equiv}}
+\DeclareUnicodeCharacter{2282}{\ensuremath{\subset}}
+\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}}
+\DeclareUnicodeCharacter{00B7}{\ensuremath{\cdot}}
+\DeclareUnicodeCharacter{2014}{---}
+\DeclareUnicodeCharacter{2013}{--}
+\DeclareUnicodeCharacter{2019}{'}
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
+
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, urlcolor=blue!50!black}
+\definecolor{acol}{HTML}{2F86A6}
+\definecolor{bcol}{HTML}{C97E1C}
+\definecolor{netc}{HTML}{4F8A3C}
+\definecolor{residc}{HTML}{8E8478}
+\definecolor{latfill}{HTML}{EEF6F2}
+\newcommand{\nest}{\preceq}
+\newcommand{\nnest}{\not\preceq}
+\newtheorem*{lemma}{Lemma}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+
+\title{SEMNEST: proofs of the nesting and equivalence relations\\[4pt]\large all 80 items of the capsule}
+\author{Generated with the capsule's item bank (\texttt{bank.js}) and checked in exact arithmetic\\ (\texttt{.dev/proofs/build.js}); see also \texttt{.dev/verify\_bank.js} and \texttt{.dev/verify\_bank.R}}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section*{1\quad Setting and definitions}
+
+Each item compares two models, $A$ (left) and $B$ (right), for the same $p$ observed variables. A model is written in RAM form
+\[
+v = \mathbf A v + u,\qquad \mathrm{Cov}(u)=\mathbf S,\qquad \Sigma_{\text{full}}=(I-\mathbf A)^{-1}\mathbf S(I-\mathbf A)^{-\top},
+\]
+with $v$ the observed and latent variables and $\Sigma$ the observed block of $\Sigma_{\text{full}}$. $\mathbf A$ holds the drawn directed effects (loadings $\lambda$, regressions $\beta$, second-order loadings $\gamma$); $\mathbf S$ holds a free variance for every variable (the residual variance $\theta_{ii}$ or $\psi$ of an endogenous variable) and the drawn covariances. For variables in a \emph{network block}, the block of $\mathbf S$ is $K^{-1}$, where the precision matrix $K$ has a free diagonal and free off-diagonal elements only for the drawn undirected edges: a Gaussian graphical model (GGM) on observed variables, a residual network model (RNM) on the residuals of indicators, or a latent network model (LNM) on latent variables (Epskamp, Rhemtulla \& Borsboom, 2017, \emph{Psychometrika}).
+
+\textbf{Parameters.} The free parameters $\theta\in\mathbb R^{q}$ are unrestricted real numbers: variances may be negative (Heywood solutions), as in lavaan's default estimation. The scale of each latent variable is fixed by its first loading (marker variable); $q_X$ counts the free parameters of model $X$. Let $\Theta_X=\{\theta:\Sigma_X(\theta)\text{ exists and is positive definite}\}$ (an open set) and
+\[
+\mathcal M_X=\{\Sigma_X(\theta):\theta\in\Theta_X\},
+\]
+the set of covariance matrices model $X$ can produce. $\overline{\mathcal M}$ denotes the closure within the positive definite matrices.
+
+\textbf{Definition.} $X$ is \emph{nested} in $Y$, written $X\nest Y$, if $\mathcal M_X\subseteq\overline{\mathcal M_Y}$: every covariance matrix that $X$ can produce, $Y$ can produce or approximate arbitrarily closely, so fitting $Y$ to it gives a perfect fit ($F_{\mathrm{ML}}=0$, $\chi^2=0$). This is exactly what the numerical check of Bentler \& Satorra (2010) and of the PL5225 assignment tests. $X$ and $Y$ are \emph{equivalent} ($X\equiv Y$) if $X\nest Y$ and $Y\nest X$. \emph{$A$ is nested in $B$} in the game means $A\nest B$ and $B\nnest A$; \emph{neither} means $A\nnest B$ and $B\nnest A$.
+
+The closure makes the definition insensitive to the measure-zero exceptions that are typical for latent variable models (e.g.\ a mapping that divides by a covariance that happens to be zero). Allowing negative variances is what makes the textbook statements (``a one-factor model with three indicators is saturated'', ``a second-order factor on three factors is equivalent to three correlated factors'') literally true.
+
+\section*{2\quad Lemmas}
+
+\begin{lemma}[R, restriction]
+If $X$ is obtained from $Y$ by fixing free parameters of $Y$ to constants or by equating them, then $X\nest Y$.
+\end{lemma}
+\emph{Proof.} $\Theta_X$ embeds in $\Theta_Y$ with the same implied $\Sigma$. \qed
+
+\begin{lemma}[G, generic maps]
+If there are a dense subset $D\subseteq\Theta_X$ and a map $\varphi:D\to\Theta_Y$ with $\Sigma_Y(\varphi(\theta))=\Sigma_X(\theta)$ for all $\theta\in D$, then $X\nest Y$.
+\end{lemma}
+\emph{Proof.} $\Sigma_X$ is continuous, so $\mathcal M_X=\Sigma_X(\Theta_X)\subseteq\overline{\Sigma_X(D)}\subseteq\overline{\mathcal M_Y}$. In the items $D$ is $\Theta_X$ minus the zero set of a polynomial that is not identically zero (``generic'' parameter values), which is dense. \qed
+
+\begin{lemma}[S, separating constraint]
+If a polynomial $f$ in the entries of $\Sigma$ vanishes on $\mathcal M_Y$ and $f(\Sigma_X(\theta^*))\neq0$ for some $\theta^*\in\Theta_X$, then $X\nnest Y$.
+\end{lemma}
+\emph{Proof.} $f$ is continuous, so it vanishes on $\overline{\mathcal M_Y}$, which therefore does not contain $\Sigma_X(\theta^*)$. \qed
+
+In every application below, $f$ vanishing on $\mathcal M_Y$ is shown algebraically in the text (and was also checked in exact rational arithmetic at random rational parameter values), and the point $\theta^*$ with rational coordinates is listed in Appendix~B together with the exact value of $f$.
+
+\begin{lemma}[D, dimension]
+Let $J_X(\theta)$ be the Jacobian of $\theta\mapsto\operatorname{vech}\Sigma_X(\theta)$. If $\operatorname{rank}J_X(\theta^*)>q_Y$ for some $\theta^*\in\Theta_X$, then $X\nnest Y$.
+\end{lemma}
+\emph{Proof.} $\mathcal M_Y$ is the image of a semialgebraic set of dimension $q_Y$ under a rational map, so $\overline{\mathcal M_Y}$ is semialgebraic with dimension at most $q_Y$. The rank of $J_X$ is lower semicontinuous, so its maximum $r\ge\operatorname{rank}J_X(\theta^*)>q_Y$ is attained on a nonempty open subset of $\Theta_X$, where the rank is constant; by the constant rank theorem $\mathcal M_X$ contains an $r$-dimensional embedded submanifold, which cannot lie in a semialgebraic set of dimension $<r$. \qed
+
+The ranks were computed exactly (rational arithmetic) at the rational points listed in Appendix~B.
+
+\begin{lemma}[B, saturated blocks]
+(a) The following are saturated ($\overline{\mathcal M}$ = all positive definite matrices): the model with all covariances free; a complete recursive path model (every pair connected by a directed path following a fixed order); a one-factor model with three indicators. (b) If two models differ only in how they model the covariance matrix of a block of variables that is connected to the rest of the model in the same way, and both can produce every covariance matrix of that block (up to closure), the models are equivalent; if only one of them can, the other is nested in it.
+\end{lemma}
+\emph{Proof.} (a) Every $\Sigma\succ0$ has a Cholesky factorization $\Sigma=(I-B)^{-1}D(I-B)^{-\top}$ with $B$ strictly lower triangular and $D$ diagonal; that is a complete recursive path model. For one factor with three indicators and $\sigma_{12}\sigma_{13}\sigma_{23}\neq0$: $\lambda_1=1$, $\psi=\sigma_{12}\sigma_{13}/\sigma_{23}$, $\lambda_2=\sigma_{23}/\sigma_{13}$, $\lambda_3=\sigma_{23}/\sigma_{12}$, $\theta_{ii}=\sigma_{ii}-\lambda_i^2\psi$ reproduce $\Sigma$; apply Lemma~G. (b) The implied $\Sigma$ depends on the block only through the block's covariance matrix (e.g.\ $\Sigma=\Lambda\Psi\Lambda^\top+\Theta$ for the latent block). \qed
+
+\begin{lemma}[M, merging factors]
+In a factor model where the covariance matrix $\Psi$ of the factors is free, setting the variances and covariances of factors $F_k$ and $F_l$ equal ($\psi_{kk}=\psi_{ll}=\psi_{kl}$ and $\psi_{km}=\psi_{lm}$ for all other $m$) makes $F_k=F_l$ almost surely. Hence the model in which $F_k$ and $F_l$ are replaced by one factor loading on the union of their indicators is nested in it.
+\end{lemma}
+\emph{Proof.} With these values $\mathrm{Var}(F_k-F_l)=0$; the implied $\Sigma$ is that of the merged model (Lemma~R on the parameters). \qed
+
+\begin{lemma}[P, pairs]
+Let $F$ be a latent variable of model $X$ and $y_i,y_j$ two observed variables whose only paths are loadings from $F$. Let $X^{+}$ be $X$ plus the residual covariance $y_i\leftrightarrow y_j$, and $X^{G}$ be $X$ in which $y_i,y_j$ instead load on a new latent variable $G$ whose only path is $F\to G$. Then $X^{+}\equiv X^{G}$.
+\end{lemma}
+\emph{Proof.} In $X^G$ write $G=\gamma F+u$ with $u$ independent of all other variables. Then $y_i=\lambda^G_i\gamma F+\lambda^G_iu+e_i$, and likewise for $y_j$: this is $X^{+}$ with loadings $\lambda_i=\lambda^G_i\gamma$, $\lambda_j=\lambda^G_j\gamma$, residual covariance $\theta_{ij}=\lambda^G_i\lambda^G_j\mathrm{Var}(u)$ and residual variances $\theta_{ii}+(\lambda^G_i)^2\mathrm{Var}(u)$; nothing else changes. Conversely, given $X^{+}$ with $\lambda_i\lambda_j\neq0$, take $\gamma=1$, $\lambda^G_i=\lambda_i$, $\lambda^G_j=\lambda_j$, $\mathrm{Var}(u)=\theta_{ij}/(\lambda_i\lambda_j)$ (possibly negative) and residual variances $\theta_{ii}-\lambda_i^2\mathrm{Var}(u)$. Lemma~G gives both directions. \qed
+
+Note that if $F$ is exogenous and $G$ has no other paths, $F\to G$ and $F\leftrightarrow G$ give the same (saturated) $2\times2$ latent block, so by Lemma~B(b) $G$ may also simply be a factor correlated with $F$.
+
+\begin{lemma}[I, inverses]
+For a positive definite $\Sigma$, $(\Sigma^{-1})_{ij}=0$ iff the partial covariance of $i$ and $j$ given all other variables is $0$. $\Sigma$ is block-diagonal iff $\Sigma^{-1}$ is block-diagonal (with the same blocks). For three variables, $(\Sigma^{-1})_{13}=0$ iff $\sigma_{12}\sigma_{23}-\sigma_{13}\sigma_{22}=0$.
+\end{lemma}
+\emph{Proof.} Standard: $(\Sigma^{-1})_{ij}=C_{ji}/\det\Sigma$ with $C$ the cofactor matrix; the inverse of a block-diagonal matrix is block-diagonal; for $3\times3$, $C_{31}=\sigma_{12}\sigma_{23}-\sigma_{13}\sigma_{22}$. \qed
+
+\begin{lemma}[C, trees]
+Let a path model be a DAG whose skeleton is a tree and in which no variable has two parents (no colliders: chains and forks). Then its set of covariance matrices equals the GGM on the skeleton, $\{\Sigma\succ0:(\Sigma^{-1})_{ij}=0\text{ for every non-adjacent pair}\}$.
+\end{lemma}
+\emph{Proof.} For a DAG, $\Sigma^{-1}=(I-B)^\top D^{-1}(I-B)$ with $B$ supported on the arrows. If every node has at most one parent, $\big((I-B)^\top D^{-1}(I-B)\big)_{ij}$ for $i\neq j$ is nonzero only if $i$ is the parent of $j$ or vice versa (a product term $b_{ki}b_{kj}$ would need a common child $k$ with two parents). So the DAG is contained in the GGM. Conversely, a $\Sigma\succ0$ with tree-shaped inverse factorizes along any orientation of the tree away from a root (the Gaussian density factorizes over a tree as $\prod_k p(x_k\mid x_{\mathrm{pa}(k)})$; see Lauritzen, 1996), and every collider-free orientation of a tree points away from some root. \qed
+
+\begin{lemma}[T, perfect indicators]
+In a factor model, an indicator $y_1$ of $F$ with $\theta_{11}=0$ and $\lambda_1=1$ equals $F$. Hence the path model in which $y_1$ is an exogenous cause of the other indicators of $F$ ($y_k=\lambda_ky_1+e_k$) is nested in the factor model.
+\end{lemma}
+\emph{Proof.} Take $\theta_{11}=0$ (allowed: parameters are unrestricted) and $\psi=\mathrm{Var}(y_1)$; Lemma~R. \qed
+
+\begin{lemma}[H, higher-order and bifactor; Yung, Thissen \& McLeod, 1999]
+A higher-order model (first-order factors $F_k$ with disjoint indicator sets, $F_k=\gamma_kG+\zeta_k$) is nested in the bifactor model with a general factor on all indicators and one orthogonal group factor per first-order factor.
+\end{lemma}
+\emph{Proof.} For an indicator $y_i$ of $F_k$: $y_i=\lambda_i\gamma_kG+\lambda_i\zeta_k+e_i$. The general factor $G$ and the disturbances $\zeta_k$ are mutually uncorrelated, so this is a bifactor model with general loadings $\lambda_i\gamma_k$, group factor $S_k=\zeta_k$ with loadings $\lambda_i$ and variance $\mathrm{Var}(\zeta_k)$ (possibly negative). Rescale $G$ to its marker loading (generic: $\lambda_{1}\gamma_1\neq0$). \qed
+
+\section*{3\quad How to read an item page}
+Each page shows the two path diagrams exactly as in the game (observed variables as squares, latent variables as circles, residuals as small circles, covariances as curved double-headed arrows, network edges as green lines; variances are free and not drawn), the model syntax ($\sim\sim$ is a covariance, \texttt{--} a network edge, \texttt{network} lists a network block, \texttt{a*} an equality label), the claim and its proof. (i) concerns $A\nest B$, (ii) concerns $B\nest A$. $\sigma_{ij}$ is the covariance of $y_i$ and $y_j$.
+
+\tableofcontents
+
+%%ITEMS%%
+
+\clearpage
+\section*{Appendix B\quad Rational points used in Lemmas S and D}
+For every non-nesting argument: the model, the rational parameter values (in the order of the model's free parameters; $X\to Y$ is a loading or regression, $\mathrm{Var}$ a (residual) variance, $\mathrm{Cov}$ a (residual) covariance, $k$ an element of a precision matrix) and the exact value of $f$ or the exact rank of the Jacobian at that point. The implied $\Sigma$ is positive definite at each point.
+
+{\small
+%%APPENDIX%%
+}
+
+\section*{References}
+\small
+Bentler, P. M., \& Satorra, A. (2010). Testing model nesting and equivalence. \emph{Psychological Methods, 15}, 111--123.\\
+Epskamp, S., Rhemtulla, M., \& Borsboom, D. (2017). Generalized network psychometrics: Combining network and latent variable models. \emph{Psychometrika, 82}, 904--927.\\
+Lauritzen, S. L. (1996). \emph{Graphical models}. Oxford: Clarendon Press.\\
+Lee, S., \& Hershberger, S. (1990). A simple rule for generating equivalent models in covariance structure modeling. \emph{Multivariate Behavioral Research, 25}, 313--334.\\
+MacCallum, R. C., Wegener, D. T., Uchino, B. N., \& Fabrigar, L. R. (1993). The problem of equivalent models in applications of covariance structure analysis. \emph{Psychological Bulletin, 114}, 185--199.\\
+Schmid, J., \& Leiman, J. M. (1957). The development of hierarchical factor solutions. \emph{Psychometrika, 22}, 53--61.\\
+Yung, Y.-F., Thissen, D., \& McLeod, L. D. (1999). On the relationship between the higher-order factor model and the hierarchical factor model. \emph{Psychometrika, 64}, 113--128.
+
+\end{document}

@@ -347,7 +347,7 @@ ml_chisq <- function(S, Sh) {
 lav_fit <- function(L, Sigma, start = NULL) {
   args <- c(list(model = L$syntax, sample.cov = Sigma, sample.nobs = NOBS), LAVOPTS)
   if (!is.null(start)) args$start <- start
-  fit <- tryCatch(suppressWarnings(do.call(lavaan, args)), error = function(e) NULL)
+  fit <- tryCatch(suppressMessages(suppressWarnings(do.call(lavaan, args))), error = function(e) NULL)
   if (is.null(fit)) return(list(chisq = NA_real_, reported = NA_real_, fit = NULL, conv = FALSE))
   Sh <- tryCatch(lavInspect(fit, "implied")$cov[L$obs, L$obs], error = function(e) NULL)
   rep <- tryCatch(as.numeric(fitMeasures(fit, "chisq")), error = function(e) NA_real_)
@@ -381,17 +381,24 @@ lav_body_alt <- function(M) {
     vapply(sp$covs, function(c) paste0(c$a, " ~~ ", mod(c), c$b), ""))
 }
 
-lav_random_start <- function(L, Sigma) {
+# random starting values; with neg = TRUE every latent (residual) variance is
+# negative with probability 1/2 (solutions with negative latent variances, e.g.
+# a group factor whose three residual covariances have a negative product,
+# are not reachable from positive starts), observed residual variances are then
+# started large enough to keep the implied matrix positive definite
+lav_random_start <- function(L, Sigma, neg = FALSE) {
   pt <- L$pt
   est <- pt$ustart
   free <- pt$free > 0
   lab <- list()
   sv <- diag(Sigma)
   for (k in which(free)) {
+    var_lat <- function() if (neg && runif(1) < .5) -runif(1, .05, .5) else runif(1, .1, 1.5)
+    var_obs <- function() if (neg) runif(1, .9, 1.3) * sv[[pt$lhs[k]]] else runif(1, .05, 1) * sv[[pt$lhs[k]]]
     x <- switch(pt$op[k],
-      "=~" = runif(1, -0.5, 1.6),
+      "=~" = if (neg) sample(c(-1, 1), 1) * runif(1, .3, 1.2) else runif(1, -0.5, 1.6),
       "~"  = runif(1, -0.5, 1.0),
-      "~~" = if (pt$lhs[k] == pt$rhs[k]) (if (pt$lhs[k] %in% L$obs) runif(1, .05, 1) * sv[[pt$lhs[k]]] else runif(1, .1, 1.5)) else runif(1, -.3, .3),
+      "~~" = if (pt$lhs[k] == pt$rhs[k]) (if (pt$lhs[k] %in% L$obs) var_obs() else var_lat()) else runif(1, -.3, .3),
       0)
     if (nzchar(pt$label[k])) { if (is.null(lab[[pt$label[k]]])) lab[[pt$label[k]]] <- x; x <- lab[[pt$label[k]]] }
     est[k] <- x
@@ -517,7 +524,7 @@ prepare <- function(M) {
 
 fit_once <- function(L, Sigma, attempt) {
   if (L$tool == "lavaan") {
-    st <- if (attempt == 0) NULL else if (attempt == 1) "simple" else lav_random_start(L, Sigma)
+    st <- if (attempt == 0) NULL else if (attempt == 1) "simple" else lav_random_start(L, Sigma, neg = attempt %% 2 == 1)
     r <- lav_fit(L, Sigma, st)
     # polish: restart from the solution when close to zero
     for (pol in 1:2) if (!is.null(r$fit) && is.finite(r$chisq) && r$chisq > POLISH && r$chisq < SMALL) {
@@ -580,6 +587,7 @@ check_item <- function(k) {
     r$nonconv <- r$chisq >= TOL && !r$conv
     # self-fit: model X to its own Sigma (sanity check of generator + fitter)
     s <- fit_best(LX, dr$Sigma, STARTS)
+    if (s$chisq >= TOL && EXTRA > 0) { s2 <- fit_best(LX, dr$Sigma, EXTRA); if (s2$chisq < s$chisq) s <- s2 }
     list(chisq = r$chisq, reported = r$reported, used = r$used, self = s$chisq, sd = sd, alt = r$alt, nonconv = r$nonconv)
   }
   for (d in seq_len(DRAWS)) {

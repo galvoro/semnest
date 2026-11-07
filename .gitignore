@@ -4,3 +4,4 @@
 .dev/proofs/*.aux
 .dev/proofs/*.log
 .dev/proofs/*.out
+.dev/proofs/*.toc

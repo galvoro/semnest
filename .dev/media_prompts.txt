@@ -1,0 +1,53 @@
+SEMNEST — prompts for generated media (the capsule ships with vector art made by
+.dev/make_art.js; replace assets/title-*.webp and cover.png if you prefer these).
+
+=====================================================================
+1. BACKGROUND MUSIC (Gemini / Lyria)
+=====================================================================
+Calm, warm instrumental loop for an educational puzzle game about bird nests and
+statistics. Acoustic, gentle and curious: fingerpicked nylon guitar and soft
+marimba carry a simple pentatonic melody, with light pizzicato strings, a soft
+upright bass and very subtle brushed percussion. Occasional faint bird-like
+flute or whistle ornaments, never busy. Major key, around 92 BPM, steady
+4/4, no build-ups, no drops, no vocals. Morning-in-the-garden mood, focused and
+friendly, suitable to think to for 10 minutes. Mixed quietly, warm and intimate,
+constant energy from start to end so it loops seamlessly (no intro, no fade-out).
+Length 60-90 seconds.
+
+=====================================================================
+2. SQUARE TILE IMAGE (ChatGPT image) — cover.png, 1080 x 1080
+=====================================================================
+Square illustration for an educational game called "SEMNEST" about nested
+structural equation models. A cozy, slightly stylised editorial illustration:
+on a branch at dawn sits a large woven straw bird's nest; nested inside it is a
+smaller nest woven from robin-egg-blue twigs, holding a pale blue egg and a
+golden egg, while a cream speckled egg rests in the big nest. A plump blue-grey
+robin with a warm orange breast perches on the branch, looking at the eggs with
+curiosity. In the soft sky, a faint constellation drawn in thin white lines
+forms a small statistical path diagram (two circles connected by a curved double
+arrow, arrows pointing down to six small squares). Palette: warm paper beige,
+straw gold, twig brown, robin-egg blue, soft leaf green. Clean shapes, gentle
+grain, no photorealism. Large title text "SEMNEST" at the top in a bold, soft
+serif typeface (dark brown), with the small italic line "nested · equivalent ·
+neither" below it. Professional and friendly, suitable for university teaching.
+
+=====================================================================
+3. OPENING SCREEN IMAGE (ChatGPT image) — assets/title-wide.webp, 16:9
+   (and a portrait 2:3 version for phones: assets/title-mobile.webp)
+=====================================================================
+Wide 16:9 key art for the start screen of an educational game "SEMNEST"
+(structural equation modeling: which model is nested in which). Same world as
+the tile: a long branch crosses the lower half from left to right; on the right
+third sits a large woven straw nest with a smaller robin-egg-blue nest nested
+inside it, with a pale blue egg, a golden egg and a cream speckled egg; a plump
+blue-grey robin with an orange breast perches on the branch next to it. The sky
+is a soft dawn gradient from pale blue to warm cream with a gentle sun glow on
+the right. In the upper middle of the sky, a faint constellation of thin white
+lines forms a tiny path diagram (two circles with a curved double-headed arrow,
+arrows to six small squares). Large title "SEMNEST" in a bold soft serif at the
+upper left, with the small italic subtitle "nested · equivalent · neither".
+Keep the bottom quarter calm (soft green hills) because buttons are placed
+there. Stylised editorial illustration, clean shapes, subtle grain, warm and
+professional, not childish, no extra text.
+Portrait version: same elements stacked vertically, title at the top centre,
+nest and robin in the lower middle, calm hills at the bottom.

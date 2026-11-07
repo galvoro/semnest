@@ -1,0 +1,41 @@
+{
+  "title": "SEMNEST",
+  "subtitle": "Nested, equivalent, or neither? Learn to see how structural equation models relate.",
+  "type": "PLAY_LEARN",
+  "level": "postgrad",
+  "domain": [
+    "Social Sciences",
+    "Interdisciplinary"
+  ],
+  "field": [
+    "Psychology",
+    "Research Methods"
+  ],
+  "subdiscipline": [
+    "Quantitative psychology",
+    "Quantitative methods"
+  ],
+  "mode": "both",
+  "course": "National University of Singapore — Department of Psychology — PL5225 Structural Equation Modeling",
+  "keywords": [
+    "structural equation modeling",
+    "nested models",
+    "equivalent models",
+    "model comparison",
+    "confirmatory factor analysis",
+    "path analysis",
+    "higher-order factor model",
+    "bifactor model",
+    "Gaussian graphical model",
+    "network psychometrics"
+  ],
+  "learning_goals": [
+    "Decide whether two structural equation models are equivalent, nested (in which direction) or neither, by thinking of a model as the set of covariance matrices it can produce.",
+    "Recognise common sources of nesting and equivalence: fixed parameters, saturated blocks, replacing rules, two-indicator factors, higher-order and bifactor models, and Gaussian graphical models.",
+    "Check nesting by fitting one model to the covariance matrix implied by the other, and see how the parameters of one model translate into those of an equivalent or more general model."
+  ],
+  "creator": "Sacha Epskamp",
+  "institution": "National University of Singapore",
+  "notes": "Every item in PLAY is proven mathematically (separate proofs document) and checked numerically with lavaan and psychonetrics. Parameters are treated as unrestricted real numbers (as in lavaan), so Heywood solutions count.",
+  "license": "CC-BY-4.0"
+}
