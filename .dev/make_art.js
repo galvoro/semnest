@@ -137,9 +137,9 @@ const WIDE = {
   nest: [1180, 690, 560], bird: [1530, 668, 1.55, false], title: [150, 260, 150, 'start'],
 };
 const MOBILE = {
-  sun: [800, 300], const: [330, 600, 1.15], branch: [-60, 1170, 1140, 1080],
-  leaves: [[120, 1150, 1.6, -30], [200, 1160, 1.2, 25], [880, 1100, 1.6, -35], [980, 1090, 1.3, 20]],
-  nest: [470, 1110, 640], bird: [900, 1092, 1.6, false], title: [540, 270, 170, 'middle'],
+  sun: [800, 360], const: [330, 640, 1.15], branch: [-60, 1290, 1140, 1200],
+  leaves: [[120, 1270, 1.6, -30], [200, 1280, 1.2, 25], [880, 1220, 1.6, -35], [980, 1210, 1.3, 20]],
+  nest: [470, 1230, 640], bird: [900, 1212, 1.6, false], title: [540, 330, 150, 'middle'],
 };
 const COVER = {
   sun: [760, 300], const: [330, 330, 0.95], branch: [-60, 780, 1140, 720],
@@ -155,7 +155,7 @@ const favicon = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 32">
 (async () => {
   fs.writeFileSync(path.join(ROOT, 'assets', 'favicon.svg'), favicon);
   const b = await launch({ width: 1920, height: 1080, port: 9399 });
-  const jobs = [['title-wide', 1920, 1080, WIDE], ['title-mobile', 1080, 1620, MOBILE], ['cover', 1080, 1080, COVER]];
+  const jobs = [['title-wide', 1920, 1080, WIDE], ['title-mobile', 1080, 2160, MOBILE], ['cover', 1080, 1080, COVER]];
   for (const [name, W, H, L] of jobs) {
     const svg = scene(W, H, L);
     fs.writeFileSync(path.join(OUT, name + '.svg'), svg);

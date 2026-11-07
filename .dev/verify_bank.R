@@ -26,7 +26,13 @@
 #      A direction is nested when chi-square < TOL for every draw and not nested
 #      when some draw gives chi-square >= 0.1 (in between: "?"). If it does not
 #      fit from the default start, the fit is repeated from random starts
-#      (claim-blind), and with many more starts when the bank claims nesting.
+#      (claim-blind; lavaan: "simple" start, then random starts of which every
+#      second one has latent variances of random sign), and with many more
+#      starts when the bank claims nesting. Fits that end close to zero are
+#      polished (lavaan: refit from the solution; psychonetrics: ucminf). When
+#      no lavaan fit converges, the model is refitted with another marker
+#      (a single-parent indicator instead of a cross-loaded first indicator).
+#   4. self-fit: model X fitted to its own Sigma_X must give chi-square ~ 0.
 #
 #   Rscript .dev/verify_bank.R [idPrefix] [--draws=3] [--starts=6] [--extra=30] [--seed=2026] [--cores=1] [--neg=0]
 # (--neg=0.3: robustness run in which drawn effects, covariances and partial

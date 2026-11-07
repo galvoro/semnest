@@ -273,7 +273,8 @@ body.mode-learn .learn-only { display: flex !important; }
 .screen.show { display: flex; }
 #screen-title { padding: 0; flex-direction: column; justify-content: flex-start; background: #E9E1CF; }
 .title-hero { position: relative; width: 100%; flex: 1; min-height: 0; overflow: hidden; }
-.title-hero picture, .title-hero img { width: 100%; height: 100%; object-fit: cover; display: block; animation: heroin 1.2s ease-out; }
+.title-hero picture, .title-hero img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; animation: heroin 1.2s ease-out; }
+@media (max-width: 860px) { .title-tag { font-size: 15px; } .title-ui { gap: 9px; } .big-btn { min-width: 170px; padding: 11px 22px; font-size: 19px; } }
 @keyframes heroin { from { opacity: 0; transform: scale(1.03); } }
 .title-ui {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px calc(18px + env(safe-area-inset-bottom, 0px));
@@ -502,7 +503,7 @@ body.mode-learn .learn-only { display: flex !important; }
   .ans .venn { width: 40px; height: 26px; }
   .ans .ans-t small { display: none; }
   .ans kbd { display: none; }
-  .feedback { position: sticky; bottom: 8px; z-index: 6; }
+  .feedback { position: static; }
   .fb-body .venn.big { display: none; }
   .fb-why { font-size: 14px; }
   #learn { padding: 8px 8px 12px; }
@@ -531,3 +532,9 @@ body.mode-learn .learn-only { display: flex !important; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
 .d-resid-val.neg { fill: #B23A32; }
+@media (max-width: 440px) {
+  .brand { display: none; }
+  .hud-stats { gap: 10px; margin-left: 0; }
+  .eggs { gap: 3px; } .eggs i { width: 11px; height: 14px; }
+  .hud-btns { gap: 4px; }
+}
