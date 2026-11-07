@@ -1,0 +1,6 @@
+.DS_Store
+.dev/out/
+.dev/media/
+.dev/proofs/*.aux
+.dev/proofs/*.log
+.dev/proofs/*.out
