@@ -603,7 +603,13 @@
       const th = randomTheta(MA, rng, { negProb: opts.negProb || 0 });
       if (!th) return { nested: null, reason: 'no admissible draw' };
       const T = implied(MA, th);
-      const r = bestFitLS(MB, T, { rng, starts: opts.starts || 8, maxIt: opts.maxIt, negProb: opts.negProb || 0 });
+      let r = bestFitLS(MB, T, { rng, starts: opts.starts || 8, maxIt: opts.maxIt, negProb: opts.negProb || 0 });
+      // before concluding "not nested", try harder (bifactor-type models have
+      // local minima)
+      if (r.F > (opts.notTol || 1e-8) && opts.retry !== false) {
+        const r2 = bestFitLS(MB, T, { rng, starts: 3 * (opts.starts || 8), maxIt: opts.maxIt, negProb: opts.negProb || 0 });
+        if (r2.F < r.F) r = r2;
+      }
       Fs.push(r.F);
       worst = Math.max(worst, r.F);
       if (r.F > (opts.notTol || 1e-8)) return { nested: false, F: Fs };
