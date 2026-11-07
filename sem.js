@@ -346,6 +346,86 @@
     return { F, theta, ok: true, iterations: it };
   }
 
+  // Least-squares fit (ULS on standardised residuals) by Levenberg-Marquardt.
+  // Used for the nesting checks: a perfect fit has F = 0 under any discrepancy,
+  // and unlike ML this does not need a positive definite Sigma at every step,
+  // so parameters can move through sign changes (Heywood solutions) freely.
+  function fitLS(M, T, opts) {
+    opts = opts || {};
+    const maxIt = opts.maxIt || 300;
+    const p = M.p, q = M.q;
+    const w = T.map((r, i) => 1 / Math.sqrt(Math.abs(r[i]) || 1));
+    const resid = (Sig) => {
+      const r = [];
+      for (let i = 0; i < p; i++) for (let j = 0; j <= i; j++) r.push((Sig[i][j] - T[i][j]) * w[i] * w[j]);
+      return r;
+    };
+    const ss = (r) => r.reduce((s, v) => s + v * v, 0);
+    let theta = (opts.start || startValues(M, T, opts.rng)).slice();
+    let Sig = implied(M, theta);
+    if (!Sig) return { F: Infinity, theta, ok: false };
+    let r = resid(Sig), F = ss(r);
+    let mu = 1e-3;
+    const hist = [];
+    let it = 0;
+    for (; it < maxIt; it++) {
+      hist.push(F);
+      if (F < 1e-26) break;
+      if (it >= (opts.stall || 40) && F > 1e-10 && hist[it - 12] - F < 2e-3 * hist[it - 12]) break;
+      const D = derivs(M, theta);
+      if (!D) break;
+      const J = [];
+      for (let i = 0; i < p; i++) for (let j = 0; j <= i; j++) J.push(D.map(Dk => Dk[i][j] * w[i] * w[j]));
+      const H = la.zeros(q, q), g = new Array(q).fill(0);
+      for (let k = 0; k < J.length; k++) {
+        const row = J[k], rk = r[k];
+        for (let a = 0; a < q; a++) {
+          if (row[a] === 0) continue;
+          g[a] += row[a] * rk;
+          for (let b = a; b < q; b++) H[a][b] += row[a] * row[b];
+        }
+      }
+      for (let a = 0; a < q; a++) for (let b = 0; b < a; b++) H[a][b] = H[b][a];
+      let accepted = false;
+      for (let tries = 0; tries < 14; tries++) {
+        const Hd = H.map((row, i) => row.map((v, j) => i === j ? v + mu * (v + 1e-6) + 1e-14 : v));
+        const step = la.solve(Hd, g.map(v => -v));
+        if (!step || step.some(v => !isFinite(v))) { mu *= 10; continue; }
+        const th2 = theta.map((v, k) => v + step[k]);
+        const S2 = implied(M, th2);
+        if (!S2) { mu *= 6; continue; }
+        const r2 = resid(S2), F2 = ss(r2);
+        if (F2 <= F) {
+          theta = th2; Sig = S2; r = r2; F = F2; mu = Math.max(1e-12, mu / 5);
+          accepted = true;
+          break;
+        }
+        mu *= 6;
+      }
+      if (!accepted) break;
+    }
+    return { F, theta, ok: true, iterations: it };
+  }
+
+  // best least-squares fit over several starts; F is the sum of squared
+  // standardised residuals
+  function bestFitLS(M, T, opts) {
+    opts = opts || {};
+    const rng = opts.rng || la.rng(opts.seed || 1);
+    const starts = opts.starts || 8;
+    let best = null;
+    for (let s = 0; s < starts; s++) {
+      const st = s === 0 && opts.start ? opts.start.slice()
+        : (s === 1 ? smartStart(M, T, rng) : s === 2 ? startValues(M, T, rng)
+          : (randomTheta(M, rng, { negProb: s % 4 === 3 ? 0.3 : (opts.negProb || 0) }) || startValues(M, T, rng)));
+      if (s >= 3 && s % 2 === 1) flipLatentVariances(M, st, rng);
+      const r = fitLS(M, T, { start: st, maxIt: opts.maxIt });
+      if (!best || r.F < best.F) best = r;
+      if (best.F < (opts.perfect || 1e-22)) break;
+    }
+    return best;
+  }
+
   // starting values: loadings .7, regressions .2, variances from the target
   function startValues(M, T, rng) {
     const r = rng || Math.random;
@@ -443,6 +523,18 @@
     return null;
   }
 
+  function flipLatentVariances(M, th, rng) {
+    let any = false;
+    M.groups.forEach((g, k) => {
+      const e = g.entries[0];
+      if (e.kind === 'S' && e.i === e.j && e.i >= M.p && rng() < 0.5) { th[k] = -th[k]; any = true; }
+    });
+    if (!any) M.groups.forEach((g, k) => {
+      const e = g.entries[0];
+      if (!any && e.kind === 'S' && e.i === e.j && e.i >= M.p) { th[k] = -th[k]; any = true; }
+    });
+  }
+
   // best fit over several starts (stops early at a perfect fit)
   function bestFit(M, T, opts) {
     opts = opts || {};
@@ -453,6 +545,10 @@
       const st = s === 0 && opts.start ? opts.start
         : (s === 1 ? smartStart(M, T, rng) : s === 2 ? startValues(M, T, rng)
           : (randomTheta(M, rng, { negProb: s % 4 === 3 ? 0.3 : (opts.negProb || 0) }) || startValues(M, T, rng)));
+      // some starts flip the sign of latent variances (Heywood solutions:
+      // e.g. a one-factor model with three indicators needs a negative factor
+      // variance when the product of the three covariances is negative)
+      if (s >= 3 && s % 2 === 1) flipLatentVariances(M, st, rng);
       const r = fit(M, T, { start: st, maxIt: opts.maxIt });
       if (!best || r.F < best.F) best = r;
       if (best.F < (opts.perfect || 1e-12)) break;
@@ -504,12 +600,12 @@
       const th = randomTheta(MA, rng, { negProb: opts.negProb || 0 });
       if (!th) return { nested: null, reason: 'no admissible draw' };
       const T = implied(MA, th);
-      const r = bestFit(MB, T, { rng, starts: opts.starts || 8, maxIt: opts.maxIt, negProb: opts.negProb || 0 });
+      const r = bestFitLS(MB, T, { rng, starts: opts.starts || 8, maxIt: opts.maxIt, negProb: opts.negProb || 0 });
       Fs.push(r.F);
       worst = Math.max(worst, r.F);
-      if (r.F > (opts.notTol || 1e-6)) return { nested: false, F: Fs };
+      if (r.F > (opts.notTol || 1e-8)) return { nested: false, F: Fs };
     }
-    return { nested: worst < (opts.tol || 1e-9) ? true : null, F: Fs };
+    return { nested: worst < (opts.tol || 1e-16) ? true : null, F: Fs };
   }
 
   function relation(MA, MB, opts) {
@@ -527,5 +623,5 @@
     return { rel, dimA: dA, dimB: dB, qA: MA.q, qB: MB.q, ab, ba };
   }
 
-  SN.sem = { parse, compile, implied, impliedFull, matrices, derivs, fit, bestFit, startValues, smartStart, randomTheta, jacobian, rankOf, dimension, nestedIn, relation, fml, invSafe };
+  SN.sem = { parse, compile, implied, impliedFull, matrices, derivs, fit, bestFit, fitLS, bestFitLS, startValues, smartStart, randomTheta, jacobian, rankOf, dimension, nestedIn, relation, fml, invSafe };
 })(typeof window !== 'undefined' ? window : globalThis);
