@@ -3,6 +3,8 @@
 A Galvoro PLAY/LEARN capsule for PL5225 Structural Equation Modeling (NUS):
 **nested, equivalent, or neither?**
 
+Play it (test build on GitHub Pages): https://galvoro.github.io/semnest/
+
 Theme: dinosaur nests in a lost valley, kept quiet: sandstone paper with
 faint map contours, fern and basalt; model A is lagoon teal, model B amber
 (the eggs in the opening image); eggs as level medals, a map neatline and
@@ -182,6 +184,12 @@ Dot-folders are never uploaded with the capsule.
   harmony match at the seam, and the lead-in and the cut-off at 2:30 are left
   out. `node .dev/check_bgm_loop.js` checks the seam and writes
   `.dev/out/bgm_seam.wav` to listen to.
+
+## GitHub Pages
+
+The capsule is static, so GitHub Pages serves it straight from the `main`
+branch (root folder). Pages runs Jekyll, which leaves out dot-folders, so
+`.dev/` is in the repository but not on the site.
 
 ## Running locally
 
