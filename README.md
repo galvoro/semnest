@@ -98,7 +98,10 @@ factors is equivalent to three correlated factors.
   a miss is rerun with many more starting values, which the feedback loop of
   P22 needs with mixed signs).
 * **R check:** `Rscript .dev/verify_bank.R`, an independent check with lavaan
-  and psychonetrics.
+  and psychonetrics. Known exception: P22 (feedback loop with instruments).
+  When the drawn loop gain b12·b21 exceeds 1, lavaan does not reach the exact
+  fit from its default or random starting values, but it does (χ² = 0) from
+  the analytic solution given in the proof.
 
 ## Files
 
