@@ -20,31 +20,34 @@ Palette of the game (for reference)
 =====================================================================
 1. BACKGROUND MUSIC (Suno)
 =====================================================================
-In Suno: Create > Custom.
-  - Instrumental: on.
-  - Model: the newest one.
-  - Title: SEMNEST
+In Suno (Create page, version 6 interface):
+  - At the top of the Create panel, pick the Advanced tab (next to Simple
+    and Sounds; older help pages call it Custom). Simple shows only one
+    description box; Advanced shows separate Lyrics and Styles boxes.
+  - Model (selector at the top right): the newest one your plan offers.
+  - Instrumental: switch it on if there is a switch; if not, paste block C
+    into the Lyrics box (it starts with [Instrumental]).
   - Styles: paste block A.
-  - Exclude styles (under More options): paste block B.
-  - If offered: Weirdness about 30 %, Style influence about 70 %.
-  - Lyrics box: leave empty, or paste block C (tags only, no words) to steer
-    the form. If Instrumental hides the lyrics box, skip C.
+  - More Options (below Styles): Exclude styles = block B; if offered,
+    Duration about 2:30, Weirdness about 30 %, Style Influence about 70 %.
+    Leave Max Mode off (it costs extra credits).
+  - Title: SEMNEST
+  - Press Create.
 Every run gives two versions; make a few runs and pick the one with the most
-even groove and the shortest intro and ending. Suno usually adds a short
-intro and a fade-out and makes tracks of 2 to 4 minutes; that is fine. Save
-the MP3 as .dev/media/bgm.mp3 and tell me: I set the loop points in
-audio.js (skipping the intro and the fade-out, with a crossfade at the
-seam), copy it to assets/bgm.mp3 and switch the music on.
+even groove and the shortest intro and ending. A short intro and a fade-out
+are fine. Download the MP3, save it as .dev/media/bgm.mp3 and tell me: I set
+the loop points in audio.js (skipping the intro and the fade-out, with a
+crossfade at the seam), copy it to assets/bgm.mp3 and switch the music on.
 
 --- A. Styles -------------------------------------------------------
 
 calm instrumental exploration underscore for a puzzle game, light adventure, curious and warm, a little mysterious, 96 BPM, steady 4/4, D dorian, warm marimba and kalimba ostinato, soft frame drum and shaker, low log drum on the downbeats, warm low strings holding long chords, wooden alto flute melody in short singable phrases, occasional soft French horn swell, organic earthy acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
 
---- B. Exclude styles -----------------------------------------------
+--- B. Exclude styles (a few strong ones work better than a long list) --
 
-vocals, choir, lyrics, spoken word, epic orchestral hits, trailer music, heavy drums, synthesizer, electric guitar, EDM, drop, build-up, animal sounds, bird sounds
+vocals, choir, synthesizer, heavy drums
 
---- C. Lyrics box (optional; structure tags only) -------------------
+--- C. Lyrics box (tags only, no words) ------------------------------
 
 [Instrumental]
 [Main Theme: marimba and kalimba groove, flute melody]
