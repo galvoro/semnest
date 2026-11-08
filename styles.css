@@ -322,6 +322,7 @@ body.mode-learn .learn-only { display: flex !important; }
 }
 .title-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
 .title-foot { margin: 0; font-size: 12px; opacity: .85; letter-spacing: .04em; }
+.title-credits-sub { display: block; margin-top: 2px; font-size: 11px; font-style: italic; letter-spacing: .02em; opacity: .75; }
 
 .level-box, .tut-box { width: min(980px, 100%); text-align: center; margin: auto; position: relative; }
 .level-box h2, .tut-header { font-family: var(--f-head); font-weight: 800; font-size: 30px; margin: 0 0 4px; }
