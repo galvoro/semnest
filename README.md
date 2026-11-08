@@ -80,17 +80,35 @@ types with at least five pairs can be reached).
 ## LEARN
 
 Two canvases (A and B) that both start as a one-factor model on six items. Draw
-factors, loadings, structural effects (factor → factor) and covariances; add or
-remove items (on both sides). The middle panel shows the relation live, plus
-the parameters and degrees of freedom of both models. It is decided
-numerically, as in the PL5225 assignment: fit each model to the covariance
-matrix implied by the other at random parameter values (the NET idea of Bentler
-& Satorra, 2010), from several starting values.
+factors, arrows (loadings, effects between items, from items to factors and
+between factors; feedback loops are allowed), covariances and network edges
+(between items: GGM; between residuals: RNM; between factors: LNM); add or
+remove items (on both sides). The layout follows PLAY: A and B side by side,
+the relation and the COMPUTE and LIBRARY buttons in the middle.
+
+**COMPUTE** decides the relation and shows the parameters and degrees of
+freedom of both models. Every structural change clears the result until
+COMPUTE is pressed again (Enter on a keyboard). For your own models the
+relation is decided numerically, as in the PL5225 assignment: fit each model
+to the covariance matrix implied by the other at random parameter values (the
+NET idea of Bentler & Satorra, 2010), from several starting values.
+
+**LIBRARY** lists every PLAY pair (filters: level and model type; the relation
+is not shown in the list). A chosen pair is loaded with PLAY's layout and its
+proven relation and explanation; once it is changed, the numerical check
+takes over (undoing the change brings the proof back).
+`.dev/check_library.js` loads all 131 pairs and checks that the editors
+produce exactly the bank's models.
 
 **Values** gives the models numbers (std.lv metric). The nested model (or either
 model, when they are equivalent) can be edited with a slider; the other model
 is fitted to the covariance matrix it implies and shows the values that
-reproduce it exactly. With *neither*, values cannot be transferred.
+reproduce it exactly. With *neither*, values cannot be transferred; network
+models have no values (yet).
+
+On phones LEARN looks like PLAY: A above B, the relation and the two buttons
+below. Tapping a model opens it in a popup with the drawing tools; tapping the
+relation shows it in full.
 
 ## Conventions (important for the "surprising" items)
 
@@ -131,7 +149,7 @@ factors is equivalent to three correlated factors.
 | `bank.js` | the 131 items and the model types |
 | `diagram.js` | layout of the path diagrams; SVG and TikZ output |
 | `game.js` | app shell and PLAY |
-| `learn.js`, `editor.js` | LEARN (editor adapted from Factor Lab) |
+| `learn.js`, `editor.js` | LEARN: COMPUTE, library, phone edit popup; the editor (adapted from Factor Lab) |
 | `tutorial.js`, `diploma.js`, `audio.js` | briefing cards, certificate image, sound |
 | `assets/` | favicon, map contours (`.dev/make_topo.js`), opening-screen placeholder (`.dev/make_placeholder.js`); the opening image goes in `title-wide.webp` / `title-mobile.webp` |
 

@@ -1,11 +1,17 @@
 // SEMNEST — path-diagram editor for LEARN (adapted from FACTOR LAB's editor).
 //
-// Items are squares y1..yp, factors circles F1, F2, ...
+// Items are squares (y1..yp unless named), factors circles (F1, F2, ... unless
+// named; models from the library keep their names).
 //   load : factor -> item     (factor loading)
-//   reg  : factor -> factor   (structural effect / higher-order loading)
-//   cov  : item <-> item (residual covariance) or factor <-> factor
-// Every item has a residual (short arrow with a small circle); residual
-// covariances are drawn between the residuals. Coordinates are normalised to
+//   reg  : any other arrow    (item -> item, item -> factor, factor -> factor)
+//   cov  : item <-> item or factor <-> factor (curved, two heads)
+//   net  : item -- item or factor -- factor (network edge: GGM on items, RNM
+//          on residuals, LNM on factors); the endpoints of the network edges
+//          of one kind form one network block (see sem.js)
+// Edges may carry an equality label (library items). Endogenous items get a
+// residual (short arrow with a small circle), as in PLAY; covariances and
+// network edges attach to the residual of an endogenous item, otherwise to
+// the item itself. Coordinates are normalised to
 // the canvas (0..1) so the diagram survives resizes. In "Values" mode the
 // paths show numbers: the model's own values, or values fitted to the other
 // model (setDisplay).
@@ -55,11 +61,42 @@
     // ---------------- geometry ----------------
     function dims() {
       const p = Math.max(S.obs.length, 1);
-      const side = Math.max(16, Math.min(48, W / (p + 2.2), H / 7.5));
+      let side = Math.max(16, Math.min(48, W / (p + 2.2), H / 7.5));
+      // library models: no larger than in PLAY (S.unit: a grid unit as a
+      // fraction of the canvas width / height)
+      if (S.unit) side = Math.max(14, Math.min(side, 0.6 * Math.min(S.unit[0] * W, S.unit[1] * H)));
       // rr: radius of the (invisible) residual node; stub: arrow length into the item
       return { side, half: side / 2, R: side * 0.66, rr: Math.max(9, side * 0.3), stub: side * (S.learn ? 0.8 : 0.42) };
     }
     function px(n) { return [n.x * W, n.y * H]; }
+    // display / syntax names: labels where given, otherwise y1.. and F1..
+    function names() {
+      const used = new Set(S.lat.concat(S.obs).map(n => n.label).filter(Boolean));
+      const lat = {}, obs = {};
+      S.lat.forEach((l, k) => {
+        if (l.label) { lat[l.id] = l.label; return; }
+        let j = k + 1;
+        while (used.has('F' + j)) j++;
+        used.add('F' + j); lat[l.id] = 'F' + j;
+      });
+      S.obs.forEach(o => { obs[o.id] = o.label || 'y' + (o.idx + 1); });
+      return { lat, obs };
+    }
+    // "y12" -> ["y", "12"] (drawn with a subscript), "G" -> ["G", ""]
+    function labelParts(name) { const m = String(name).match(/^([A-Za-z]+?)(\d+)$/); return m ? [m[1], m[2]] : [String(name), '']; }
+    function drawName(g, name, x, y, size, cls) {
+      const [base, sub] = labelParts(name);
+      const t = el('text', { x: x - (sub ? size * 0.12 : 0), y, 'font-size': size, 'text-anchor': 'middle', 'dominant-baseline': 'central', class: cls }, g);
+      const t1 = el('tspan', {}, t); t1.textContent = base;
+      if (sub) { const t2 = el('tspan', { class: 'sub', dy: size * 0.3, 'font-size': size * 0.72 }, t); t2.textContent = sub; }
+    }
+    function isEndo(id) { return S.edges.some(e => (e.kind === 'load' || e.kind === 'reg') && e.b === id); }
+    // the members of the network block of one kind ('obs' | 'lat')
+    function netMembers(kind) {
+      const set = new Set();
+      for (const e of S.edges) if (e.kind === 'net') { set.add(e.a); set.add(e.b); }
+      return [...set].filter(id => (kind === 'lat') === isLat(id));
+    }
     function node(id) { return S.obs.find(o => o.id === id) || S.lat.find(l => l.id === id); }
     function isLat(id) { return id && id[0] === 'f'; }
     function boundary(n, ux, uy) {
@@ -80,15 +117,25 @@
     function residAnchor(o) {
       const d = dims();
       const [x, y] = px(o);
-      const facs = S.edges.filter(e => e.kind === 'load' && e.b === o.id).map(e => node(e.a)).filter(Boolean);
-      let ux = 0, uy = 1;
-      if (facs.length) {
-        const fx = facs.reduce((s, f) => s + f.x * W, 0) / facs.length;
-        const fy = facs.reduce((s, f) => s + f.y * H, 0) / facs.length;
-        const L = hyp(x - fx, y - fy) || 1;
-        ux = (x - fx) / L; uy = (y - fy) / L;
-        if (Math.abs(uy) >= 0.3) { ux = 0; uy = Math.sign(uy); } else { ux = Math.sign(ux) || 1; uy = 0; }
+      // directions to the nodes it is connected to by arrows, and to close
+      // neighbours; the residual goes down, up, right or left: the first of
+      // these that is well clear, otherwise the one with the widest gap
+      const dirs = [];
+      for (const e of S.edges) {
+        if (e.kind !== 'load' && e.kind !== 'reg') continue;
+        const other = e.a === o.id ? node(e.b) : e.b === o.id ? node(e.a) : null;
+        if (other) dirs.push(Math.atan2(other.y * H - y, other.x * W - x));
       }
+      for (const n of S.obs.concat(S.lat)) {
+        if (n === o) continue;
+        const [nx, ny] = px(n);
+        if (hyp(nx - x, ny - y) < d.side * 2.3) dirs.push(Math.atan2(ny - y, nx - x));
+      }
+      const gap = (a) => { let mn = Math.PI; for (const t of dirs) { let df = Math.abs(a - t) % (2 * Math.PI); if (df > Math.PI) df = 2 * Math.PI - df; mn = Math.min(mn, df); } return mn; };
+      const cands = [Math.PI / 2, -Math.PI / 2, 0, Math.PI];
+      let a = cands.find(c => gap(c) >= 0.95);
+      if (a === undefined) a = cands.reduce((b, c) => (gap(c) > gap(b) + 1e-9 ? c : b), cands[0]);
+      const ux = Math.round(Math.cos(a)), uy = Math.round(Math.sin(a));
       const tip = boundary(o, ux, uy);
       const k = d.stub + d.rr;
       return { ux, uy, tip, c: [tip[0] + ux * k, tip[1] + uy * k], rr: d.rr };
@@ -100,7 +147,7 @@
 
     // ---------------- state helpers ----------------
     function snapshot() {
-      return JSON.stringify({ obs: S.obs, lat: S.lat, edges: S.edges, nextLat: S.nextLat, nextEdge: S.nextEdge });
+      return JSON.stringify({ obs: S.obs, lat: S.lat, edges: S.edges, nextLat: S.nextLat, nextEdge: S.nextEdge, unit: S.unit || null });
     }
     function pushHistory() {
       S.history.push(snapshot());
@@ -108,7 +155,7 @@
     }
     function restore(js) {
       const o = JSON.parse(js);
-      S.obs = o.obs; S.lat = o.lat; S.edges = o.edges; S.nextLat = o.nextLat; S.nextEdge = o.nextEdge;
+      S.obs = o.obs; S.lat = o.lat; S.edges = o.edges; S.nextLat = o.nextLat; S.nextEdge = o.nextEdge; S.unit = o.unit || null;
       S.sel.clear();
     }
     function changed(structural) {
@@ -119,7 +166,8 @@
     function msg(text, kind) { if (opts.onMessage) opts.onMessage(text, kind || 'info'); }
 
     function edgeExists(kind, a, b) {
-      return S.edges.some(e => e.kind === kind && ((e.a === a && e.b === b) || (kind === 'cov' && e.a === b && e.b === a)));
+      const sym = kind === 'cov' || kind === 'net';
+      return S.edges.some(e => e.kind === kind && ((e.a === a && e.b === b) || (sym && e.a === b && e.b === a)));
     }
     function createsCycle(from, to) {
       // adding from -> to; cycle if `from` reachable from `to`
@@ -129,25 +177,33 @@
         if (v === from) return true;
         if (seen.has(v)) continue;
         seen.add(v);
-        for (const e of S.edges) if (e.kind === 'reg' && e.a === v) stack.push(e.b);
+        for (const e of S.edges) if ((e.kind === 'reg' || e.kind === 'load') && e.a === v) stack.push(e.b);
       }
       return false;
     }
     function isEndogenous(id) { return S.edges.some(e => e.kind === 'reg' && e.b === id); }
+    const nm = (id) => { const n = names(); return n.lat[id] || n.obs[id]; };
 
     function addEdge(kind, a, b, silent) {
       if (a === b) return false;
       if (kind === 'arrow') {
-        if (!isLat(a) && !isLat(b)) { msg('Paths between items are not available here. Use Covary for a residual covariance.', 'warn'); return false; }
-        if (!isLat(a) && isLat(b)) { const t = a; a = b; b = t; msg('Arrows point from a factor to its items — reversed for you.', 'info'); }
-        kind = isLat(b) ? 'reg' : 'load';
-        if (kind === 'reg') {
-          if (edgeExists('reg', a, b)) return false;
-          if (createsCycle(a, b)) { msg('That would create a feedback loop between factors.', 'warn'); return false; }
-        } else if (edgeExists('load', a, b)) { msg('That loading already exists.', 'info'); return false; }
-      } else {
+        kind = isLat(a) && !isLat(b) ? 'load' : 'reg';
+        if (edgeExists(kind, a, b)) { msg('That arrow already exists.', 'info'); return false; }
+        if (!silent) {
+          if (createsCycle(a, b)) msg('A feedback loop: allowed, but such models are often not identified.', 'info');
+          else if (!isLat(a) && isLat(b)) msg(nm(b) + ' is regressed on ' + nm(a) + '. For a loading, draw from the factor to the item.', 'info');
+        }
+      } else if (kind === 'cov') {
         if (isLat(a) !== isLat(b)) { msg('A covariance connects two items (their residuals) or two factors.', 'warn'); return false; }
         if (edgeExists('cov', a, b)) { msg('That covariance already exists.', 'info'); return false; }
+        const mem = netMembers(isLat(a) ? 'lat' : 'obs');
+        if (mem.includes(a) && mem.includes(b)) { msg(nm(a) + ' and ' + nm(b) + ' are in a network: connect them with a network edge.', 'warn'); return false; }
+      } else if (kind === 'net') {
+        if (isLat(a) !== isLat(b)) { msg('A network edge connects two items or two factors.', 'warn'); return false; }
+        if (edgeExists('net', a, b)) { msg('That network edge already exists.', 'info'); return false; }
+        const mem = new Set(netMembers(isLat(a) ? 'lat' : 'obs').concat([a, b]));
+        const clash = S.edges.find(e => e.kind === 'cov' && mem.has(e.a) && mem.has(e.b));
+        if (clash) { msg(nm(clash.a) + ' and ' + nm(clash.b) + ' covary: inside a network use network edges. Erase that covariance first.', 'warn'); return false; }
       }
       if (!silent) pushHistory();
       S.edges.push(newEdge(kind, a, b));
@@ -178,7 +234,8 @@
       }
       const id = 'f' + (S.nextLat++);
       // new factors correlate with existing exogenous factors (lavaan cfa() default)
-      const others = S.lat.filter(l => !isEndogenous(l.id)).map(l => l.id);
+      const inNet = new Set(netMembers('lat'));
+      const others = S.lat.filter(l => !isEndogenous(l.id) && !inNet.has(l.id)).map(l => l.id);
       S.lat.push({ id, kind: 'lat', x, y });
       for (const o of others) S.edges.push(newEdge('cov', o, id));
       for (const it of items || []) S.edges.push(newEdge('load', id, it));
@@ -235,7 +292,7 @@
     }
 
     function newEdge(kind, a, b) {
-      const v = kind === 'load' ? DEFAULTS.load : kind === 'reg' ? DEFAULTS.reg : isLat(a) ? DEFAULTS.fcov : DEFAULTS.rcov;
+      const v = kind === 'load' ? DEFAULTS.load : kind === 'reg' ? DEFAULTS.reg : kind === 'net' ? 0 : isLat(a) ? DEFAULTS.fcov : DEFAULTS.rcov;
       return { id: 'e' + (S.nextEdge++), kind, a, b, v };
     }
     function GA(name) { const a = global.GaltonAudio; if (a && a.SFX && a.SFX[name]) a.SFX[name](); }
@@ -305,8 +362,55 @@
     }
     function edgeStyle(e) { return { color: INK, width: 2, std: null }; }
 
-    function covControl(A, B, e) {
-      const [ax, ay] = px(A), [bx, by] = px(B);
+    // where a covariance / network edge attaches: the residual of an
+    // endogenous item, otherwise the node itself
+    function anchorOf(n) {
+      if (n.kind === 'obs' && isEndo(n.id)) { const a = residAnchor(n); return { c: a.c, r: a.rr, dir: [a.ux, a.uy], circle: true, n }; }
+      const d = dims();
+      return { c: px(n), r: n.kind === 'lat' ? d.R : d.half, dir: null, circle: n.kind === 'lat', n };
+    }
+    function trim(an, u) {
+      if (an.circle) return [an.c[0] + u[0] * an.r, an.c[1] + u[1] * an.r];
+      return boundary(an.n, u[0], u[1]);
+    }
+    const unit = (dx, dy) => { const l = hyp(dx, dy) || 1; return [dx / l, dy / l]; };
+    const qpt = (p, c, q, t) => [(1 - t) * (1 - t) * p[0] + 2 * (1 - t) * t * c[0] + t * t * q[0], (1 - t) * (1 - t) * p[1] + 2 * (1 - t) * t * c[1] + t * t * q[1]];
+
+    // control point that bends an edge from p to q around the other nodes
+    // (null: a straight line is clear); prefer: +1 / -1 forces a bend
+    function routeCtrl(p, q, skip, prefer) {
+      const d = dims();
+      const obst = [];
+      for (const n of S.obs.concat(S.lat)) {
+        if (skip.includes(n.id)) continue;
+        const [x, y] = px(n);
+        obst.push([x, y, (n.kind === 'lat' ? d.R : d.half * 1.2) + 3]);
+      }
+      const hits = (c) => {
+        let k = 0;
+        for (let t = 0.08; t <= 0.921; t += 0.042) { const [x, y] = qpt(p, c, q, t); if (obst.some(([ox, oy, r]) => hyp(x - ox, y - oy) < r)) k++; }
+        return k;
+      };
+      const mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2;
+      const L = hyp(q[0] - p[0], q[1] - p[1]) || 1, nx = -(q[1] - p[1]) / L, ny = (q[0] - p[0]) / L;
+      if (!prefer && !hits([mx, my])) return null;
+      const cen = centroid();
+      const away = (cen[0] - mx) * nx + (cen[1] - my) * ny > 0 ? -1 : 1;
+      const sides = prefer ? [prefer] : [away, -away];
+      let best = null;
+      for (let h = prefer ? 0.2 * L : 0.14 * L + 8; h <= 1.3 * L + 50; h += 0.08 * L + 6) {
+        for (const sd of sides) {
+          const c = [mx + nx * sd * h, my + ny * sd * h];
+          const k = hits(c);
+          if (!k) return c;
+          if (!best || k < best.k) best = { c, k };
+        }
+      }
+      return best.c;
+    }
+
+    function covControl(pa, pb, A, B, e) {
+      const [ax, ay] = pa, [bx, by] = pb;
       const mx = (ax + bx) / 2, my = (ay + by) / 2;
       const dx = bx - ax, dy = by - ay, L = hyp(dx, dy) || 1;
       let nx = -dy / L, ny = dx / L;
@@ -314,9 +418,9 @@
       let ref = null;
       const nbr = [];
       for (const f of S.edges) {
-        if (f === e) continue;
-        if (f.kind === 'load' && (f.b === A.id || f.b === B.id)) nbr.push(node(f.a));
-        if ((f.kind === 'load' || f.kind === 'reg') && (f.a === A.id || f.a === B.id)) nbr.push(node(f.b));
+        if (f === e || (f.kind !== 'load' && f.kind !== 'reg')) continue;
+        if (f.b === A.id || f.b === B.id) nbr.push(node(f.a));
+        if (f.a === A.id || f.a === B.id) nbr.push(node(f.b));
       }
       const pts = nbr.filter(Boolean).filter(n => n.id !== A.id && n.id !== B.id);
       if (pts.length) {
@@ -333,77 +437,84 @@
       if (!A || !B) return;
       const st = edgeStyle(e);
       const dropping = pick && e.kind === 'load' && e.a === pick.fid && !pick.items.has(e.b);
-      const g = el('g', { class: 'd-edge' + (S.sel.has(e.id) ? ' sel' : '') + (dropping ? ' dropping' : ''), 'data-id': e.id }, gEdges);
+      const g = el('g', { class: 'd-edge' + (e.kind === 'net' ? ' net' : '') + (S.sel.has(e.id) ? ' sel' : '') + (dropping ? ' dropping' : ''), 'data-id': e.id }, gEdges);
       const head = Math.max(9, dims().side * 0.24) + st.width * 0.9;
-      let pathD, labelPos;
-      if (e.kind === 'cov' && !isLat(e.a)) {
-        // residual covariance: between the two hidden residuals
-        const ra = residAnchor(A), rb = residAnchor(B);
+      let labelPos;
+      if (e.kind === 'cov') {
+        const ra = anchorOf(A), rb = anchorOf(B);
         const [ax, ay] = ra.c, [bx, by] = rb.c;
-        const mx = (ax + bx) / 2, my = (ay + by) / 2;
-        const L = hyp(bx - ax, by - ay) || 1;
-        let nx = ra.ux + rb.ux, ny = ra.uy + rb.uy;
-        const nl = hyp(nx, ny);
-        if (nl < 0.5) {
-          nx = -(by - ay) / L; ny = (bx - ax) / L;
-          const cen = centroid();
-          if ((cen[0] - mx) * nx + (cen[1] - my) * ny > 0) { nx = -nx; ny = -ny; }
-        } else { nx /= nl; ny /= nl; }
-        let off = Math.min(0.6 * L, 0.22 * L + 3 * ra.rr);
-        for (let k = 0; k < 10; k++) {          // keep the curve inside the canvas
-          const apx = mx + nx * off / 2, apy = my + ny * off / 2;
-          if (apx > 8 && apx < W - 8 && apy > 8 && apy < H - 8) break;
-          off *= 0.7;
-        }
-        const C = [mx + nx * off, my + ny * off];
-        let u1 = [C[0] - ax, C[1] - ay]; let l1 = hyp(...u1) || 1; u1 = [u1[0] / l1, u1[1] / l1];
-        let u2 = [C[0] - bx, C[1] - by]; let l2 = hyp(...u2) || 1; u2 = [u2[0] / l2, u2[1] / l2];
-        const s = [ax + u1[0] * ra.rr, ay + u1[1] * ra.rr], t = [bx + u2[0] * rb.rr, by + u2[1] * rb.rr];
+        let C, lift = null;
+        if (ra.dir && rb.dir) {
+          // two residuals: bulge on the residuals' side
+          const mx = (ax + bx) / 2, my = (ay + by) / 2;
+          const L = hyp(bx - ax, by - ay) || 1;
+          let nx = ra.dir[0] + rb.dir[0], ny = ra.dir[1] + rb.dir[1];
+          const nl = hyp(nx, ny);
+          if (nl < 0.5) {
+            nx = -(by - ay) / L; ny = (bx - ax) / L;
+            const cen = centroid();
+            if ((cen[0] - mx) * nx + (cen[1] - my) * ny > 0) { nx = -nx; ny = -ny; }
+          } else { nx /= nl; ny /= nl; }
+          let off = Math.min(0.6 * L, 0.22 * L + 3 * ra.r);
+          for (let k = 0; k < 10; k++) {          // keep the curve inside the canvas
+            const apx = mx + nx * off / 2, apy = my + ny * off / 2;
+            if (apx > 8 && apx < W - 8 && apy > 8 && apy < H - 8) break;
+            off *= 0.7;
+          }
+          C = [mx + nx * off, my + ny * off];
+          lift = [nx, ny];
+        } else C = covControl(ra.c, rb.c, A, B, e);
+        const u1 = unit(C[0] - ax, C[1] - ay), u2 = unit(C[0] - bx, C[1] - by);
+        const s = trim(ra, u1), t = trim(rb, u2);
         const s2 = [s[0] + u1[0] * head * 0.85, s[1] + u1[1] * head * 0.85];
         const t2 = [t[0] + u2[0] * head * 0.85, t[1] + u2[1] * head * 0.85];
-        pathD = `M${s2[0]},${s2[1]} Q${C[0]},${C[1]} ${t2[0]},${t2[1]}`;
         el('path', { d: `M${s[0]},${s[1]} Q${C[0]},${C[1]} ${t[0]},${t[1]}`, class: 'd-hit' }, g);
-        el('path', { d: pathD, fill: 'none', stroke: st.color, 'stroke-width': st.width, class: 'd-line' }, g);
+        el('path', { d: `M${s2[0]},${s2[1]} Q${C[0]},${C[1]} ${t2[0]},${t2[1]}`, fill: 'none', stroke: st.color, 'stroke-width': st.width, class: 'd-line' }, g);
         arrowHead(g, s, -u1[0], -u1[1], head, st.color);
         arrowHead(g, t, -u2[0], -u2[1], head, st.color);
-        const lift = Math.max(10, Math.min(13, dims().side * 0.3)) * 0.95 + st.width / 2;
-        labelPos = [0.25 * s[0] + 0.5 * C[0] + 0.25 * t[0] + nx * lift, 0.25 * s[1] + 0.5 * C[1] + 0.25 * t[1] + ny * lift];
-      } else if (e.kind === 'cov') {
-        const C = covControl(A, B, e);
-        const [ax, ay] = px(A), [bx, by] = px(B);
-        let u1 = [C[0] - ax, C[1] - ay]; let l1 = hyp(...u1) || 1; u1 = [u1[0] / l1, u1[1] / l1];
-        let u2 = [C[0] - bx, C[1] - by]; let l2 = hyp(...u2) || 1; u2 = [u2[0] / l2, u2[1] / l2];
-        const s = boundary(A, u1[0], u1[1]), t = boundary(B, u2[0], u2[1]);
-        const s2 = [s[0] + u1[0] * head * 0.85, s[1] + u1[1] * head * 0.85];
-        const t2 = [t[0] + u2[0] * head * 0.85, t[1] + u2[1] * head * 0.85];
-        pathD = `M${s2[0]},${s2[1]} Q${C[0]},${C[1]} ${t2[0]},${t2[1]}`;
-        el('path', { d: `M${s[0]},${s[1]} Q${C[0]},${C[1]} ${t[0]},${t[1]}`, class: 'd-hit' }, g);
-        el('path', { d: pathD, fill: 'none', stroke: st.color, 'stroke-width': st.width, class: 'd-line' }, g);
-        arrowHead(g, s, -u1[0], -u1[1], head, st.color);
-        arrowHead(g, t, -u2[0], -u2[1], head, st.color);
+        const lp = Math.max(10, Math.min(13, dims().side * 0.3)) * 0.95 + st.width / 2;
         labelPos = [0.25 * s[0] + 0.5 * C[0] + 0.25 * t[0], 0.25 * s[1] + 0.5 * C[1] + 0.25 * t[1]];
+        if (lift) labelPos = [labelPos[0] + lift[0] * lp, labelPos[1] + lift[1] * lp];
+      } else if (e.kind === 'net') {
+        // network edge: a plain line (bent around other nodes when needed)
+        const ra = anchorOf(A), rb = anchorOf(B);
+        const C = routeCtrl(ra.c, rb.c, [A.id, B.id]) || [(ra.c[0] + rb.c[0]) / 2, (ra.c[1] + rb.c[1]) / 2];
+        const s = trim(ra, unit(C[0] - ra.c[0], C[1] - ra.c[1])), t = trim(rb, unit(C[0] - rb.c[0], C[1] - rb.c[1]));
+        const d = `M${s[0]},${s[1]} Q${C[0]},${C[1]} ${t[0]},${t[1]}`;
+        el('path', { d, class: 'd-hit' }, g);
+        el('path', { d, fill: 'none', stroke: st.color, 'stroke-width': st.width, class: 'd-line' }, g);
+        labelPos = qpt(s, C, t, 0.5);
       } else {
-        const [ax, ay] = px(A), [bx, by] = px(B);
-        const L = hyp(bx - ax, by - ay) || 1;
-        const ux = (bx - ax) / L, uy = (by - ay) / L;
-        const s = boundary(A, ux, uy), t = boundary(B, -ux, -uy);
-        const t2 = [t[0] - ux * head * 0.85, t[1] - uy * head * 0.85];
-        el('line', { x1: s[0], y1: s[1], x2: t[0], y2: t[1], class: 'd-hit' }, g);
-        el('line', { x1: s[0], y1: s[1], x2: t2[0], y2: t2[1], stroke: st.color, 'stroke-width': st.width, class: 'd-line' }, g);
-        arrowHead(g, t, ux, uy, head, st.color);
-        const at = e.kind === 'load' ? 0.62 : 0.5;
-        labelPos = [s[0] + (t[0] - s[0]) * at, s[1] + (t[1] - s[1]) * at];
+        // arrow: straight, or bent around other nodes; the two arrows of a
+        // feedback loop bend to opposite sides
+        const pa = px(A), pb = px(B);
+        const loop = S.edges.some(f => f !== e && (f.kind === 'reg' || f.kind === 'load') && f.a === e.b && f.b === e.a);
+        const C = routeCtrl(pa, pb, [A.id, B.id], loop ? 1 : 0) || [(pa[0] + pb[0]) / 2, (pa[1] + pb[1]) / 2];
+        const u1 = unit(C[0] - pa[0], C[1] - pa[1]), u2 = unit(C[0] - pb[0], C[1] - pb[1]);
+        const s = boundary(A, u1[0], u1[1]), t = boundary(B, u2[0], u2[1]);
+        const t2 = [t[0] + u2[0] * head * 0.85, t[1] + u2[1] * head * 0.85];
+        el('path', { d: `M${s[0]},${s[1]} Q${C[0]},${C[1]} ${t[0]},${t[1]}`, class: 'd-hit' }, g);
+        el('path', { d: `M${s[0]},${s[1]} Q${C[0]},${C[1]} ${t2[0]},${t2[1]}`, fill: 'none', stroke: st.color, 'stroke-width': st.width, class: 'd-line' }, g);
+        arrowHead(g, t, -u2[0], -u2[1], head, st.color);
+        labelPos = qpt(s, C, t, e.kind === 'load' ? 0.62 : 0.5);
       }
       if (S.diff.has(e.id)) g.classList.add('diffed');
       const dv = S.disp && S.disp.edge ? S.disp.edge[e.id] : undefined;
+      const fs = Math.max(10, Math.min(13, dims().side * 0.3));
       if (dv !== undefined) {
-        const fs = Math.max(10, Math.min(13, dims().side * 0.3));
         const lg = el('g', { class: 'd-elabel' + (S.disp.fitted ? ' fitted' : '') + (dv < 0 ? ' neg' : '') }, gLabels);
         const txt = fmt(dv);
         const w = txt.length * fs * 0.58 + 6;
         el('rect', { x: labelPos[0] - w / 2, y: labelPos[1] - fs * 0.7, width: w, height: fs * 1.4, rx: 3, class: 'd-elabel-bg' }, lg);
         const t = el('text', { x: labelPos[0], y: labelPos[1], 'font-size': fs, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, lg);
         t.textContent = txt;
+      } else if (e.label) {
+        // equality label: the same letter means the same value
+        const lg = el('g', { class: 'd-eqlabel' }, gLabels);
+        const w = e.label.length * fs * 0.62 + 8;
+        el('rect', { x: labelPos[0] - w / 2, y: labelPos[1] - fs * 0.72, width: w, height: fs * 1.44, rx: fs * 0.72, class: 'd-elabel-bg' }, lg);
+        const t = el('text', { x: labelPos[0], y: labelPos[1], 'font-size': fs * 1.05, 'text-anchor': 'middle', 'dominant-baseline': 'central' }, lg);
+        t.textContent = e.label;
       }
     }
 
@@ -443,31 +554,23 @@
       const d = dims();
       // draw edges sorted weakest first so strong paths sit on top
       const es = S.edges.slice();
-      for (const o of S.obs) drawResidual(o);
+      for (const o of S.obs) if (isEndo(o.id)) drawResidual(o);
       for (const e of es) drawEdge(e);
+      const nmap = names();
       if (pick) drawPickPreview();
       for (const l of S.lat) {
         const [x, y] = px(l);
         const g = el('g', { class: 'd-node lat' + (S.sel.has(l.id) ? ' sel' : '') + (pending === l.id ? ' pending' : '') + (pick && pick.fid === l.id ? ' picking' : ''), 'data-id': l.id }, gNodes);
         el('circle', { cx: x, cy: y, r: d.R + 6, class: 'd-halo' }, g);
         el('circle', { cx: x, cy: y, r: d.R, class: 'd-shape' }, g);
-        if (l.label) {
-          const t = el('text', { x, y, 'font-size': d.R * 0.72, 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'd-label lat-label' }, g);
-          t.textContent = l.label;
-        } else if (!isStatic) {
-          // subtle F1, F2, ... matching the console's lavaan syntax
-          const t = el('text', { x, y, 'font-size': Math.max(9, d.R * 0.42), 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'lat-idx' }, g);
-          t.textContent = 'F' + (S.lat.indexOf(l) + 1);
-        }
+        drawName(g, nmap.lat[l.id], x, y, d.R * 0.62, 'd-label lat-label');
       }
       for (const o of S.obs) {
         const [x, y] = px(o);
         const g = el('g', { class: 'd-node obs' + (S.sel.has(o.id) ? ' sel' : '') + (pending === o.id ? ' pending' : '') + (S.hl.has(o.idx) ? ' hl' : '') + (pick && pick.items.has(o.id) ? ' picked' : ''), 'data-id': o.id }, gNodes);
         el('rect', { x: x - d.half - 5, y: y - d.half - 5, width: d.side + 10, height: d.side + 10, rx: 6, class: 'd-halo' }, g);
         el('rect', { x: x - d.half, y: y - d.half, width: d.side, height: d.side, class: 'd-shape' }, g);
-        const t = el('text', { x: x - d.side * 0.04, y, 'font-size': d.side * 0.42, 'text-anchor': 'middle', 'dominant-baseline': 'central', class: 'd-label' }, g);
-        const t1 = el('tspan', {}, t); t1.textContent = 'y';
-        const t2 = el('tspan', { class: 'sub', dy: d.side * 0.13 }, t); t2.textContent = String(o.idx + 1);
+        drawName(g, nmap.obs[o.id], x, y, d.side * 0.42, 'd-label');
       }
       svg.classList.toggle('picking', !!pick);
       if (pick) notifyPick();
@@ -512,6 +615,7 @@
     }
     function hitResid(x, y, slop) {
       for (let i = S.obs.length - 1; i >= 0; i--) {
+        if (!isEndo(S.obs[i].id)) continue;
         const a = residAnchor(S.obs[i]);
         if (hyp(x - a.c[0], y - a.c[1]) <= a.rr + (slop || 6)) return S.obs[i];
       }
@@ -536,7 +640,8 @@
       const [x, y] = pt(ev);
       const tool = S.tool;
       const slop = ev.pointerType === 'touch' ? 12 : 5;
-      const n = hitNode(x, y, slop) || (tool === 'cov' || tool === 'arrow' || pick ? hitResid(x, y, slop) : null);
+      const connecting = tool === 'cov' || tool === 'arrow' || tool === 'net';
+      const n = hitNode(x, y, slop) || (connecting || pick ? hitResid(x, y, slop) : null);
       const eid = n ? null : hitEdge(ev.target);
       drag = { x0: x, y0: y, moved: false, node: n, edge: eid, tool, shift: ev.shiftKey || ev.metaKey || ev.ctrlKey };
 
@@ -592,7 +697,7 @@
 
       if (tool === 'erase') {
         if (n && n.kind === 'lat') removeIds([n.id]);
-        else if (n && n.kind === 'obs' && S.learn) removeObs(n.id);
+        else if (n && n.kind === 'obs' && S.learn) { if (opts.onEraseItem) opts.onEraseItem(n.idx); else removeObs(n.id); }
         else if (eid) removeIds([eid]);
         drag = null;
         return;
@@ -606,7 +711,7 @@
         }
         return;
       }
-      if (tool === 'arrow' || tool === 'cov') {
+      if (connecting) {
         if (n) {
           drag.kind = 'connect';
           drag.from = pending ? null : n.id;
@@ -664,9 +769,9 @@
       } else if (drag.kind === 'connect' && drag.from) {
         while (gOver.firstChild) gOver.removeChild(gOver.firstChild);
         const A = node(drag.from);
-        const [ax, ay] = drag.tool === 'cov' && A.kind === 'obs' ? residAnchor(A).c : px(A);
+        const [ax, ay] = drag.tool !== 'arrow' ? anchorOf(A).c : px(A);
         const tgt = hitNode(x, y, 8) || hitResid(x, y, 8);
-        el('line', { x1: ax, y1: ay, x2: x, y2: y, class: 'd-temp' + (drag.tool === 'cov' ? ' cov' : '') }, gOver);
+        el('line', { x1: ax, y1: ay, x2: x, y2: y, class: 'd-temp' + (drag.tool !== 'arrow' ? ' ' + drag.tool : '') }, gOver);
         if (tgt && tgt.id !== drag.from) {
           const d = dims();
           const [tx, ty] = px(tgt);
@@ -752,7 +857,7 @@
       if (opts.onTool) opts.onTool(t);
     }
     function reset(p) {
-      S.obs = []; S.lat = []; S.edges = []; S.nextLat = 1; S.nextEdge = 1;
+      S.obs = []; S.lat = []; S.edges = []; S.nextLat = 1; S.nextEdge = 1; S.unit = null;
       S.sel.clear(); S.fit = null; S.fitT = 1; S.stale = false; S.history = []; pending = null; lastTap = null; lastNodeTap = null; S.disp = null;
       if (pick) { pick = null; notifyPick(); }
       for (let i = 0; i < p; i++) {
@@ -774,11 +879,26 @@
       const p = row.length;
       row.forEach((o, k) => { o.x = p === 1 ? 0.5 : 0.08 + 0.84 * k / (p - 1); });
     }
+    // name of a new item when the items are named (A, B, C -> D; X1..X5 -> X6)
+    function nextObsLabel() {
+      const labs = S.obs.slice().sort((a, b) => a.idx - b.idx).map(o => o.label);
+      if (!labs.some(Boolean)) return undefined;
+      const used = new Set(labs.concat(S.lat.map(l => l.label)).filter(Boolean));
+      const last = labs[labs.length - 1] || '';
+      const m = last.match(/^(.*?)(\d+)$/);
+      if (m) { let k = +m[2] + 1; while (used.has(m[1] + k)) k++; return m[1] + k; }
+      if (/^[A-Z]$/.test(last)) {
+        for (let c = last.charCodeAt(0) + 1; c <= 90; c++) if (!used.has(String.fromCharCode(c))) return String.fromCharCode(c);
+      }
+      let k = labs.length + 1;
+      while (used.has('y' + k)) k++;
+      return 'y' + k;
+    }
     function addObs() {
       if (S.obs.length >= MAX_ITEMS) { msg('At most ' + MAX_ITEMS + ' items.', 'info'); return false; }
       pushHistory();
       const i = S.obs.length;
-      S.obs.push({ id: 'o' + i, kind: 'obs', idx: i, x: 0.99, y: Y_OBS, v: DEFAULTS.rvar });
+      S.obs.push({ id: 'o' + i, kind: 'obs', idx: i, x: 0.99, y: Y_OBS, v: DEFAULTS.rvar, label: nextObsLabel() });
       respaceItems();
       GA('place');
       changed(true);
@@ -807,7 +927,7 @@
     // LEARN: value of a path ({type:'edge', id}) or residual variance ({type:'obs', id})
     function getValue(t) {
       if (!t) return null;
-      if (t.type === 'edge') { const e = S.edges.find(x => x.id === t.id); return e ? { kind: e.kind === 'cov' ? (isLat(e.a) ? 'fcov' : 'rcov') : e.kind, v: e.v, a: e.a, b: e.b } : null; }
+      if (t.type === 'edge') { const e = S.edges.find(x => x.id === t.id); return e && e.kind !== 'net' ? { kind: e.kind === 'cov' ? (isLat(e.a) ? 'fcov' : 'rcov') : e.kind, v: e.v, a: e.a, b: e.b } : null; }
       const o = node(t.id);
       return o ? { kind: 'rvar', v: o.v, a: o.id } : null;
     }
@@ -842,6 +962,7 @@
     }
     // semPlot-like tidy layout: factors on top, their items below in groups.
     function tidy(animate) {
+      S.unit = null;
       const before = new Map(S.obs.concat(S.lat).map(n => [n.id, [n.x, n.y]]));
       const strength = () => 1;
       const primary = {};
@@ -921,6 +1042,25 @@
       tidy(false);
     }
 
+    // Load a named model (a library item): obs [{label, x, y}], lat [{label,
+    // x, y}], edges [{kind, a, b, label}] with names; x, y in 0..1
+    function loadModel(m) {
+      if (pick) cancelPick();
+      pushHistory();
+      S.obs = m.obs.map((o, i) => ({ id: 'o' + i, kind: 'obs', idx: i, x: o.x, y: o.y, v: DEFAULTS.rvar, label: o.label }));
+      S.lat = []; S.edges = []; S.unit = m.unit || null;
+      const id = {};
+      m.obs.forEach((o, i) => { id[o.label] = 'o' + i; });
+      for (const l of m.lat) { const lid = 'f' + (S.nextLat++); S.lat.push({ id: lid, kind: 'lat', x: l.x, y: l.y, label: l.label }); id[l.label] = lid; }
+      for (const e of m.edges) {
+        const ne = newEdge(e.kind, id[e.a], id[e.b]);
+        if (e.label) ne.label = e.label;
+        S.edges.push(ne);
+      }
+      S.sel.clear(); pending = null; S.disp = null; S.diff = new Set();
+      changed(true);
+    }
+
     function setHighlight(idxs) {
       S.hl = new Set(idxs || []);
       for (const g of gNodes.querySelectorAll('.d-node.obs')) {
@@ -943,28 +1083,34 @@
     function setDiff(ids) { S.diff = new Set(ids || []); render(); }
     // lavaan-like syntax for SN.sem, plus maps between editor ids and names
     function toSyntax() {
-      const latName = {}; S.lat.forEach((l, k) => { latName[l.id] = 'F' + (k + 1); });
-      const obsName = {}; S.obs.forEach(o => { obsName[o.id] = 'y' + (o.idx + 1); });
-      const nm = (id) => latName[id] || obsName[id];
+      const nmap = names();
+      const latName = nmap.lat, obsName = nmap.obs;
+      const name = (id) => latName[id] || obsName[id];
+      const lab = (e) => (e.label ? e.label + '*' : '');
       const lines = [];
       for (const l of S.lat) {
-        const ind = S.edges.filter(e => e.kind === 'load' && e.a === l.id).map(e => nm(e.b));
-        const sub = S.edges.filter(e => e.kind === 'reg' && e.a === l.id).map(e => e.b);
-        void sub;
+        const ind = S.edges.filter(e => e.kind === 'load' && e.a === l.id).map(e => lab(e) + name(e.b));
         if (ind.length) lines.push(latName[l.id] + ' =~ ' + ind.join(' + '));
       }
-      for (const e of S.edges) if (e.kind === 'reg') lines.push(nm(e.b) + ' ~ ' + nm(e.a));
-      for (const e of S.edges) if (e.kind === 'cov') lines.push(nm(e.a) + ' ~~ ' + nm(e.b));
+      for (const e of S.edges) if (e.kind === 'reg') lines.push(name(e.b) + ' ~ ' + lab(e) + name(e.a));
+      for (const e of S.edges) if (e.kind === 'cov') lines.push(name(e.a) + ' ~~ ' + lab(e) + name(e.b));
+      // one network block per kind: the endpoints of the network edges
+      for (const kind of ['obs', 'lat']) {
+        const mem = netMembers(kind);
+        if (mem.length) lines.push('network ' + mem.map(name).join(' '));
+      }
+      for (const e of S.edges) if (e.kind === 'net') lines.push(name(e.a) + ' -- ' + name(e.b));
       const obs = S.obs.slice().sort((a, b) => a.idx - b.idx).map(o => obsName[o.id]);
-      const edges = S.edges.map(e => ({ id: e.id, kind: e.kind, a: nm(e.a), b: nm(e.b), v: e.v }));
+      const edges = S.edges.map(e => ({ id: e.id, kind: e.kind, a: name(e.a), b: name(e.b), v: e.v, label: e.label }));
       const resid = S.obs.map(o => ({ id: o.id, name: obsName[o.id], v: o.v === undefined ? DEFAULTS.rvar : o.v }));
-      return { text: lines.join('\n'), obs, edges, resid, latName, obsName, empty: !S.lat.length };
+      return { text: lines.join('\n'), obs, edges, resid, latName, obsName, empty: !S.lat.length,
+        hasNet: S.edges.some(e => e.kind === 'net') };
     }
 
     const api = {
       reset, render, setTool, getSpec, deleteSelection, factorFromSelection,
       getState, setState, setDisplay, setDiff, toSyntax,
-      undo, clear: clearModel, tidy, loadSpec, setHighlight, selection,
+      undo, clear: clearModel, tidy, loadSpec, loadModel, setHighlight, selection,
       get tool() { return S.tool; },
       get stale() { return S.stale; },
       get hasFit() { return !!S.fit && !S.stale; },

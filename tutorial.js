@@ -30,14 +30,14 @@
 
   const LEARN_CARDS = [
     { title: 'DRAW TWO MODELS', c: 'var(--a)',
-      body: 'Both start as one factor. <b>Double-click</b> to add a factor, then click its items. <b>Path</b> draws loadings or effects, ' +
-        '<b>Covary</b> links residuals or factors, <b>Erase</b> removes.' },
-    { title: 'WATCH THE RELATION', c: 'var(--b)',
-      body: 'The middle panel shows how the models relate, with their parameters and df. Try adding a residual covariance.' },
-    { title: 'GIVE THEM NUMBERS', c: 'var(--leaf)',
+      body: '<span class="only-phone">Tap a model to edit it. </span>Both start as one factor. <b>Double-click</b> to add a factor, then pick its items. ' +
+        '<b>Path</b> draws arrows, <b>Covary</b> covariances, <b>Network</b> network edges; <b>Erase</b> removes.' },
+    { title: 'COMPUTE', c: 'var(--b)',
+      body: 'Press <b>COMPUTE</b> to see how the models relate, with their parameters and df. A change clears the answer until you compute again.' },
+    { title: 'LIBRARY', c: 'var(--leaf)',
+      body: '<b>LIBRARY</b> loads any pair from PLAY, with its proven relation. Change it and see what happens.' },
+    { title: 'GIVE THEM NUMBERS', c: 'var(--twig)',
       body: 'Press <b>Values</b> and move a slider: the other model finds values that give exactly the same covariance matrix.' },
-    { title: 'NO SCORE', c: 'var(--twig)',
-      body: 'Can different arrows be equivalent? Can more parameters still be less general?' },
   ];
 
   let onDone = null;
@@ -56,7 +56,7 @@
       grid.appendChild(d);
     });
     btn.textContent = opts.popup ? 'BACK' : 'START';
-    scr.querySelector('.tut-header').textContent = opts.learn ? 'LEARN: NESTING ON THE FLY' : 'HOW TO PLAY';
+    scr.querySelector('.tut-header').textContent = opts.learn ? 'LEARN: BUILD AND COMPARE' : 'HOW TO PLAY';
     scr.classList.toggle('popup', !!opts.popup);
     scr.classList.add('show');
     onDone = opts.onDismiss || null;

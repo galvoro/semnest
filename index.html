@@ -107,16 +107,18 @@
 
   <!-- ==================== LEARN ==================== -->
   <main id="learn" class="mode-main">
-    <div class="toolbar" role="toolbar" aria-label="Drawing tools">
+    <div class="toolbar" id="ltoolbar" role="toolbar" aria-label="Drawing tools">
       <div class="tool-group">
         <button class="tool on" data-tool="select" title="Select / move (V)">
           <svg viewBox="0 0 24 24"><path d="M6 3 L6 19 L10.5 14.8 L13.6 21 L16.2 19.8 L13.2 13.7 L19 13.4 Z"/></svg><span>Move</span></button>
         <button class="tool" data-tool="factor" title="Add a factor (F), or double-click a canvas">
           <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7.5" fill="none"/><path d="M12 8.5 V15.5 M8.5 12 H15.5"/></svg><span>Factor</span></button>
-        <button class="tool" data-tool="arrow" title="Draw a loading (factor → item) or a structural effect (factor → factor) (A)">
+        <button class="tool" data-tool="arrow" title="Draw an arrow: a loading (factor → item) or an effect (A)">
           <svg viewBox="0 0 24 24"><path d="M4 20 L17 7" fill="none"/><path d="M19.5 4.5 L11.5 7.5 L16.5 12.5 Z"/></svg><span>Path</span></button>
         <button class="tool" data-tool="cov" title="Draw a covariance: between two residuals or two factors (C)">
           <svg viewBox="0 0 24 24"><path d="M6.5 16 Q12 4 17.5 16" fill="none"/><path d="M3.5 17.5 L9.5 18.5 L6.5 12.5 Z M20.5 17.5 L14.5 18.5 L17.5 12.5 Z"/></svg><span>Covary</span></button>
+        <button class="tool" data-tool="net" title="Draw a network edge (partial correlation): between two items, two residuals or two factors (N)">
+          <svg viewBox="0 0 24 24"><path d="M6 17.5 L12 6.5 L18 17.5 Z" fill="none"/><circle cx="6" cy="17.5" r="2.4"/><circle cx="12" cy="6.5" r="2.4"/><circle cx="18" cy="17.5" r="2.4"/></svg><span>Network</span></button>
         <button class="tool" data-tool="erase" title="Erase factors and paths (E)">
           <svg viewBox="0 0 24 24"><path d="M4 16 L12.5 7.5 L18.5 13.5 L12 20 H7 Z" fill="none"/><path d="M12 20 H20"/></svg><span>Erase</span></button>
       </div>
@@ -130,21 +132,32 @@
     <section class="lpair">
       <div class="lpane" id="lpane-a" data-side="A">
         <div class="lhead"><span class="badge a">A</span><span class="mc-title">Model A</span><span class="mc-meta" id="lmeta-a"></span>
-          <span class="lacts"><button class="mini" data-act="copy" data-from="B" title="Copy model B into A">&#8592; copy B</button><button class="mini" data-act="undo" title="Undo">undo</button><button class="mini" data-act="tidy" title="Tidy layout">tidy</button><button class="mini" data-act="clear" title="Remove all factors and paths">clear</button></span></div>
+          <span class="lacts" data-side="A"><button class="mini" data-act="copy" data-from="B" title="Copy model B into A">&#8592; copy B</button><button class="mini" data-act="undo" title="Undo">undo</button><button class="mini" data-act="tidy" title="Tidy layout">tidy</button><button class="mini" data-act="clear" title="Remove all factors and paths">clear</button></span></div>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 16 L4.6 12.6 L12.8 4.4 L15.6 7.2 L7.4 15.4 Z M11.2 6 L14 8.8"/></svg></span>
         <div class="canvas-wrap"><svg class="lcanvas" id="lsvg-a"></svg></div>
       </div>
 
-      <div class="lrel" id="lrel" aria-live="polite">
-        <svg class="venn big" id="lrel-venn" viewBox="0 0 64 40"></svg>
-        <div class="lrel-sym" id="lrel-sym">A &equiv; B</div>
-        <div class="lrel-text" id="lrel-text">Equivalent</div>
-        <div class="lrel-sub" id="lrel-sub"></div>
-        <button class="link-btn" id="lrel-how">how is this decided?</button>
+      <div class="lmid" id="lmid">
+        <div class="lrel stale" id="lrel" aria-live="polite">
+          <div class="lrel-wait" id="lrel-wait">Press <b>COMPUTE</b> to see how <b class="ta">A</b> and <b class="tb">B</b> relate.</div>
+          <div class="lrel-res">
+            <svg class="venn big" id="lrel-venn" viewBox="0 0 64 40"></svg>
+            <div class="lrel-sym" id="lrel-sym"></div>
+            <div class="lrel-text" id="lrel-text"></div>
+            <div class="lrel-sub" id="lrel-sub"></div>
+            <div class="lrel-src" id="lrel-src"></div>
+          </div>
+        </div>
+        <div class="lbtns">
+          <button class="big-btn" id="btn-compute">COMPUTE</button>
+          <button class="pill-btn ghost" id="btn-library">LIBRARY</button>
+        </div>
       </div>
 
       <div class="lpane" id="lpane-b" data-side="B">
         <div class="lhead"><span class="badge b">B</span><span class="mc-title">Model B</span><span class="mc-meta" id="lmeta-b"></span>
-          <span class="lacts"><button class="mini" data-act="copy" data-from="A" title="Copy model A into B">copy A &#8594;</button><button class="mini" data-act="undo" title="Undo">undo</button><button class="mini" data-act="tidy" title="Tidy layout">tidy</button><button class="mini" data-act="clear" title="Remove all factors and paths">clear</button></span></div>
+          <span class="lacts" data-side="B"><button class="mini" data-act="copy" data-from="A" title="Copy model A into B">copy A &#8594;</button><button class="mini" data-act="undo" title="Undo">undo</button><button class="mini" data-act="tidy" title="Tidy layout">tidy</button><button class="mini" data-act="clear" title="Remove all factors and paths">clear</button></span></div>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 20 20"><path d="M4 16 L4.6 12.6 L12.8 4.4 L15.6 7.2 L7.4 15.4 Z M11.2 6 L14 8.8"/></svg></span>
         <div class="canvas-wrap"><svg class="lcanvas" id="lsvg-b"></svg></div>
       </div>
     </section>
@@ -165,6 +178,42 @@
     </div>
     <div id="toast" role="status" aria-live="polite"></div>
   </main>
+</div>
+
+<!-- LEARN on phones: a model is edited in this popup (tools, canvas, actions) -->
+<div id="lzoom" class="zoom lzoom hidden" role="dialog" aria-modal="true" aria-label="Edit a model">
+  <div class="zoom-box">
+    <div class="zoom-head">
+      <button class="zoom-side" data-side="A" aria-label="Model A"><span class="badge a">A</span></button>
+      <button class="zoom-side" data-side="B" aria-label="Model B"><span class="badge b">B</span></button>
+      <span class="zoom-title" id="lzoom-title">Model A</span>
+      <button class="icon-btn" id="lzoom-close" aria-label="Close">&#10005;</button>
+    </div>
+    <div class="lzoom-tools" id="lzoom-tools"></div>
+    <div class="lzoom-body" id="lzoom-body"></div>
+    <div class="lzoom-foot" id="lzoom-foot"></div>
+  </div>
+</div>
+
+<!-- LEARN: the library of PLAY pairs -->
+<div id="modal-lib" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="lib-title">
+  <div class="modal-box lib-box">
+    <div class="lib-head"><h3 id="lib-title">Library</h3><span class="lib-count" id="lib-count"></span><button class="icon-btn" id="lib-close" aria-label="Close">&#10005;</button></div>
+    <p class="lib-intro">All pairs from PLAY. Pick one to load it into A and B.</p>
+    <div class="lib-filters">
+      <div class="lib-row" id="lib-levels" role="group" aria-label="Level"></div>
+      <div class="lib-row" id="lib-types" role="group" aria-label="Model type"></div>
+    </div>
+    <div class="lib-list" id="lib-list"></div>
+  </div>
+</div>
+
+<!-- LEARN on phones: the relation in full -->
+<div id="modal-rel" class="modal hidden" role="dialog" aria-modal="true" aria-label="How A and B relate">
+  <div class="modal-box">
+    <div class="mrel" id="mrel"></div>
+    <div class="modal-foot"><button class="pill-btn" id="mrel-ok">OK</button></div>
+  </div>
 </div>
 
 <!-- ==================== TITLE ==================== -->
@@ -280,7 +329,7 @@
     <h3>How does LEARN decide?</h3>
     <p>Model <b>A</b> is <b>nested</b> in model <b>B</b> when every covariance matrix A can produce, B can produce too: fit B to the covariance matrix implied by A and you get a perfect fit (&chi;&sup2; = 0). The models are <b>equivalent</b> when this works both ways.</p>
     <p>LEARN checks this numerically, like you would in lavaan: it draws random parameter values for one model, computes the covariance matrix it implies, fits the other model to it (from several starting values) and looks whether the fit is perfect. It does this both ways, for a few random draws (the <i>NET</i> idea of Bentler &amp; Satorra, 2010).</p>
-    <p class="muted">Parameters are free real numbers, as in lavaan: a variance may become negative (a Heywood case). A numerical check is not a proof. It can miss nesting in rare cases, for example when the optimizer gets stuck. The items in PLAY are proven mathematically.</p>
+    <p class="muted">Parameters are free real numbers, as in lavaan: a variance may become negative (a Heywood case). A numerical check is not a proof. It can miss nesting in rare cases, for example when the optimizer gets stuck. The pairs in the library (the PLAY items) are proven mathematically: as long as you leave such a pair unchanged, LEARN shows its proven relation.</p>
     <div class="modal-foot"><button class="pill-btn" id="how-ok">OK</button></div>
   </div>
 </div>

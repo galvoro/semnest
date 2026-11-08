@@ -56,7 +56,18 @@ const W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900), MOB = proce
     await b.clickSel('#btn-learn'); await sleep(600);
     await b.clickSel('#tut-continue'); await sleep(400);
     await b.shot(path.join(OUT, tag + '08_learn.png'));
-    console.log('learn relation:', await b.eval('SN.learn.L.res.rel'));
+    await b.clickSel('#btn-compute'); await sleep(1200);
+    console.log('learn relation:', await b.eval('SN.learn.L.res && SN.learn.L.res.rel'));
+    await b.clickSel('#btn-library'); await sleep(500);
+    await b.shot(path.join(OUT, tag + '09_library.png'));
+    await b.clickSel('.lib-item[data-id="H33"]'); await sleep(1200);
+    await b.shot(path.join(OUT, tag + '10_learn_lib.png'));
+    console.log('library pair H33:', await b.eval('SN.learn.L.res && SN.learn.L.res.rel'), await b.eval('document.getElementById("lrel-src").textContent'));
+    if (MOB) {
+      await b.clickSel('#lpane-a'); await sleep(500);
+      await b.shot(path.join(OUT, tag + '11_learn_edit.png'));
+      await b.clickSel('#lzoom-close'); await sleep(300);
+    }
     console.log('logs:', b.logs.filter(l => !/favicon|title-/.test(l)).join('\n'));
   } catch (e) { console.log('ERROR', e.message); console.log(b.logs.join('\n')); }
   await b.close();

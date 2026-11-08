@@ -1,4 +1,4 @@
-// LEARN: draw a residual covariance in B, check the relation, then Values mode.
+// LEARN: draw a residual covariance in B, COMPUTE the relation, then Values mode.
 const { launch, sleep } = require('./cdp.js');
 const path = require('path');
 const OUT = path.join(__dirname, 'out');
@@ -13,8 +13,10 @@ const BASE = process.argv[2] || 'http://127.0.0.1:8811/semnest/';
     // residual covariance y1 <-> y2 in B: Covary tool, drag box to box
     await b.clickSel('.tool[data-tool="cov"]');
     let p1 = await c('b', 'o0'), p2 = await c('b', 'o1');
-    await b.drag(p1[0], p1[1], p2[0], p2[1]); await sleep(600);
-    console.log('after cov in B:', await b.eval('SN.learn.L.res.rel'), '| B syntax:', JSON.stringify(await b.eval('SN.learn.L.eds.B.toSyntax().text')));
+    await b.drag(p1[0], p1[1], p2[0], p2[1]); await sleep(300);
+    console.log('after cov in B (no relation until COMPUTE):', await b.eval('SN.learn.L.res'), '| B syntax:', JSON.stringify(await b.eval('SN.learn.L.eds.B.toSyntax().text')));
+    await b.clickSel('#btn-compute'); await sleep(1200);
+    console.log('after COMPUTE:', await b.eval('SN.learn.L.res.rel'));
     await b.shot(path.join(OUT, 'l01_cov.png'));
     // Values mode, open a loading in A
     await b.clickSel('.tool[data-tool="select"]');
