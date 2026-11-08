@@ -42,21 +42,26 @@ After choosing a level, players can switch model types on and off:
 | GGM | Gaussian graphical models (networks of observed variables) |
 | Latent / residual | latent network models and residual network models |
 
-The types of an item follow from its two models (`SN.bank.itemTags`); a type
-that another one builds on is not counted separately, so an SEM item may use
-a plain CFA or path model as the other model, a bifactor item a higher-order
-model, a GGM item a DAG, and a network item a factor model or a GGM. An item
-is in the game when all its types are switched on. A type is offered at a
-level when at least five items of that level are about that type alone;
-other types are greyed out there. Hence every combination of offered types
-gives at least five items: `node .dev/check_bank.js` checks all of them.
+Types build on each other: SEM on CFA and path analysis, higher-order on CFA,
+bifactor on higher-order, GGM on path analysis, and latent/residual networks
+on CFA and GGM (`SN.bank.BUILDS_ON`). The level screen keeps the switched-on
+types closed under this: switching a type off also switches off every type
+built on it, and switching one on also switches on what it builds on. An item
+is in the game when every type its two models use, with what those build on,
+is switched on (`SN.bank.needs`). Types that no item of a level uses are greyed
+out there. A type cannot be switched off when fewer than five pairs would be
+left; it then shows a lock. Each level remembers its own selection.
 
-| level | offered types |
-|---|---|
-| Easy | CFA, path analysis, SEM, GGM |
-| Medium | CFA, path analysis, SEM, higher-order, GGM |
-| Hard | CFA, path analysis, SEM, higher-order, bifactor |
-| Psychometrika | SEM, higher-order, bifactor, GGM, latent / residual networks |
+| level | types used | always on | blocked combinations |
+|---|---|---|---|
+| Easy | CFA, path analysis, SEM, GGM | – | none (one of CFA and path analysis stays on) |
+| Medium | CFA, path analysis, SEM, higher-order, GGM | – | none (idem) |
+| Hard | CFA, path analysis, SEM, higher-order, bifactor | – | none (idem) |
+| Psychometrika | all seven | CFA | CFA alone, CFA + path analysis (one of SEM, higher-order and GGM stays on) |
+
+`node .dev/check_bank.js` walks through every configuration a player can reach
+and checks that each has at least five pairs (and that every closed set of
+types with at least five pairs can be reached).
 
 ## LEARN
 

@@ -15,12 +15,15 @@ const W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900), MOB = proce
     await b.clickSel('#btn-play'); await sleep(300);
     await b.shot(path.join(OUT, tag + '02_levels.png'));
     await b.clickSel('.level-card[data-level="' + (process.env.LEVEL || 2) + '"]'); await sleep(300);
-    if (process.env.FAMS) {   // e.g. FAMS=ggm: switch off every other offered family
-      const want = process.env.FAMS.split(',');
-      for (const f of await b.eval('SN.bank.offered(SN.game.lv.level).on')) {
+    if (process.env.FAMS) {   // e.g. FAMS=ggm: keep GGM and what it builds on, switch the rest off
+      const want = await b.eval(`SN.bank.closure(${JSON.stringify(process.env.FAMS.split(','))})`);
+      if (await b.eval('getComputedStyle(document.getElementById("fam-all")).visibility === "visible"')) await b.clickSel('#fam-all');
+      // top of the hierarchy first, so each click only switches off that type
+      for (const f of (await b.eval(`SN.bank.present(SN.game.lv.level)`)).reverse()) {
         const on = await b.eval(`document.querySelector('.fam-chip[data-fam="${f}"]').getAttribute('aria-pressed') === 'true'`);
-        if (on !== want.includes(f)) await b.clickSel(`.fam-chip[data-fam="${f}"]`);
+        if (on && !want.includes(f)) await b.clickSel(`.fam-chip[data-fam="${f}"]`);
       }
+      console.log('on:', await b.eval('SN.game.lv && [...document.querySelectorAll(".fam-chip[aria-pressed=true]")].map(c => c.dataset.fam + (c.classList.contains("locked") ? "(locked)" : "")).join(",")'));
     }
     await b.shot(path.join(OUT, tag + '02_levels_sel.png'));
     console.log('pool:', await b.eval('document.getElementById("fam-pool").textContent'), '| note:', await b.eval('document.getElementById("fam-note").textContent'));

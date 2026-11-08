@@ -131,10 +131,27 @@
   // Level screen: pick a level and the model types to practise
   // ------------------------------------------------------------------
   const B = SN.bank;
-  const allFams = B.FAMILIES.map(f => f.id);
-  const lv = { level: +(store('level') || 1), fams: Array.isArray(store('fams')) ? store('fams').filter(f => allFams.includes(f)) : allFams.slice() };
+  const FULL = Object.fromEntries(B.FAMILIES.map(f => [f.id, f.full]));
+  const list = (ids) => { const n = ids.map(x => FULL[x]); return n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]; };
+  // per level, the types switched off there (types built on them are off too)
+  const savedOff = store('famsOff');
+  const lv = { level: +(store('level') || 1), off: {} };
   if (!B.LEVELS[lv.level]) lv.level = 1;
-  const TICK = '<svg viewBox="0 0 12 12"><path d="M2.2 6.4 L5 9 L9.8 3.2"/></svg>';
+  for (const L of Object.keys(B.LEVELS)) lv.off[L] = Array.isArray(savedOff && savedOff[L]) ? savedOff[L] : [];
+  // the switched-on types at a level
+  function onAt(L) {
+    let on = B.present(L);
+    for (const t of lv.off[L]) if (on.includes(t)) on = B.switchOff(on, t);
+    if (B.pool(L, on).length < B.MIN_POOL) { lv.off[L] = []; on = B.present(L); }
+    return on;
+  }
+  function setOn(on) {
+    lv.off[lv.level] = B.present(lv.level).filter(x => !on.includes(x));
+    store('famsOff', lv.off);
+  }
+  function replay(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
+  const TICK = '<svg class="ok" viewBox="0 0 12 12"><path d="M2.2 6.4 L5 9 L9.8 3.2"/></svg>' +
+    '<svg class="lk" viewBox="0 0 12 12"><path d="M4 5.6V4.1a2 2 0 0 1 4 0v1.5"/><rect x="2.6" y="5.4" width="6.8" height="4.9" rx="1"/></svg>';
   (function buildChips() {
     const box = $('fam-chips');
     for (const f of B.FAMILIES) {
@@ -143,37 +160,58 @@
       b.innerHTML = `<span class="tick">${TICK}</span><span>${f.name}<small>${f.sub}</small></span>`;
       b.addEventListener('click', () => {
         if (b.disabled) return;
+        const L = lv.level, on = onAt(L);
+        let next, also, msg = '';
+        if (on.includes(f.id)) {
+          if (!B.canSwitchOff(L, on, f.id)) {
+            replay(b, 'shake');
+            return updateLevel(`${f.name} stays on: without it fewer than ${B.MIN_POOL} pairs are left at ${B.LEVELS[L]}.`, true);
+          }
+          next = B.switchOff(on, f.id);
+          also = on.filter(x => x !== f.id && !next.includes(x));
+          if (also.length) msg = `Also off: ${list(also)} (built on ${f.full}).`;
+        } else {
+          next = B.switchOn(on, f.id);
+          also = next.filter(x => x !== f.id && !on.includes(x));
+          if (also.length) msg = `Also on: ${list(also)} (needed for ${f.full}).`;
+        }
         SFX('click');
-        lv.fams = lv.fams.includes(f.id) ? lv.fams.filter(x => x !== f.id) : lv.fams.concat(f.id);
-        store('fams', lv.fams); updateLevel();
+        setOn(next); updateLevel(msg);
+        for (const x of also) replay(box.querySelector(`[data-fam="${x}"]`), 'flash');
       });
       box.appendChild(b);
     }
   })();
-  // the enabled families that are offered at the current level
-  function activeFams() { const on = B.offered(lv.level).on; return lv.fams.filter(f => on.includes(f)); }
-  function updateLevel() {
+  function activeFams() { return onAt(lv.level); }
+  function updateLevel(msg, warn) {
     for (const card of document.querySelectorAll('.level-card')) {
       const sel = +card.dataset.level === lv.level;
       card.classList.toggle('sel', sel); card.setAttribute('aria-checked', String(sel));
     }
-    const on = B.offered(lv.level).on;
+    const L = lv.level, P = B.present(L), on = onAt(L);
+    let anyLock = false;
     for (const b of document.querySelectorAll('.fam-chip')) {
-      const f = b.dataset.fam, offered = on.includes(f);
-      b.disabled = !offered;
-      b.setAttribute('aria-pressed', String(offered && lv.fams.includes(f)));
-      b.title = offered ? '' : 'Not part of the level ' + B.LEVELS[lv.level];
+      const f = b.dataset.fam, here = P.includes(f), isOn = here && on.includes(f);
+      const lock = isOn && !B.canSwitchOff(L, on, f);
+      anyLock = anyLock || lock;
+      b.disabled = !here;
+      b.classList.toggle('locked', lock);
+      b.setAttribute('aria-pressed', String(isOn));
+      b.setAttribute('aria-disabled', String(!here || lock));
+      const base = B.BUILDS_ON[f] ? 'Builds on ' + list(B.closure([f]).filter(x => x !== f)) + '.' : '';
+      b.title = !here ? 'No pairs at ' + B.LEVELS[L] + ' use this type.' :
+        lock ? `Stays on: without it fewer than ${B.MIN_POOL} pairs are left.` : base;
     }
-    const act = activeFams(), n = act.length ? B.pool(lv.level, act).length : 0;
+    const n = B.pool(L, on).length;
     $('btn-start').disabled = n < CONFIG.ROUNDS;
-    $('fam-pool').textContent = n ? n + ' pairs of models' : '';
+    $('fam-pool').textContent = n + ' pairs of models';
     const note = $('fam-note');
-    note.classList.toggle('warn', !act.length);
-    note.textContent = !act.length ? 'Switch on at least one model type.' :
-      'Greyed out: not part of this level. Items about SEM, higher-order, bifactor or network models may compare with a plain factor or path model.';
-    $('fam-all').style.visibility = on.every(f => lv.fams.includes(f)) ? 'hidden' : 'visible';
+    note.classList.toggle('warn', !!warn);
+    note.textContent = msg || ('Switching a type off also switches off the types built on it.' +
+      (anyLock ? ` Locked types stay on: without them fewer than ${B.MIN_POOL} pairs are left.` : ''));
+    $('fam-all').style.visibility = on.length < P.length ? 'visible' : 'hidden';
   }
-  $('fam-all').addEventListener('click', () => { SFX('click'); lv.fams = Array.from(new Set(lv.fams.concat(B.offered(lv.level).on))); store('fams', lv.fams); updateLevel(); });
+  $('fam-all').addEventListener('click', () => { SFX('click'); setOn(B.present(lv.level)); updateLevel(); });
   function showLevels() {
     const best = store('best') || {};
     for (const card of document.querySelectorAll('.level-card')) {
@@ -406,7 +444,7 @@
     $('dip-line2').textContent = passed ? 'sorted five pairs of structural equation models at the level' : 'who needs 60 points for a certificate at the level';
     $('dip-level').textContent = SN.bank.LEVELS[g.level];
     // a subset of the model types is mentioned on the certificate
-    const famText = g.fams.length < B.offered(g.level).on.length ? 'Model types: ' + g.fams.map(id => B.FAMILIES.find(f => f.id === id).name).join(', ') : '';
+    const famText = g.fams.length < B.present(g.level).length ? 'Model types: ' + g.fams.map(id => FULL[id]).join(', ') : '';
     $('dip-fams').textContent = famText;
     $('dip-medal').innerHTML = eggSVG(medal);
     $('final-score').textContent = String(s);

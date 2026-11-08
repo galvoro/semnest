@@ -1,8 +1,10 @@
 // SEMNEST — the item bank: pairs of models at four levels, each pair
 // equivalent, A nested in B, B nested in A, or neither. Every item belongs to
 // one or more model families (FAMILIES below); players can switch families
-// off on the level screen. Every family offered at a level has at least five
-// items of its own there (checked by .dev/check_bank.js).
+// off on the level screen. Families build on each other (BUILDS_ON): switching
+// one off also switches off the families built on it, and a family stays on
+// when switching it off would leave fewer than five items (checked by
+// .dev/check_bank.js).
 //
 // Every relation is proven in .dev/proofs (one page per item) and checked
 // numerically by .dev/verify_bank.js (this engine) and .dev/verify_bank.R
@@ -446,13 +448,13 @@
   // bifactor item with a higher-order model, a network item with a DAG ...).
   // ------------------------------------------------------------------
   const FAMILIES = [
-    { id: 'cfa', name: 'CFA', sub: 'factor models' },
-    { id: 'path', name: 'Path analysis', sub: 'observed variables' },
-    { id: 'sem', name: 'SEM', sub: 'structural effects' },
-    { id: 'ho', name: 'Higher-order', sub: 'second-order factors' },
-    { id: 'bif', name: 'Bifactor', sub: 'hierarchical' },
-    { id: 'ggm', name: 'GGM', sub: 'networks' },
-    { id: 'net', name: 'Latent / residual', sub: 'networks' },
+    { id: 'cfa', name: 'CFA', sub: 'factor models', full: 'CFA' },
+    { id: 'path', name: 'Path analysis', sub: 'observed variables', full: 'path analysis' },
+    { id: 'sem', name: 'SEM', sub: 'structural effects', full: 'SEM' },
+    { id: 'ho', name: 'Higher-order', sub: 'second-order factors', full: 'higher-order' },
+    { id: 'bif', name: 'Bifactor', sub: 'hierarchical', full: 'bifactor' },
+    { id: 'ggm', name: 'GGM', sub: 'networks', full: 'GGM' },
+    { id: 'net', name: 'Latent / residual', sub: 'networks', full: 'latent/residual networks' },
   ];
   const BUILDS_ON = { sem: ['cfa', 'path'], ho: ['cfa'], bif: ['cfa', 'ho'], ggm: ['path'], net: ['cfa', 'ggm'] };
   const MIN_POOL = 5;
@@ -484,33 +486,34 @@
     tagCache.set(it, t);
     return t;
   }
-  // Families offered at a level: every family with at least MIN_POOL items of
-  // its own. The others are background at that level (greyed out; they may
-  // still appear next to an offered family).
-  const offerCache = {};
-  function offered(level) {
-    if (offerCache[level]) return offerCache[level];
-    const its = items.filter(i => i.level === level);
-    const on = new Set(its.flatMap(itemTags));
-    let count;
-    for (;;) {
-      count = {};
-      for (const f of on) count[f] = its.filter(i => { const t = itemTags(i).filter(x => on.has(x)); return t.length && t.every(x => x === f); }).length;
-      const weak = [...on].filter(f => count[f] < MIN_POOL).sort((a, b) => count[a] - count[b]);
-      if (!weak.length) break;
-      on.delete(weak[0]);
-    }
-    return (offerCache[level] = { on: FAMILIES.map(x => x.id).filter(x => on.has(x)), count });
+  // The switched-on families are kept closed under BUILDS_ON: switching a
+  // family off also switches off every family built on it, switching one on
+  // also switches on what it builds on. An item is in the game when every
+  // family its two models use, with what those build on, is switched on.
+  const IDS = FAMILIES.map(f => f.id);
+  const ordered = (s) => IDS.filter(x => s.has(x));
+  function closure(list) {          // the families with everything they build on
+    const s = new Set(list);
+    for (const k of s) for (const b of BUILDS_ON[k] || []) s.add(b);
+    return ordered(s);
   }
-  // the items of a level that only use enabled families
-  function pool(level, enabled) {
-    const on = offered(level).on;
-    return items.filter(i => {
-      if (i.level !== level) return false;
-      const t = itemTags(i).filter(x => on.includes(x));
-      return t.length > 0 && t.every(x => enabled.includes(x));
-    });
+  function above(t) { return IDS.filter(x => closure([x]).includes(t)); }   // t and everything built on it
+  const needCache = new Map();
+  function needs(it) {
+    if (!needCache.has(it)) needCache.set(it, closure([...modelFamilies(it.A, it.obs), ...modelFamilies(it.B, it.obs)]));
+    return needCache.get(it);
   }
+  // the families used at a level (greyed out on the level screen otherwise)
+  const presentCache = {};
+  function present(level) {
+    return presentCache[level] || (presentCache[level] = ordered(new Set(items.filter(i => i.level === level).flatMap(needs))));
+  }
+  function pool(level, on) { return items.filter(i => i.level === level && needs(i).every(x => on.includes(x))); }
+  function switchOn(on, t) { return ordered(new Set([...on, ...closure([t])])); }
+  function switchOff(on, t) { const up = above(t); return on.filter(x => !up.includes(x)); }
+  function canSwitchOff(level, on, t) { return pool(level, switchOff(on, t)).length >= MIN_POOL; }
+  // families that can never be switched off at a level
+  function locked(level) { const P = present(level); return P.filter(t => !canSwitchOff(level, P, t)); }
 
-  SN.bank = { items, LEVELS, FAMILIES, BUILDS_ON, MIN_POOL, modelFamilies, itemTags, offered, pool };
+  SN.bank = { items, LEVELS, FAMILIES, BUILDS_ON, MIN_POOL, modelFamilies, itemTags, needs, closure, above, present, pool, switchOn, switchOff, canSwitchOff, locked };
 })(typeof window !== 'undefined' ? window : globalThis);
