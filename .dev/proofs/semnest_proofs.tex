@@ -385,7 +385,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
     cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.550,-0.763) rectangle (3.050,-3.925);
+\useasboundingbox (-0.550,0.550) rectangle (3.300,-3.925);
 \draw[resid] (0.000,-3.612) circle (0.125);
 \draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
 \draw[resid] (1.250,-3.612) circle (0.125);
@@ -409,13 +409,13 @@ Each page shows the two path diagrams exactly as in the game (observed variables
     cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.550,-0.763) rectangle (3.050,-3.925);
-\draw[cov] (0.227,-2.512) .. controls (0.492,-2.087) and (0.758,-2.087) .. (1.023,-2.512);
-\draw[cov] (0.302,-2.512) .. controls (0.934,-1.754) and (1.566,-1.754) .. (2.198,-2.512);
-\draw[cov] (1.477,-2.512) .. controls (1.742,-2.087) and (2.008,-2.087) .. (2.273,-2.512);
-\node[obs] at (0.000,-2.875) {$y_{1}$};
-\node[obs] at (1.250,-2.875) {$y_{2}$};
-\node[obs] at (2.500,-2.875) {$y_{3}$};
+\useasboundingbox (-0.550,0.550) rectangle (3.300,-3.925);
+\draw[cov] (-0.056,-1.200) .. controls (-0.185,-0.371) and (0.171,0.032) .. (1.013,0.010);
+\draw[cov] (0.302,-1.925) .. controls (1.017,-2.783) and (1.733,-2.783) .. (2.448,-1.925);
+\draw[cov] (1.738,0.010) .. controls (2.579,0.032) and (2.935,-0.371) .. (2.806,-1.200);
+\node[obs] at (0.000,-1.563) {$y_{1}$};
+\node[obs] at (1.375,0.000) {$y_{2}$};
+\node[obs] at (2.750,-1.563) {$y_{3}$};
 \end{tikzpicture}\\[1pt]{\scriptsize \texttt{y1 \char`\~{}\char`\~{} y2 + y3; y2 \char`\~{}\char`\~{} y3}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
@@ -3784,7 +3784,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. Same measurement part. The structural parts are the chain $F_1\to F_2\to F_3$ and the fork $F_1\leftarrow F_2\to F_3$: same skeleton, no collider, so by Lemma~C (applied to the latent variables) both produce exactly the $\Psi$ with $(\Psi^{-1})_{13}=0$. Lemma~B(b).\par\smallskip
 \noindent(ii) $B\nest A$. See above.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A latent chain F1 → F2 → F3 and a fork F1 ← F2 → F3 both say only that F1 and F3 are independent given F2. Same claim, so the models are equivalent (E01, one level up).}
+\noindent{\small\textit{In the game:} A latent chain F1 → F2 → F3 and a fork F1 ← F2 → F3 both say only that F1 and F3 are independent given F2. Same claim, so the models are equivalent (the chain-or-fork rule, one level up).}
 
 \clearpage
 \section*{M25 \quad One or two second-order factors}
@@ -4142,10 +4142,10 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \draw[residarrow] (5.714,-2.657) -- (5.714,-2.467);
 \draw[resid] (6.667,-2.752) circle (0.095);
 \draw[residarrow] (6.667,-2.657) -- (6.667,-2.467);
-\draw[resid] (0.476,-0.438) circle (0.095);
-\draw[residarrow] (0.476,-0.533) -- (0.476,-0.724);
-\draw[resid] (1.752,-1.067) circle (0.095);
-\draw[residarrow] (1.848,-1.067) -- (2.038,-1.067);
+\draw[resid] (0.314,-0.460) circle (0.095);
+\draw[residarrow] (0.338,-0.552) -- (0.387,-0.735);
+\draw[resid] (2.067,-0.522) circle (0.095);
+\draw[residarrow] (2.114,-0.605) -- (2.210,-0.770);
 \draw[resid] (4.914,-1.067) circle (0.095);
 \draw[residarrow] (4.819,-1.067) -- (4.629,-1.067);
 \draw[resid] (6.190,-0.438) circle (0.095);
@@ -4158,11 +4158,11 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \draw[path] (4.419,-1.382) -- (4.645,-1.914);
 \draw[path] (6.057,-1.382) -- (5.831,-1.914);
 \draw[path] (6.324,-1.382) -- (6.550,-1.914);
-\draw[path] (3.012,-0.120) -- (0.797,-0.947);
+\draw[path] (2.996,-0.059) .. controls (2.202,-0.197) and (1.460,-0.474) .. (0.770,-0.890);
 \draw[path] (3.105,-0.256) -- (2.609,-0.811);
 \draw[path] (3.562,-0.256) -- (4.057,-0.811);
 \draw[path] (3.655,-0.120) -- (5.869,-0.947);
-\draw[cov] (0.566,-0.407) .. controls (1.141,-0.212) and (1.526,-0.402) .. (1.722,-0.976);
+\draw[cov] (0.383,-0.395) .. controls (0.942,0.126) and (1.482,0.106) .. (2.002,-0.453);
 \node[obs] at (0.000,-2.190) {$y_{1}$};
 \node[obs] at (0.952,-2.190) {$y_{2}$};
 \node[obs] at (1.905,-2.190) {$y_{3}$};
@@ -6353,7 +6353,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. Substitute $X_3=\beta_{31}X_1+\beta_{32}X_2+\zeta_3$ in the equation of $X_4$ in $A$: $X_4=(\beta_{41}+\beta_{43}\beta_{31})X_1+(\beta_{42}+\beta_{43}\beta_{32})X_2+\zeta_4'$ with $\zeta_4'=\beta_{43}\zeta_3+\zeta_4$, $\mathrm{Var}(\zeta_4')=\beta_{43}^2\psi_3+\psi_4$ and $\mathrm{Cov}(\zeta_3,\zeta_4')=\beta_{43}\psi_3$. The variable $X_4$ itself is unchanged, so the equation of $X_5$ (on $X_4$ and $X_2$, with $\zeta_5$ uncorrelated with everything) is the same in both models: this is model $B$.\par\smallskip
 \noindent(ii) $B\nest A$. Conversely, given $B$ with $\psi_3\neq0$ and $\omega=\mathrm{Cov}(\zeta_3,\zeta_4')$: $\beta_{43}=\omega/\psi_3$, $\beta_{4k}=\beta'_{4k}-\beta_{43}\beta_{3k}$ ($k=1,2$), $\psi_4=\psi'_4-\omega^2/\psi_3$ (Lemma~G).\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} The replacing rule (Lee \& Hershberger): X3 → X4 may become the residual covariance X3 ↔ X4, because the other predictors of X4 (X1, X2) include all predictors of X3. Compare H13 and H17.}
+\noindent{\small\textit{In the game:} The replacing rule (Lee \& Hershberger): X3 → X4 may become the residual covariance X3 ↔ X4, because the other predictors of X4 (X1, X2) include all predictors of X3.}
 
 \clearpage
 \section*{H22 \quad A collider equals two covariances}
@@ -6516,7 +6516,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. In $A$ let $v=\mathrm{Var}(X)$, $F=\gamma X+\zeta$, $\Phi=\mathrm{Var}(F)=\gamma^2v+\psi_\zeta$, $y_1=\lambda_1F+\delta X+e_1$, $y_j=\lambda_jF+e_j$ ($j=2,3$). In $B$ take $\psi=\Phi$, the same $\lambda_2,\lambda_3$, $\lambda_X=\gamma v/\Phi$, $\theta_X=v-\lambda_X^2\Phi$, $\lambda_1^B=\lambda_1+\delta\gamma v/\Phi$, $\theta_{X1}=\delta v\psi_\zeta/\Phi$ and adjust $\theta_{11}$. Then $\sigma_{Xy_j}=\lambda_X\lambda_j\Phi=\gamma v\lambda_j$, $\sigma_{y_1y_j}=\lambda_1^B\lambda_j\Phi=\lambda_j(\lambda_1\Phi+\delta\gamma v)$ and $\sigma_{Xy_1}=\lambda_X\lambda_1^B\Phi+\theta_{X1}=\gamma v\lambda_1+\delta v$, all as in $A$. (Loadings and factor variances are rescaled to the markers as explained after Lemma~G.)\par\smallskip
 \noindent(ii) $B\nest A$. Conversely, given $B$: $v=\lambda_X^2\psi+\theta_X$, $\Phi=\psi$, $\gamma=\lambda_X\psi/v$, $\psi_\zeta=\psi-\gamma^2v$, $\delta=\theta_{X1}\Phi/(v\psi_\zeta)$, $\lambda_1=\lambda_1^B-\delta\gamma v/\Phi$ (Lemma~G; $v\psi_\zeta\neq0$ generically).\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} Covariate or indicator, one step further (see H05): a direct effect X → y1 on top of X → F does the same as a residual covariance X ↔ y1 on top of X as an indicator. Both models imply one tetrad, σ(y1,y2)·σ(X,y3) = σ(y1,y3)·σ(X,y2), and nothing else.}
+\noindent{\small\textit{In the game:} Covariate or indicator, one step further: a direct effect X → y1 on top of X → F does the same as a residual covariance X ↔ y1 on top of X as an indicator. Both models imply one tetrad, σ(y1,y2)·σ(X,y3) = σ(y1,y3)·σ(X,y2), and nothing else.}
 
 \clearpage
 \section*{H25 \quad Higher-order model inside a cross-loading model}
@@ -6640,7 +6640,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. By M02, $A$ is equivalent to three correlated factors, which is $B$ with the cross-loading of $y_4$ on $F_1$ fixed to 0 (Lemma~R).\par\smallskip
 \noindent(ii) $B\nnest A$ by Lemma~D: the Jacobian of model $B$ has rank 22 at the rational point listed in Appendix~B, while model $A$ has only $q_A=21$ free parameters.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A second-order factor on three factors is just-identified: A is the same as three correlated factors (M02). And those are B with its cross-loading fixed to zero.}
+\noindent{\small\textit{In the game:} A second-order factor on three factors is just-identified: A is the same as three correlated factors. And those are B with its cross-loading fixed to zero.}
 
 \clearpage
 \section*{H26 \quad One factor inside a higher-order model}
@@ -7001,7 +7001,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 27 at the rational point listed in Appendix~B, while model $B$ has only $q_B=21$ free parameters.\par\smallskip
 \noindent(ii) $B\nest A$. By H03, $A$ is equivalent to one factor plus free residual covariances within $\{y_1,y_2,y_3\}$, $\{y_4,y_5,y_6\}$ and $\{y_7,y_8,y_9\}$. $B$ is that model with the second and third block fixed to 0 (Lemma~R).\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A group factor with three indicators can produce any covariances within its group (H03), so A is one factor plus three free residual blocks. B keeps only the first block: nested in A.}
+\noindent{\small\textit{In the game:} A group factor with three indicators can produce any covariances within its group, so A is one factor plus three free residual blocks. B keeps only the first block: nested in A.}
 
 \clearpage
 \section*{H29 \quad Two bifactor groupings}
@@ -8096,7 +8096,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. By P04, $A$ is equivalent to the higher-order model over $F_1,\dots,F_4$, which is nested in $B$ (M06).\par\smallskip
 \noindent(ii) $B\nnest A$ by Lemma~S with $f(\Sigma)=\sigma_{13}\sigma_{57} - \sigma_{15}\sigma_{37}$. In $A$ items of different groups covary only through $G$: $\sigma_{ij}=g_ig_j\psi_G$, so this tetrad vanishes. So $f\equiv0$ on $\mathcal M_A$, whereas in model $B$ at the point of Appendix~B, $f=-0.02500\neq0$.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} With two-indicator groups the bifactor model is equivalent to the higher-order model (P04), and the higher-order model is nested in four freely correlated factors (M06).}
+\noindent{\small\textit{In the game:} With two-indicator groups the bifactor model is equivalent to the higher-order model, and the higher-order model is nested in four freely correlated factors.}
 
 \clearpage
 \section*{P11 \quad One residual edge inside a residual chain}
@@ -8196,7 +8196,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
     cov/.style={{Stealth[length=3.3pt]}-{Stealth[length=3.3pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.363,0.317) rectangle (7.155,-3.511);
+\useasboundingbox (-0.363,-0.503) rectangle (7.155,-3.511);
 \draw[resid] (0.375,-1.896) circle (0.062);
 \draw[residarrow] (0.313,-1.896) -- (0.239,-1.896);
 \draw[resid] (1.199,-1.896) circle (0.062);
@@ -8256,42 +8256,42 @@ Each page shows the two path diagrams exactly as in the game (observed variables
     cov/.style={{Stealth[length=3.3pt]}-{Stealth[length=3.3pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.363,0.317) rectangle (7.155,-3.511);
-\draw[resid] (0.000,-2.382) circle (0.082);
-\draw[residarrow] (0.000,-2.300) -- (0.000,-2.135);
-\draw[resid] (0.824,-2.382) circle (0.082);
-\draw[residarrow] (0.824,-2.300) -- (0.824,-2.135);
-\draw[resid] (1.649,-2.382) circle (0.082);
-\draw[residarrow] (1.649,-2.300) -- (1.649,-2.135);
-\draw[resid] (2.473,-2.382) circle (0.082);
-\draw[residarrow] (2.473,-2.300) -- (2.473,-2.135);
-\draw[resid] (3.297,-2.382) circle (0.082);
-\draw[residarrow] (3.297,-2.300) -- (3.297,-2.135);
-\draw[resid] (4.121,-2.382) circle (0.082);
-\draw[residarrow] (4.121,-2.300) -- (4.121,-2.135);
-\draw[resid] (4.946,-2.382) circle (0.082);
-\draw[residarrow] (4.946,-2.300) -- (4.946,-2.135);
-\draw[resid] (5.770,-2.382) circle (0.082);
-\draw[residarrow] (5.770,-2.300) -- (5.770,-2.135);
-\draw[resid] (6.594,-2.382) circle (0.082);
-\draw[residarrow] (6.594,-2.300) -- (6.594,-2.135);
+\useasboundingbox (-0.363,-0.503) rectangle (7.155,-3.511);
+\draw[resid] (0.375,-1.896) circle (0.062);
+\draw[residarrow] (0.313,-1.896) -- (0.239,-1.896);
+\draw[resid] (1.199,-1.896) circle (0.062);
+\draw[residarrow] (1.138,-1.896) -- (1.063,-1.896);
+\draw[resid] (2.024,-1.896) circle (0.062);
+\draw[residarrow] (1.962,-1.896) -- (1.888,-1.896);
+\draw[resid] (2.848,-1.896) circle (0.062);
+\draw[residarrow] (2.786,-1.896) -- (2.712,-1.896);
+\draw[resid] (3.672,-1.896) circle (0.062);
+\draw[residarrow] (3.610,-1.896) -- (3.536,-1.896);
+\draw[resid] (4.497,-1.896) circle (0.062);
+\draw[residarrow] (4.435,-1.896) -- (4.361,-1.896);
+\draw[resid] (5.321,-1.896) circle (0.062);
+\draw[residarrow] (5.259,-1.896) -- (5.185,-1.896);
+\draw[resid] (6.145,-1.896) circle (0.062);
+\draw[residarrow] (6.083,-1.896) -- (6.009,-1.896);
+\draw[resid] (6.594,-1.410) circle (0.082);
+\draw[residarrow] (6.594,-1.492) -- (6.594,-1.657);
 \draw[path] (0.632,-1.150) -- (0.203,-1.657);
 \draw[path] (0.824,-1.220) -- (0.824,-1.657);
 \draw[path] (1.016,-1.150) -- (1.446,-1.657);
-\draw[path] (2.769,-1.196) -- (2.574,-1.657);
-\draw[path] (3.001,-1.196) -- (3.196,-1.657);
-\draw[path] (3.118,-1.107) -- (3.882,-1.708);
+\draw[path] (3.105,-1.150) -- (2.675,-1.657);
+\draw[path] (3.297,-1.220) -- (3.297,-1.657);
+\draw[path] (3.489,-1.150) -- (3.919,-1.657);
 \draw[path] (5.242,-1.196) -- (5.047,-1.657);
 \draw[path] (5.474,-1.196) -- (5.669,-1.657);
-\draw[path] (3.489,-0.725) .. controls (1.906,0.700) and (0.770,0.390) .. (0.081,-1.657);
-\draw[path] (3.461,-0.761) .. controls (2.254,0.025) and (1.404,-0.273) .. (0.910,-1.657);
-\draw[path] (3.464,-0.757) .. controls (2.392,-0.029) and (1.794,-0.329) .. (1.671,-1.657);
-\draw[path] (3.476,-1.107) -- (2.712,-1.708);
-\draw[path] (3.594,-1.196) -- (3.398,-1.657);
-\draw[path] (3.825,-1.196) -- (4.020,-1.657);
-\draw[path] (3.943,-1.107) -- (4.707,-1.708);
-\draw[path] (3.978,-1.050) -- (5.531,-1.783);
-\draw[path] (4.002,-0.972) .. controls (4.821,-1.107) and (5.606,-1.373) .. (6.355,-1.770);
+\draw[path] (3.007,-3.030) .. controls (2.045,-2.827) and (1.123,-2.492) .. (0.239,-2.023);
+\draw[path] (3.030,-2.962) -- (1.063,-2.011);
+\draw[path] (3.057,-2.917) -- (1.888,-2.069);
+\draw[path] (3.129,-2.847) -- (2.638,-2.135);
+\draw[path] (3.297,-2.794) -- (3.297,-2.135);
+\draw[path] (3.466,-2.847) -- (3.957,-2.135);
+\draw[path] (3.537,-2.917) -- (4.707,-2.069);
+\draw[path] (3.564,-2.962) -- (5.531,-2.011);
+\draw[path] (3.588,-3.030) .. controls (4.549,-2.827) and (5.472,-2.492) .. (6.355,-2.023);
 \node[obs] at (0.000,-1.896) {$y_{1}$};
 \node[obs] at (0.824,-1.896) {$y_{2}$};
 \node[obs] at (1.649,-1.896) {$y_{3}$};
@@ -8302,15 +8302,15 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.770,-1.896) {$y_{8}$};
 \node[obs] at (6.594,-1.896) {$y_{9}$};
 \node[lat] at (0.824,-0.923) {$S_{1}$};
-\node[lat] at (2.885,-0.923) {$S_{2}$};
+\node[lat] at (3.297,-0.923) {$S_{2}$};
 \node[lat] at (5.358,-0.923) {$S_{3}$};
-\node[lat] at (3.709,-0.923) {$G$};
+\node[lat] at (3.297,-3.091) {$G$};
 \end{tikzpicture}\\[1pt]{\scriptsize \texttt{S1 =\char`\~{} y1 + y2 + y3; S2 =\char`\~{} y4 + y5 + y6; S3 =\char`\~{} y7 + y8; G =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6 + y7 + y8 + y9}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 27 at the rational point listed in Appendix~B, while model $B$ has only $q_B=26$ free parameters.\par\smallskip
 \noindent(ii) $B\nest A$. A group factor with two indicators $y_7,y_8$ adds $s_7s_8\psi_{S_3}$ to $\sigma_{78}$ (and to the variances) and nothing else: it acts as a free residual covariance $\theta_{78}$ (conversely $s_7=1$, $\psi_{S_3}=\theta_{78}/s_8$). By H03 the three-indicator group factors act as free residual blocks. So $B\equiv$ one factor plus free blocks $\{1,2,3\}$, $\{4,5,6\}$ and $\theta_{78}$, and $A\equiv$ one factor plus free blocks $\{1,2,3\}$, $\{4,5,6\}$, $\{7,8,9\}$: $B$ is $A$ with $\theta_{79}=\theta_{89}=0$ (Lemma~R).\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A group factor with three indicators frees all covariances within its group (H03); one with two indicators only frees one (here y7 ↔ y8). So B is A with the covariances of y9 with y7 and y8 fixed to zero.}
+\noindent{\small\textit{In the game:} A group factor with three indicators frees all covariances within its group; one with two indicators only frees one (here y7 ↔ y8). So B is A with the covariances of y9 with y7 and y8 fixed to zero.}
 
 \clearpage
 \section*{P13 \quad A tree network inside two factors}
@@ -8822,41 +8822,41 @@ Each page shows the two path diagrams exactly as in the game (observed variables
     cov/.style={{Stealth[length=3.3pt]}-{Stealth[length=3.3pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.363,0.317) rectangle (7.155,-3.511);
-\draw[resid] (0.000,-2.382) circle (0.082);
-\draw[residarrow] (0.000,-2.300) -- (0.000,-2.135);
-\draw[resid] (0.824,-2.382) circle (0.082);
-\draw[residarrow] (0.824,-2.300) -- (0.824,-2.135);
-\draw[resid] (1.649,-2.382) circle (0.082);
-\draw[residarrow] (1.649,-2.300) -- (1.649,-2.135);
-\draw[resid] (2.473,-2.382) circle (0.082);
-\draw[residarrow] (2.473,-2.300) -- (2.473,-2.135);
-\draw[resid] (3.297,-2.382) circle (0.082);
-\draw[residarrow] (3.297,-2.300) -- (3.297,-2.135);
-\draw[resid] (4.121,-2.382) circle (0.082);
-\draw[residarrow] (4.121,-2.300) -- (4.121,-2.135);
-\draw[resid] (4.946,-2.382) circle (0.082);
-\draw[residarrow] (4.946,-2.300) -- (4.946,-2.135);
-\draw[resid] (5.770,-2.382) circle (0.082);
-\draw[residarrow] (5.770,-2.300) -- (5.770,-2.135);
-\draw[resid] (6.594,-2.382) circle (0.082);
-\draw[residarrow] (6.594,-2.300) -- (6.594,-2.135);
-\draw[path] (2.592,-0.972) .. controls (1.773,-1.107) and (0.989,-1.373) .. (0.239,-1.770);
-\draw[path] (2.617,-1.050) -- (1.063,-1.783);
-\draw[path] (2.652,-1.107) -- (1.888,-1.708);
-\draw[path] (2.769,-1.196) -- (2.574,-1.657);
-\draw[path] (3.001,-1.196) -- (3.196,-1.657);
-\draw[path] (3.118,-1.107) -- (3.882,-1.708);
-\draw[path] (3.131,-0.757) .. controls (4.203,-0.029) and (4.800,-0.329) .. (4.924,-1.657);
-\draw[path] (3.134,-0.761) .. controls (4.340,0.025) and (5.191,-0.273) .. (5.685,-1.657);
-\draw[path] (3.106,-0.725) .. controls (4.688,0.700) and (5.825,0.390) .. (6.514,-1.657);
-\draw[path] (3.476,-1.107) -- (2.712,-1.708);
-\draw[path] (3.594,-1.196) -- (3.398,-1.657);
-\draw[path] (3.825,-1.196) -- (4.020,-1.657);
+\useasboundingbox (-0.363,-0.035) rectangle (7.155,-3.511);
+\draw[resid] (0.000,-1.410) circle (0.082);
+\draw[residarrow] (0.000,-1.492) -- (0.000,-1.657);
+\draw[resid] (0.824,-1.410) circle (0.082);
+\draw[residarrow] (0.824,-1.492) -- (0.824,-1.657);
+\draw[resid] (1.649,-1.410) circle (0.082);
+\draw[residarrow] (1.649,-1.492) -- (1.649,-1.657);
+\draw[resid] (2.848,-1.896) circle (0.062);
+\draw[residarrow] (2.786,-1.896) -- (2.712,-1.896);
+\draw[resid] (3.672,-1.896) circle (0.062);
+\draw[residarrow] (3.610,-1.896) -- (3.536,-1.896);
+\draw[resid] (4.497,-1.896) circle (0.062);
+\draw[residarrow] (4.435,-1.896) -- (4.361,-1.896);
+\draw[resid] (5.321,-1.896) circle (0.062);
+\draw[residarrow] (5.259,-1.896) -- (5.185,-1.896);
+\draw[resid] (6.145,-1.896) circle (0.062);
+\draw[residarrow] (6.083,-1.896) -- (6.009,-1.896);
+\draw[resid] (6.969,-1.896) circle (0.062);
+\draw[residarrow] (6.908,-1.896) -- (6.833,-1.896);
+\draw[path] (3.007,-3.030) .. controls (2.045,-2.827) and (1.123,-2.492) .. (0.239,-2.023);
+\draw[path] (3.030,-2.962) -- (1.063,-2.011);
+\draw[path] (3.057,-2.917) -- (1.888,-2.069);
+\draw[path] (3.129,-2.847) -- (2.638,-2.135);
+\draw[path] (3.297,-2.794) -- (3.297,-2.135);
+\draw[path] (3.466,-2.847) -- (3.957,-2.135);
+\draw[path] (3.537,-2.917) -- (4.707,-2.069);
+\draw[path] (3.564,-2.962) -- (5.531,-2.011);
+\draw[path] (3.588,-3.030) .. controls (4.549,-2.827) and (5.472,-2.492) .. (6.355,-2.023);
+\draw[path] (3.105,-1.150) -- (2.675,-1.657);
+\draw[path] (3.297,-1.220) -- (3.297,-1.657);
+\draw[path] (3.489,-1.150) -- (3.919,-1.657);
 \draw[path] (5.578,-1.150) -- (5.148,-1.657);
 \draw[path] (5.770,-1.220) -- (5.770,-1.657);
 \draw[path] (5.962,-1.150) -- (6.392,-1.657);
-\draw[cov] (3.919,-0.713) .. controls (4.466,-0.166) and (5.013,-0.166) .. (5.560,-0.713);
+\draw[cov] (3.507,-0.713) .. controls (4.191,-0.029) and (4.876,-0.029) .. (5.560,-0.713);
 \node[obs] at (0.000,-1.896) {$y_{1}$};
 \node[obs] at (0.824,-1.896) {$y_{2}$};
 \node[obs] at (1.649,-1.896) {$y_{3}$};
@@ -8866,8 +8866,8 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (4.946,-1.896) {$y_{7}$};
 \node[obs] at (5.770,-1.896) {$y_{8}$};
 \node[obs] at (6.594,-1.896) {$y_{9}$};
-\node[lat] at (2.885,-0.923) {$G$};
-\node[lat] at (3.709,-0.923) {$S_{2}$};
+\node[lat] at (3.297,-3.091) {$G$};
+\node[lat] at (3.297,-0.923) {$S_{2}$};
 \node[lat] at (5.770,-0.923) {$S_{3}$};
 \end{tikzpicture}\\[1pt]{\scriptsize \texttt{G =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6 + y7 + y8 + y9; S2 =\char`\~{} y4 + y5 + y6; S3 =\char`\~{} y7 + y8 + y9; S2 \char`\~{}\char`\~{} S3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=27$}\\[2pt]
@@ -8879,7 +8879,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
     cov/.style={{Stealth[length=3.3pt]}-{Stealth[length=3.3pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.363,0.317) rectangle (7.155,-3.511);
+\useasboundingbox (-0.363,-0.035) rectangle (7.155,-3.511);
 \draw[resid] (0.375,-1.896) circle (0.062);
 \draw[residarrow] (0.313,-1.896) -- (0.239,-1.896);
 \draw[resid] (1.199,-1.896) circle (0.062);
@@ -9189,7 +9189,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. The observed covariances depend on the first-order factors only through $\Psi=\mathrm{Cov}(F_1,\dots,F_4)$ (Lemma~B(b)). In $A$ the $F_k$ are indicators of $G$ with disturbances as residuals, so Lemma~P applies one level up: the disturbance covariance $F_1\leftrightarrow F_2$ is equivalent to a factor $H_1$ for $(F_1,F_2)$ regressed on $G$, and likewise $H_2$ for $(F_3,F_4)$. Then $G$ has no other children, and $H_1\leftarrow G\to H_2$ produces every $2\times2$ covariance matrix of $(H_1,H_2)$, as does $H_1\leftrightarrow H_2$ (Lemma~B(b)). Hence $A\equiv B$; as in H02, $A$ is not identified ($q_A=q_B+1$).\par\smallskip
 \noindent(ii) $B\nest A$. See above.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A disturbance covariance between two first-order factors acts like an extra second-order factor for that pair (H04, one level up). So A is G above two pair factors, and that is two correlated second-order factors. Counting trap: A has one parameter more and is not identified.}
+\noindent{\small\textit{In the game:} A disturbance covariance between two first-order factors acts like an extra second-order factor for that pair (just like a residual covariance acts like a factor, one level up). So A is G above two pair factors, and that is two correlated second-order factors. Counting trap: A has one parameter more and is not identified.}
 
 \clearpage
 \section*{P22 \quad A feedback loop with instruments is saturated}
@@ -9491,7 +9491,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. By H04, $A$ is equivalent to one factor plus the residual covariances $\theta_{12},\theta_{34},\theta_{56},\theta_{78}$, which is $B$ with $\theta_{13}=0$ (Lemma~R).\par\smallskip
 \noindent(ii) $B\nnest A$ by Lemma~D: the Jacobian of model $B$ has rank 21 at the rational point listed in Appendix~B, while model $A$ has only $q_A=20$ free parameters.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} By H04 the higher-order model over four two-indicator factors is one factor plus a residual covariance within each pair. B has those four and one more (y1 ↔ y3).}
+\noindent{\small\textit{In the game:} The higher-order model over four two-indicator factors is equivalent to one factor plus a residual covariance within each pair. B has those four and one more (y1 ↔ y3).}
 
 \clearpage
 \section*{P25 \quad Correlated factors inside the bifactor-(S$-$1) model}
@@ -9499,113 +9499,113 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textit{Level: Psychometrika. Model families: Bifactor.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}, y_{5}, y_{6}, y_{7}, y_{8}, y_{9}$ ($p=9$, 45 moments).\par\medskip
 \noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=21$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
-    obs/.style={draw, rounded corners=0.6pt, minimum size=0.491cm, inner sep=0pt, fill=white, font=\fontsize{7.6}{10}\selectfont},
-    lat/.style={draw, circle, minimum size=0.609cm, inner sep=0pt, fill=latfill, font=\fontsize{7.6}{10}\selectfont},
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.478cm, inner sep=0pt, fill=white, font=\fontsize{7.4}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.593cm, inner sep=0pt, fill=latfill, font=\fontsize{7.4}{10}\selectfont},
     resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
-    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
-    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    path/.style={-{Stealth[length=3.3pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.3pt]}-{Stealth[length=3.3pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.372,0.599) rectangle (7.143,-2.657);
-\draw[resid] (0.000,-2.446) circle (0.085);
-\draw[residarrow] (0.000,-2.361) -- (0.000,-2.192);
-\draw[resid] (0.846,-2.446) circle (0.085);
-\draw[residarrow] (0.846,-2.361) -- (0.846,-2.192);
-\draw[resid] (1.693,-2.446) circle (0.085);
-\draw[residarrow] (1.693,-2.361) -- (1.693,-2.192);
-\draw[resid] (2.539,-2.446) circle (0.085);
-\draw[residarrow] (2.539,-2.361) -- (2.539,-2.192);
-\draw[resid] (3.385,-2.446) circle (0.085);
-\draw[residarrow] (3.385,-2.361) -- (3.385,-2.192);
-\draw[resid] (4.232,-2.446) circle (0.085);
-\draw[residarrow] (4.232,-2.361) -- (4.232,-2.192);
-\draw[resid] (5.078,-2.446) circle (0.085);
-\draw[residarrow] (5.078,-2.361) -- (5.078,-2.192);
-\draw[resid] (5.924,-2.446) circle (0.085);
-\draw[residarrow] (5.924,-2.361) -- (5.924,-2.192);
-\draw[resid] (6.771,-2.446) circle (0.085);
-\draw[residarrow] (6.771,-2.361) -- (6.771,-2.192);
-\draw[path] (0.649,-1.180) -- (0.208,-1.701);
-\draw[path] (0.846,-1.253) -- (0.846,-1.701);
-\draw[path] (1.043,-1.180) -- (1.485,-1.701);
-\draw[path] (3.188,-1.180) -- (2.747,-1.701);
-\draw[path] (3.385,-1.253) -- (3.385,-1.701);
-\draw[path] (3.582,-1.180) -- (4.024,-1.701);
-\draw[path] (5.727,-1.180) -- (5.286,-1.701);
-\draw[path] (5.924,-1.253) -- (5.924,-1.701);
-\draw[path] (6.121,-1.180) -- (6.563,-1.701);
-\draw[cov] (1.062,-0.732) .. controls (1.764,-0.030) and (2.467,-0.030) .. (3.170,-0.732);
-\draw[cov] (1.062,-0.732) .. controls (2.611,0.817) and (4.160,0.817) .. (5.709,-0.732);
-\draw[cov] (3.601,-0.732) .. controls (4.303,-0.030) and (5.006,-0.030) .. (5.709,-0.732);
-\node[obs] at (0.000,-1.947) {$y_{1}$};
-\node[obs] at (0.846,-1.947) {$y_{2}$};
-\node[obs] at (1.693,-1.947) {$y_{3}$};
-\node[obs] at (2.539,-1.947) {$y_{4}$};
-\node[obs] at (3.385,-1.947) {$y_{5}$};
-\node[obs] at (4.232,-1.947) {$y_{6}$};
-\node[obs] at (5.078,-1.947) {$y_{7}$};
-\node[obs] at (5.924,-1.947) {$y_{8}$};
-\node[obs] at (6.771,-1.947) {$y_{9}$};
-\node[lat] at (0.846,-0.948) {$F_{1}$};
-\node[lat] at (3.385,-0.948) {$F_{2}$};
-\node[lat] at (5.924,-0.948) {$F_{3}$};
+\useasboundingbox (-0.363,0.583) rectangle (7.155,-3.511);
+\draw[resid] (0.000,-2.382) circle (0.082);
+\draw[residarrow] (0.000,-2.300) -- (0.000,-2.135);
+\draw[resid] (0.824,-2.382) circle (0.082);
+\draw[residarrow] (0.824,-2.300) -- (0.824,-2.135);
+\draw[resid] (1.649,-2.382) circle (0.082);
+\draw[residarrow] (1.649,-2.300) -- (1.649,-2.135);
+\draw[resid] (2.473,-2.382) circle (0.082);
+\draw[residarrow] (2.473,-2.300) -- (2.473,-2.135);
+\draw[resid] (3.297,-2.382) circle (0.082);
+\draw[residarrow] (3.297,-2.300) -- (3.297,-2.135);
+\draw[resid] (4.121,-2.382) circle (0.082);
+\draw[residarrow] (4.121,-2.300) -- (4.121,-2.135);
+\draw[resid] (4.946,-2.382) circle (0.082);
+\draw[residarrow] (4.946,-2.300) -- (4.946,-2.135);
+\draw[resid] (5.770,-2.382) circle (0.082);
+\draw[residarrow] (5.770,-2.300) -- (5.770,-2.135);
+\draw[resid] (6.594,-2.382) circle (0.082);
+\draw[residarrow] (6.594,-2.300) -- (6.594,-2.135);
+\draw[path] (0.632,-1.150) -- (0.203,-1.657);
+\draw[path] (0.824,-1.220) -- (0.824,-1.657);
+\draw[path] (1.016,-1.150) -- (1.446,-1.657);
+\draw[path] (3.105,-1.150) -- (2.675,-1.657);
+\draw[path] (3.297,-1.220) -- (3.297,-1.657);
+\draw[path] (3.489,-1.150) -- (3.919,-1.657);
+\draw[path] (5.578,-1.150) -- (5.148,-1.657);
+\draw[path] (5.770,-1.220) -- (5.770,-1.657);
+\draw[path] (5.962,-1.150) -- (6.392,-1.657);
+\draw[cov] (1.034,-0.713) .. controls (1.719,-0.029) and (2.403,-0.029) .. (3.087,-0.713);
+\draw[cov] (1.034,-0.713) .. controls (2.543,0.795) and (4.052,0.795) .. (5.560,-0.713);
+\draw[cov] (3.507,-0.713) .. controls (4.191,-0.029) and (4.876,-0.029) .. (5.560,-0.713);
+\node[obs] at (0.000,-1.896) {$y_{1}$};
+\node[obs] at (0.824,-1.896) {$y_{2}$};
+\node[obs] at (1.649,-1.896) {$y_{3}$};
+\node[obs] at (2.473,-1.896) {$y_{4}$};
+\node[obs] at (3.297,-1.896) {$y_{5}$};
+\node[obs] at (4.121,-1.896) {$y_{6}$};
+\node[obs] at (4.946,-1.896) {$y_{7}$};
+\node[obs] at (5.770,-1.896) {$y_{8}$};
+\node[obs] at (6.594,-1.896) {$y_{9}$};
+\node[lat] at (0.824,-0.923) {$F_{1}$};
+\node[lat] at (3.297,-0.923) {$F_{2}$};
+\node[lat] at (5.770,-0.923) {$F_{3}$};
 \end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2 + y3; F2 =\char`\~{} y4 + y5 + y6; F3 =\char`\~{} y7 + y8 + y9; F1 \char`\~{}\char`\~{} F2 + F3; F2 \char`\~{}\char`\~{} F3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=25$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
-    obs/.style={draw, rounded corners=0.6pt, minimum size=0.491cm, inner sep=0pt, fill=white, font=\fontsize{7.6}{10}\selectfont},
-    lat/.style={draw, circle, minimum size=0.609cm, inner sep=0pt, fill=latfill, font=\fontsize{7.6}{10}\selectfont},
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.478cm, inner sep=0pt, fill=white, font=\fontsize{7.4}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.593cm, inner sep=0pt, fill=latfill, font=\fontsize{7.4}{10}\selectfont},
     resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
-    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
-    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    path/.style={-{Stealth[length=3.3pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.3pt]}-{Stealth[length=3.3pt]}, line width=0.55pt},
     net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
-\useasboundingbox (-0.372,0.599) rectangle (7.143,-2.657);
-\draw[resid] (0.000,-2.446) circle (0.085);
-\draw[residarrow] (0.000,-2.361) -- (0.000,-2.192);
-\draw[resid] (0.846,-2.446) circle (0.085);
-\draw[residarrow] (0.846,-2.361) -- (0.846,-2.192);
-\draw[resid] (1.693,-2.446) circle (0.085);
-\draw[residarrow] (1.693,-2.361) -- (1.693,-2.192);
-\draw[resid] (2.539,-2.446) circle (0.085);
-\draw[residarrow] (2.539,-2.361) -- (2.539,-2.192);
-\draw[resid] (3.385,-2.446) circle (0.085);
-\draw[residarrow] (3.385,-2.361) -- (3.385,-2.192);
-\draw[resid] (4.232,-2.446) circle (0.085);
-\draw[residarrow] (4.232,-2.361) -- (4.232,-2.192);
-\draw[resid] (5.078,-2.446) circle (0.085);
-\draw[residarrow] (5.078,-2.361) -- (5.078,-2.192);
-\draw[resid] (5.924,-2.446) circle (0.085);
-\draw[residarrow] (5.924,-2.361) -- (5.924,-2.192);
-\draw[resid] (6.771,-2.446) circle (0.085);
-\draw[residarrow] (6.771,-2.361) -- (6.771,-2.192);
-\draw[path] (2.662,-0.998) .. controls (1.820,-1.137) and (1.015,-1.410) .. (0.245,-1.817);
-\draw[path] (2.687,-1.078) -- (1.092,-1.831);
-\draw[path] (2.723,-1.136) -- (1.938,-1.753);
-\draw[path] (2.843,-1.228) -- (2.643,-1.701);
-\draw[path] (3.081,-1.228) -- (3.281,-1.701);
-\draw[path] (3.202,-1.136) -- (3.986,-1.753);
-\draw[path] (3.214,-0.777) .. controls (4.315,-0.030) and (4.929,-0.338) .. (5.055,-1.701);
-\draw[path] (3.217,-0.782) .. controls (4.456,0.026) and (5.329,-0.281) .. (5.837,-1.701);
-\draw[path] (3.189,-0.744) .. controls (4.814,0.719) and (5.980,0.400) .. (6.688,-1.701);
-\draw[path] (3.569,-1.136) -- (2.784,-1.753);
-\draw[path] (3.690,-1.228) -- (3.489,-1.701);
-\draw[path] (3.927,-1.228) -- (4.128,-1.701);
-\draw[path] (5.727,-1.180) -- (5.286,-1.701);
-\draw[path] (5.924,-1.253) -- (5.924,-1.701);
-\draw[path] (6.121,-1.180) -- (6.563,-1.701);
-\draw[cov] (4.024,-0.732) .. controls (4.586,-0.171) and (5.147,-0.171) .. (5.709,-0.732);
-\node[obs] at (0.000,-1.947) {$y_{1}$};
-\node[obs] at (0.846,-1.947) {$y_{2}$};
-\node[obs] at (1.693,-1.947) {$y_{3}$};
-\node[obs] at (2.539,-1.947) {$y_{4}$};
-\node[obs] at (3.385,-1.947) {$y_{5}$};
-\node[obs] at (4.232,-1.947) {$y_{6}$};
-\node[obs] at (5.078,-1.947) {$y_{7}$};
-\node[obs] at (5.924,-1.947) {$y_{8}$};
-\node[obs] at (6.771,-1.947) {$y_{9}$};
-\node[lat] at (2.962,-0.948) {$G$};
-\node[lat] at (3.808,-0.948) {$S_{2}$};
-\node[lat] at (5.924,-0.948) {$S_{3}$};
+\useasboundingbox (-0.363,0.583) rectangle (7.155,-3.511);
+\draw[resid] (0.000,-1.410) circle (0.082);
+\draw[residarrow] (0.000,-1.492) -- (0.000,-1.657);
+\draw[resid] (0.824,-1.410) circle (0.082);
+\draw[residarrow] (0.824,-1.492) -- (0.824,-1.657);
+\draw[resid] (1.649,-1.410) circle (0.082);
+\draw[residarrow] (1.649,-1.492) -- (1.649,-1.657);
+\draw[resid] (2.848,-1.896) circle (0.062);
+\draw[residarrow] (2.786,-1.896) -- (2.712,-1.896);
+\draw[resid] (3.672,-1.896) circle (0.062);
+\draw[residarrow] (3.610,-1.896) -- (3.536,-1.896);
+\draw[resid] (4.497,-1.896) circle (0.062);
+\draw[residarrow] (4.435,-1.896) -- (4.361,-1.896);
+\draw[resid] (5.321,-1.896) circle (0.062);
+\draw[residarrow] (5.259,-1.896) -- (5.185,-1.896);
+\draw[resid] (6.145,-1.896) circle (0.062);
+\draw[residarrow] (6.083,-1.896) -- (6.009,-1.896);
+\draw[resid] (6.969,-1.896) circle (0.062);
+\draw[residarrow] (6.908,-1.896) -- (6.833,-1.896);
+\draw[path] (3.007,-3.030) .. controls (2.045,-2.827) and (1.123,-2.492) .. (0.239,-2.023);
+\draw[path] (3.030,-2.962) -- (1.063,-2.011);
+\draw[path] (3.057,-2.917) -- (1.888,-2.069);
+\draw[path] (3.129,-2.847) -- (2.638,-2.135);
+\draw[path] (3.297,-2.794) -- (3.297,-2.135);
+\draw[path] (3.466,-2.847) -- (3.957,-2.135);
+\draw[path] (3.537,-2.917) -- (4.707,-2.069);
+\draw[path] (3.564,-2.962) -- (5.531,-2.011);
+\draw[path] (3.588,-3.030) .. controls (4.549,-2.827) and (5.472,-2.492) .. (6.355,-2.023);
+\draw[path] (3.105,-1.150) -- (2.675,-1.657);
+\draw[path] (3.297,-1.220) -- (3.297,-1.657);
+\draw[path] (3.489,-1.150) -- (3.919,-1.657);
+\draw[path] (5.578,-1.150) -- (5.148,-1.657);
+\draw[path] (5.770,-1.220) -- (5.770,-1.657);
+\draw[path] (5.962,-1.150) -- (6.392,-1.657);
+\draw[cov] (3.507,-0.713) .. controls (4.191,-0.029) and (4.876,-0.029) .. (5.560,-0.713);
+\node[obs] at (0.000,-1.896) {$y_{1}$};
+\node[obs] at (0.824,-1.896) {$y_{2}$};
+\node[obs] at (1.649,-1.896) {$y_{3}$};
+\node[obs] at (2.473,-1.896) {$y_{4}$};
+\node[obs] at (3.297,-1.896) {$y_{5}$};
+\node[obs] at (4.121,-1.896) {$y_{6}$};
+\node[obs] at (4.946,-1.896) {$y_{7}$};
+\node[obs] at (5.770,-1.896) {$y_{8}$};
+\node[obs] at (6.594,-1.896) {$y_{9}$};
+\node[lat] at (3.297,-3.091) {$G$};
+\node[lat] at (3.297,-0.923) {$S_{2}$};
+\node[lat] at (5.770,-0.923) {$S_{3}$};
 \end{tikzpicture}\\[1pt]{\scriptsize \texttt{G =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6 + y7 + y8 + y9; S2 =\char`\~{} y4 + y5 + y6; S3 =\char`\~{} y7 + y8 + y9; S2 \char`\~{}\char`\~{} S3}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
@@ -9692,7 +9692,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. In $A$ the variables $(X,F_1,F_2)$ form the chain $X\to F_1\to F_2$; the measurement parts attach to $F_1$ and $F_2$ only. By Lemma~C the chain produces the same covariance matrices of $(X,F_1,F_2)$ as the fork $X\leftarrow F_1\to F_2$, i.e.\ $X$ as one more indicator of $F_1$ (Lemma~B(b)). With $X$ an indicator, $F_1\to F_2$ and $F_1\leftrightarrow F_2$ both leave $\mathrm{Cov}(F_1,F_2)$ free (E03). So $A$ is equivalent to the two-factor model with $X$ loading on $F_1$ only, which is $B$ with the loading of $X$ on $F_2$ fixed to 0 (Lemma~R).\par\smallskip
 \noindent(ii) $B\nnest A$ by Lemma~D: the Jacobian of model $B$ has rank 12 at the rational point listed in Appendix~B, while model $A$ has only $q_A=11$ free parameters.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A covariate that predicts F1 is the same as one more indicator of F1 (H05), and between two factors a regression is a covariance (E03). So A is the two-factor model with X loading on F1 only; B lets X load on F2 as well.}
+\noindent{\small\textit{In the game:} A covariate that predicts F1 is the same as one more indicator of F1, and between two factors a regression is a covariance. So A is the two-factor model with X loading on F1 only; B lets X load on F2 as well.}
 
 \clearpage
 \section*{P27 \quad Paired residuals inside two second-order factors}
@@ -9812,7 +9812,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 21 at the rational point listed in Appendix~B, while model $B$ has only $q_B=20$ free parameters.\par\smallskip
 \noindent(ii) $B\nest A$. By H04, $B$ is equivalent to one second-order factor over the four pair factors $F_1,\dots,F_4$, which is nested in $A$ by M25 (merge $H_1$ and $H_2$).\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} B is equivalent to one second-order factor over four pair factors (H04), and one second-order factor is two perfectly correlated ones (M25).}
+\noindent{\small\textit{In the game:} A residual covariance within a pair acts like a factor for that pair, so B is one second-order factor over four pair factors. And one second-order factor is two perfectly correlated ones.}
 
 \clearpage
 \section*{P28 \quad A saturated block of covariate and factors}
@@ -10011,7 +10011,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Claim.} $A \nnest B$ and $B \nnest A$: \textbf{neither} is nested in the other.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\sigma_{12}\sigma_{36} - \sigma_{16}\sigma_{23}$. In $B$ none of the pairs $(1,2),(3,6),(1,6),(2,3)$ has a residual covariance, so their covariances are $\lambda_i\lambda_j\psi$ and the tetrad vanishes. So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$, $f=\lambda_1\lambda_2\lambda_3\lambda_6\gamma_2\gamma_3\phi\,\zeta_1\neq0$ for generic parameters; e.g.\ at the point of Appendix~B, $f=0.3240\neq0$.\par\smallskip
 \noindent(ii) $B\nnest A$ by Lemma~S with $f(\Sigma)=\sigma_{13}\sigma_{26} - \sigma_{16}\sigma_{23}$. In $A$, $\sigma_{ij}=\lambda_i\lambda_j\psi_{k(i)k(j)}$; here $y_1,y_2$ are indicators of $F_1$, so $f=\lambda_1\lambda_2\lambda_3\lambda_6(\psi_{12}\psi_{13}-\psi_{13}\psi_{12})=0$. So $f\equiv0$ on $\mathcal M_A$, whereas in model $B$, $f=\theta_{13}\lambda_2\lambda_6\psi\neq0$ for generic parameters; e.g.\ at the point of Appendix~B, $f=0.3300\neq0$.\hfill$\square$\par\medskip
-\noindent{\small\textit{In the game:} A is one factor with residual covariances within the pairs (y1, y2), (y3, y4), ... (H04). B pairs the items differently. Same number of parameters, different restrictions.}
+\noindent{\small\textit{In the game:} A is the same as one factor with residual covariances within the pairs (y1, y2), (y3, y4), ... B pairs the items differently. Same number of parameters, different restrictions.}
 
 \clearpage
 \section*{P30 \quad Cause of the factor or indicator with an effect}

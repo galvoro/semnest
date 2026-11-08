@@ -7,7 +7,8 @@ A Galvoro PLAY/LEARN capsule for PL5225 Structural Equation Modeling (NUS):
 
 Four levels (Easy, Medium, Hard, Psychometrika), five rounds per game. Each round
 shows two path diagrams, model **A** and model **B**, for the same observed
-variables (side by side on desktop, stacked on phones). The player answers:
+variables (side by side on desktop; on phones one at a time, with A / B tabs
+and the answers underneath). The player answers:
 
 | answer | meaning |
 |---|---|
@@ -23,8 +24,39 @@ for the level. After every answer the feedback shows the relation, a short
 explanation, the number of parameters and degrees of freedom of both models,
 and highlights what differs between the diagrams.
 
-Every level has 20 items (5 equivalent, 5 A ⊂ B, 5 B ⊂ A, 5 neither); a game
-draws 5 of them with at most two of each kind (`bank.js`).
+The bank has 118 items: Easy 27, Medium 32, Hard 29, Psychometrika 30, with
+all four relations at every level. A game draws 5 items, with at most two of
+each relation and at least three kinds when the pool allows it (`game.js`).
+
+### Model types
+
+After choosing a level, players can switch model types on and off:
+
+| type | what it is about |
+|---|---|
+| CFA | factor models: loadings, factor and residual covariances, cross-loadings |
+| Path analysis | models for observed variables only (DAGs, covariances) |
+| SEM | structural effects: regressions between factors, covariates |
+| Higher-order | second- (and third-) order factors |
+| Bifactor | bifactor / hierarchical models, including bifactor-(S−1) |
+| GGM | Gaussian graphical models (networks of observed variables) |
+| Latent / residual | latent network models and residual network models |
+
+The types of an item follow from its two models (`SN.bank.itemTags`); a type
+that another one builds on is not counted separately, so an SEM item may use
+a plain CFA or path model as the other model, a bifactor item a higher-order
+model, a GGM item a DAG, and a network item a factor model or a GGM. An item
+is in the game when all its types are switched on. A type is offered at a
+level when at least five items of that level are about that type alone;
+other types are greyed out there. Hence every combination of offered types
+gives at least five items: `node .dev/check_bank.js` checks all of them.
+
+| level | offered types |
+|---|---|
+| Easy | CFA, path analysis, SEM, GGM |
+| Medium | CFA, path analysis, SEM, higher-order, GGM |
+| Hard | CFA, path analysis, SEM, higher-order, bifactor |
+| Psychometrika | SEM, higher-order, bifactor, GGM, latent / residual networks |
 
 ## LEARN
 
@@ -62,7 +94,9 @@ factors is equivalent to three correlated factors.
     rational points and be non-zero at the listed witness point;
   * dimension arguments use exact Jacobian ranks.
 * **Engine check:** `node .dev/verify_bank.js [--mixed]` fits each model to the
-  other's implied covariance matrices (positive or mixed-sign parameter draws).
+  other's implied covariance matrices (positive or mixed-sign parameter draws;
+  a miss is rerun with many more starting values, which the feedback loop of
+  P22 needs with mixed signs).
 * **R check:** `Rscript .dev/verify_bank.R`, an independent check with lavaan
   and psychonetrics.
 
@@ -72,16 +106,17 @@ factors is equivalent to three correlated factors.
 |---|---|
 | `index.html`, `styles.css` | screens, HUD, light / dark / auto themes |
 | `sem.js` | RAM engine with network (precision) blocks; ML and least-squares fitting; Jacobian rank; nesting check |
-| `bank.js` | the 80 items |
+| `bank.js` | the 118 items and the model types |
 | `diagram.js` | layout of the path diagrams; SVG and TikZ output |
 | `game.js` | app shell and PLAY |
 | `learn.js`, `editor.js` | LEARN (editor adapted from Factor Lab) |
 | `tutorial.js`, `diploma.js`, `audio.js` | briefing cards, certificate image, sound |
 | `assets/`, `cover.png` | key art (vector, `.dev/make_art.js`), favicon |
 
-`.dev/` holds the verification scripts, the proofs, the art generator,
+`.dev/` holds the verification scripts (`verify_bank.js`, `verify_bank.R`,
+`check_bank.js` for the model-type filter), the proofs, the art generator,
 `media_prompts.txt` (prompts for generated music and images) and headless-Chrome
-tests (`smoke_play.js`, `smoke_learn.js`, `gallery.html` for all 160 diagrams).
+tests (`smoke_play.js`, `smoke_learn.js`, `gallery.html` for all 236 diagrams).
 Dot-folders are never uploaded with the capsule.
 
 No background music is included yet: add `assets/bgm.mp3` and set `BGM_FILE` in

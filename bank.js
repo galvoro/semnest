@@ -65,7 +65,7 @@
     { id: 'E04', level: 1, rel: 'equiv', obs: ['A', 'B', 'C'], pos: tri,
       A: 'B ~ A; C ~ A + B', B: 'A ~~ B + C; B ~~ C',
       why: 'Both models are saturated: they have as many parameters (6) as there are variances and covariances. Every saturated model reproduces any covariance matrix, so all saturated models are equivalent.' },
-    { id: 'E05', level: 1, rel: 'equiv', obs: ys(3),
+    { id: 'E05', level: 1, rel: 'equiv', obs: ys(3), posB: triY,
       A: 'F =~ y1 + y2 + y3', B: 'y1 ~~ y2 + y3; y2 ~~ y3',
       why: 'A one-factor model with three indicators has 3 loadings and 3 residual variances: 6 parameters for 6 (co)variances. It is just-identified (saturated), like the model with all covariances free.' },
 
