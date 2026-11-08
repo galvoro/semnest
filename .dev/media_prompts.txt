@@ -7,6 +7,9 @@ Where the files go
                     (makes assets/title-wide.webp and assets/title-mobile.webp;
                     the game then shows them instead of the placeholder).
                     .dev/media/ is not committed.
+  Square tile    -> save as .dev/media/cover.png and run the same script
+                    (makes cover.webp in the capsule folder, 1080 x 1080, and
+                    ../squareimg/semnest.png for upload-covers).
   Music          -> save Suno's MP3 as .dev/media/bgm.mp3; it then goes to
                     assets/bgm.mp3 with loop points that skip the intro and
                     the fade-out (BGM_FILE and BGM_LOOP in audio.js).
@@ -365,3 +368,31 @@ on a rock just below. Keep the title, the nest and the hatchling(s) within
 the middle 60 % of the width (phones crop the left and right edges) and keep
 the bottom quarter calm and dark for the buttons. The only text is the title
 and the line below it.
+
+--- e. square tile for c2 (same chat, after c2 and d.) --------------
+   -> .dev/media/cover.png, then  sh .dev/make_title.sh
+
+Now make a square 1:1 version (1024 x 1024) of the same image, to be used as
+the game's tile in a course catalogue. The tile is often shown small (about
+200 px wide), so simplify and zoom in:
+- The same world, style, palette and characters, but close in on the heart
+  of the scene: the curious hatchling sitting on the open field notebook,
+  head tilted, studying the pencil path diagram (two circles joined by a
+  curved double-headed arrow, with straight arrows down to six small
+  squares), the brass compass beside it; just behind it the nest with the
+  smaller nest nested inside and the amber egg; the parent hadrosaur peeking
+  around a fern at one side. Of the background keep only a hint of the misty
+  sandstone cliffs and the waterfall.
+- Bold, clear shapes and strong contrast between the hatchling and the
+  background, so the picture still reads at thumbnail size.
+- The title "SEMNEST" large across the top, in the same bold vintage serif,
+  colour #25261F, clearly readable at small size. Spelling must be exact:
+  S-E-M-N-E-S-T. No subtitle line this time.
+- Keep the title, the hatchling and the notebook inside the central 85 % of
+  the image (the tile may get rounded corners or a slight crop). The bottom
+  does not need to be dark this time.
+- The ONLY text is the title. No other words, numbers, logos, signatures,
+  watermarks or frames.
+
+If the title comes out misspelled, ask: "The same image, but without any
+text." (the catalogue shows the name next to the tile anyway).
