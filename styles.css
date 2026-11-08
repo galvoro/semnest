@@ -393,7 +393,8 @@ body.mode-learn .learn-only { display: flex !important; }
 .tut-card { border: 1px solid var(--line); border-left: 5px solid var(--c, var(--accent)); border-radius: 14px; padding: 11px 14px; background: var(--bg); animation: rise .45s both; }
 .tut-card h3 { margin: 0 0 4px; font-family: var(--f-head); font-size: 16px; font-weight: 800; letter-spacing: .03em; }
 .tut-card p { margin: 0; font-size: 14px; color: var(--ink-2); }
-.tut-card .vrow { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+.tut-card .vrow { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; margin-top: 6px; }
+.only-phone { display: none; }
 .tut-card .vrow span { display: inline-flex; align-items: center; gap: 4px; font-size: 12.5px; font-weight: 700; }
 .tut-card .vrow .venn { width: 40px; height: 26px; }
 
@@ -646,7 +647,21 @@ body.mode-learn .learn-only { display: flex !important; }
   .level-go { grid-template-columns: 1fr; justify-items: center; gap: 8px; margin-top: 12px; }
   .level-go #btn-start { order: -1; }
   .level-go #level-back, .level-go .fam-pool { justify-self: center; }
-  #tut-cards { grid-template-columns: 1fr; }
+  #tut-cards { grid-template-columns: 1fr; gap: 8px; margin: 10px 0 12px; }
+  #screen-tutorial { padding: 10px; }
+  .tut-box { padding: 14px 12px 12px; border-radius: 18px; }
+  .tut-header { font-size: 22px; }
+  #screen-tutorial.popup .tut-header { padding: 0 34px; }
+  .tut-close { top: 9px; right: 9px; width: 30px; height: 30px; }
+  .tut-card { padding: 7px 10px 8px; border-radius: 12px; }
+  .tut-card h3 { font-size: 14px; margin-bottom: 2px; }
+  .tut-card p { font-size: 13px; line-height: 1.38; }
+  .tut-card .vrow { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 8px; margin-top: 4px; }
+  .tut-card .vrow span { font-size: 12px; }
+  .tut-card .vrow .venn { width: 32px; height: 21px; }
+  #tut-continue { padding: 9px 30px; font-size: 18px; min-width: 150px; }
+  .only-phone { display: inline; }
+  .only-desk { display: none; }
   .diploma { padding: 22px 18px 20px; }
   .dip-title { font-size: 26px; }
   .dip-score { font-size: 44px; }

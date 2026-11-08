@@ -11,33 +11,33 @@
   };
   SN.VENN = V;
 
+  // short enough to fit a phone screen without scrolling; .only-phone and
+  // .only-desk pick the hint for the device
   const CARDS = [
-    { title: 'TWO MODELS, ONE NEST', c: 'var(--a)',
-      body: 'Each round shows two models, <b>A</b> and <b>B</b>, for the same observed variables (squares). Circles are latent variables, ' +
-        'arrows effects, curved arrows covariances, plain lines network edges (partial correlations; no line = independent given all others). Variances are free and not drawn. On a phone, tap a model to enlarge it.' },
+    { title: 'TWO MODELS', c: 'var(--a)',
+      body: 'Squares are observed, circles latent. Arrows are effects, curved arrows covariances, plain lines network edges ' +
+        '(no line: independent given the rest). Variances are free and not drawn.<span class="only-phone"> Tap a model to enlarge it.</span>' },
     { title: 'HOW DO THEY RELATE?', c: 'var(--b)',
-      body: 'Think of a model as the set of covariance matrices it can produce. ' +
-        '<div class="vrow"><span>' + V.equiv + 'equivalent</span><span>' + V.AinB + 'A nested in B</span><span>' + V.BinA + 'B nested in A</span><span>' + V.neither + 'neither</span></div>' },
+      body: 'A model is the set of covariance matrices it can produce.' +
+        '<span class="vrow"><span>' + V.equiv + 'equivalent</span><span>' + V.AinB + 'A nested in B</span><span>' + V.BinA + 'B nested in A</span><span>' + V.neither + 'neither</span></span>' },
     { title: 'NESTED?', c: 'var(--leaf)',
-      body: 'A is <b>nested</b> in B if B can produce everything A can (fit B to A\'s implied covariance matrix: χ² = 0). ' +
-        '<b>Equivalent</b> = nested both ways: the same fit on every dataset. Parameters are free real numbers, as in lavaan.' },
+      body: 'A is <b>nested</b> in B if B fits everything A produces (χ²&nbsp;=&nbsp;0). <b>Equivalent</b>: nested both ways. ' +
+        'Parameters are free real numbers, as in lavaan.' },
     { title: 'SCORING', c: 'var(--twig)',
-      body: 'Five pairs per game, 20 points each. Confusing <b>nested</b> and <b>equivalent</b> (in the right direction) earns 8. ' +
-        'Score 60 of 100 for a certificate. Keys 1–4 answer, Enter goes on.' },
+      body: 'Five pairs, 20 points each. Confusing <b>nested</b> and <b>equivalent</b> (in the right direction) earns 8; ' +
+        '60 of 100 earns a certificate.<span class="only-desk"> Keys 1–4 answer, Enter goes on.</span>' },
   ];
 
   const LEARN_CARDS = [
     { title: 'DRAW TWO MODELS', c: 'var(--a)',
-      body: 'Both canvases start as a one-factor model. <b>Double-click</b> to add a factor and click its items; <b>Path</b> draws loadings or structural effects, ' +
+      body: 'Both start as one factor. <b>Double-click</b> to add a factor, then click its items. <b>Path</b> draws loadings or effects, ' +
         '<b>Covary</b> links residuals or factors, <b>Erase</b> removes.' },
     { title: 'WATCH THE RELATION', c: 'var(--b)',
-      body: 'The middle panel shows how the models relate: equivalent, nested, or neither, plus their parameters and degrees of freedom. ' +
-        'Add a residual covariance to one side and see what happens.' },
+      body: 'The middle panel shows how the models relate, with their parameters and df. Try adding a residual covariance.' },
     { title: 'GIVE THEM NUMBERS', c: 'var(--leaf)',
-      body: 'Press <b>Values</b>. Change the parameters of the nested (or an equivalent) model with the slider, ' +
-        'and watch the other model find values that reproduce exactly the same covariance matrix.' },
+      body: 'Press <b>Values</b> and move a slider: the other model finds values that give exactly the same covariance matrix.' },
     { title: 'NO SCORE', c: 'var(--twig)',
-      body: 'Just explore. Can you make two models with different arrows equivalent? Can you find a model with more parameters that is still not more general?' },
+      body: 'Can different arrows be equivalent? Can more parameters still be less general?' },
   ];
 
   let onDone = null;
