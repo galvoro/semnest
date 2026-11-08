@@ -1,7 +1,7 @@
 // SEMNEST — WebAudio synth sound effects (+ optional background music).
 // Exposes window.GaltonAudio (same interface as the other Galvoro capsules).
-// Background music: drop a track at assets/bgm.mp3 and set BGM_FILE below;
-// until then the game is silent apart from the effects.
+// Background music: assets/bgm.mp3 (made with Suno), looped seamlessly from
+// the WebAudio buffer (see BGM_LOOP).
 (function (global) {
   let ctx = null;
   let muted = false;
@@ -16,11 +16,14 @@
   }
 
   // -------- BGM --------
-  // Loop points for the track (set once it exists; see .dev/media_prompts.txt):
-  // { length: seconds of one loop cycle, crossfade: seconds blended back into
-  // the start }. null loops the whole file.
-  const BGM_LOOP = null;
-  const BGM_FILE = null;     // e.g. 'assets/bgm.mp3' once a track is added
+  // Loop points: the track plays from 0 s; after start + length it returns
+  // to start (+ crossfade). The last `crossfade` seconds before the jump
+  // blend into the music right after `start`, so the seam is inaudible.
+  // Found by beat analysis of the track (99.9 BPM): the 32 bars from 20.22 s
+  // return at 97.11 s (rhythm and harmony match); the 2-second lead-in and
+  // the cut-off at the end (150 s) are not looped. null loops the whole file.
+  const BGM_LOOP = { start: 20.22, length: 76.8905, crossfade: 2.4 };
+  const BGM_FILE = 'assets/bgm.mp3';
   let bgmTargetVolume = 0.18;
   let bgmWanted = false;
   let bgm = null;            // { buf, loopStart, loopEnd } once decoded
@@ -31,20 +34,22 @@
   function makeLoop(c, raw) {
     const sr = raw.sampleRate;
     if (!BGM_LOOP) return { buf: raw, loopStart: 0, loopEnd: raw.duration };
-    const X = Math.round(BGM_LOOP.crossfade * sr), Lp = Math.round(BGM_LOOP.length * sr), E = Lp + X;
+    const S0 = Math.round((BGM_LOOP.start || 0) * sr);
+    const X = Math.round(BGM_LOOP.crossfade * sr), Lp = Math.round(BGM_LOOP.length * sr), E = S0 + Lp + X;
     if (E > raw.length) return { buf: raw, loopStart: 0, loopEnd: raw.duration };
     const out = c.createBuffer(raw.numberOfChannels, E, sr);
     for (let ch = 0; ch < raw.numberOfChannels; ch++) {
       const a = raw.getChannelData(ch), o = out.getChannelData(ch);
       o.set(a.subarray(0, E));
       // last bar: equal-power crossfade from the music at that point into
-      // the opening bar, so jumping from E back to X is seamless
+      // the bar after the loop start, so jumping from E back to S0 + X is
+      // seamless
       for (let i = 0; i < X; i++) {
         const t = (i + 0.5) / X;
-        o[Lp + i] = a[Lp + i] * Math.cos(t * Math.PI / 2) + a[i] * Math.sin(t * Math.PI / 2);
+        o[S0 + Lp + i] = a[S0 + Lp + i] * Math.cos(t * Math.PI / 2) + a[S0 + i] * Math.sin(t * Math.PI / 2);
       }
     }
-    return { buf: out, loopStart: X / sr, loopEnd: E / sr };
+    return { buf: out, loopStart: (S0 + X) / sr, loopEnd: E / sr };
   }
   function bgmLoad(c) {
     if (bgm || bgmLoading) return bgmLoading;
@@ -87,6 +92,17 @@
     if (bgm) bgmPlay(c);
     else bgmLoad(c).then(() => { if (bgm) bgmPlay(c); });
   }
+  // while the page is hidden the music pauses (and resumes where it was)
+  document.addEventListener('visibilitychange', () => {
+    if (!bgmWanted) return;
+    if (document.hidden) {
+      if (ctx && ctx.state === 'running') ctx.suspend();
+      if (bgmEl) bgmEl.pause();
+    } else {
+      if (ctx && ctx.state === 'suspended') ctx.resume();
+      if (bgmEl) bgmEl.play().catch(() => {});
+    }
+  });
   function bgmStop() {
     bgmWanted = false;
     if (bgmSrc) { try { bgmSrc.stop(); } catch (e) {} bgmSrc = null; }

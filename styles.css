@@ -41,6 +41,7 @@
   --glow: #F5C37A;
   --topo-op: .075;
   --topo-filter: none;
+  --art-op: .26;
   color-scheme: light;
 }
 :root[data-theme="dark"] {
@@ -48,7 +49,7 @@
   --line: #2C3A33; --line-2: #22302A; --shadow: 0 10px 30px rgba(0,0,0,0.45); --shadow-sm: 0 2px 6px rgba(0,0,0,0.35);
   --a: #4FB2BF; --a-soft: #173A3D; --a-ink: #86D2DA; --b: #E39E45; --b-soft: #43331A; --b-ink: #F0C27E;
   --accent-soft: #43331A; --btn-off: #22302A; --backdrop: rgba(0,0,0,0.6); --leaf-soft: #1F3720; --berry-soft: #43251C;
-  --topo-op: .045; --topo-filter: invert(1);
+  --topo-op: .045; --topo-filter: invert(1); --art-op: .14;
   color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -57,7 +58,7 @@
     --line: #2C3A33; --line-2: #22302A; --shadow: 0 10px 30px rgba(0,0,0,0.45); --shadow-sm: 0 2px 6px rgba(0,0,0,0.35);
     --a: #4FB2BF; --a-soft: #173A3D; --a-ink: #86D2DA; --b: #E39E45; --b-soft: #43331A; --b-ink: #F0C27E;
     --accent-soft: #43331A; --btn-off: #22302A; --backdrop: rgba(0,0,0,0.6); --leaf-soft: #1F3720; --berry-soft: #43251C;
-  --topo-op: .045; --topo-filter: invert(1);
+  --topo-op: .045; --topo-filter: invert(1); --art-op: .14;
     color-scheme: dark;
   }
 }
@@ -78,6 +79,14 @@ body {
   background-image: radial-gradient(circle at 12% -10%, rgba(196,119,24,0.10), transparent 40%), radial-gradient(circle at 105% 110%, rgba(36,124,140,0.10), transparent 45%);
 }
 button { font-family: inherit; color: inherit; }
+/* menu screens (levels, certificate): the opening art, softly out of
+   focus, behind the cards */
+#screen-level::after, #screen-final::after {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: url(assets/title-wide.webp) center / cover no-repeat;
+  transform: scale(1.45); transform-origin: 100% 100%;   /* the painted title stays out of view */
+  filter: blur(7px) saturate(.85); opacity: var(--art-op);
+}
 /* faint map contours behind everything */
 body::before, .screen::before {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -306,22 +315,22 @@ body.mode-learn .learn-only { display: flex !important; }
   background: var(--bg); overflow: auto;
 }
 .screen.show { display: flex; }
-#screen-title { padding: 0; flex-direction: column; justify-content: flex-start; background: #D9E2D3; }
+/* the opening art (ChatGPT): the buttons take its egg colours (amber, teal)
+   in both themes; the art's sky shows while the image loads */
+#screen-title {
+  padding: 0; flex-direction: column; justify-content: flex-start;
+  background: linear-gradient(#CFE1DC, #EADCBC 55%, #2F3B26);
+  --a: #247C8C; --a-ink: #175E6A; --accent: #C47718; --accent-deep: #93560F;
+}
 .title-hero { position: relative; width: 100%; flex: 1; min-height: 0; overflow: hidden; }
 .title-hero picture, .title-hero img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; display: block; animation: heroin 1.2s ease-out; }
 @media (max-width: 860px) { .title-ui { gap: 9px; } .big-btn { min-width: 170px; padding: 11px 22px; font-size: 19px; } }
 @keyframes heroin { from { opacity: 0; transform: scale(1.03); } }
-/* until the opening image exists (assets/title-*.webp): a plain placeholder */
+/* very wide screens (turned phones): keep the title at the top in view */
+@media (min-aspect-ratio: 2/1) { .title-hero picture, .title-hero img { object-position: 50% 0%; } }
+/* the opening image fades in once loaded (no broken-image icon before) */
 .title-hero picture { visibility: hidden; }
 .title-hero.loaded picture { visibility: visible; }
-.title-hero.loaded .title-ph { display: none; }
-.title-ph { position: absolute; inset: 0; }
-.title-ph .ph-land { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
-.ph-text { position: absolute; left: 0; right: 0; top: 16%; display: flex; flex-direction: column; align-items: center; gap: 6px; color: #25261F; text-align: center; padding: 0 16px; }
-.ph-title { font-family: var(--f-head); font-weight: 800; font-size: clamp(54px, 11vw, 132px); line-height: 1; letter-spacing: .02em; }
-.ph-sub { font-family: var(--f-head); font-style: italic; font-weight: 500; font-size: clamp(17px, 2.4vw, 28px); color: #45463A; }
-.ph-tag { position: absolute; top: calc(12px + env(safe-area-inset-top, 0px)); right: 12px; font-size: 11px; font-weight: 700; letter-spacing: .04em;
-  color: #45463A; border: 1.5px dashed rgba(37, 38, 31, .35); border-radius: 999px; padding: 3px 10px; background: rgba(255, 252, 243, .55); }
 .title-ui {
   position: absolute; left: 0; right: 0; bottom: 0; padding: 18px 20px calc(18px + env(safe-area-inset-bottom, 0px));
   display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center;
@@ -786,6 +795,7 @@ body.mode-learn .learn-only { display: flex !important; }
   #screen-final { position: absolute; inset: 0; background: #fff; padding: 0; }
   .final-btns { display: none; }
   .diploma { box-shadow: none; }
+  #screen-final::after, #screen-final::before { display: none; }
 }
 @media (max-width: 860px) and (min-aspect-ratio: 5/4) {
   .lpair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "a b" "mid mid"; }

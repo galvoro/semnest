@@ -4,8 +4,11 @@ A Galvoro PLAY/LEARN capsule for PL5225 Structural Equation Modeling (NUS):
 **nested, equivalent, or neither?**
 
 Theme: dinosaur nests in a lost valley, kept quiet: sandstone paper with
-faint map contours, fern and basalt; model A is lagoon teal, model B amber;
-eggs as level medals, a map neatline and ferns on the certificate.
+faint map contours, fern and basalt; model A is lagoon teal, model B amber
+(the eggs in the opening image); eggs as level medals, a map neatline and
+ferns on the certificate. The opening image (a young hadrosaur studying a path
+diagram next to a nest within a nest) is by ChatGPT; it also shows, softly out
+of focus, behind the level screen and the certificate. The music is by Suno.
 
 ## PLAY
 
@@ -155,19 +158,30 @@ factors is equivalent to three correlated factors.
 | `game.js` | app shell and PLAY |
 | `learn.js`, `editor.js` | LEARN: COMPUTE, library, phone edit popup; the editor (adapted from Factor Lab) |
 | `tutorial.js`, `diploma.js`, `audio.js` | briefing cards, certificate image, sound |
-| `assets/` | favicon, map contours (`.dev/make_topo.js`), opening-screen placeholder (`.dev/make_placeholder.js`); the opening image goes in `title-wide.webp` / `title-mobile.webp` |
+| `assets/` | favicon, map contours (`.dev/make_topo.js`), opening image (`title-wide.webp`, `title-mobile.webp`), music (`bgm.mp3`) |
+| `cover.webp` | square cover for the Galvoro catalogue |
 
 `.dev/` holds the verification scripts (`verify_bank.js`, `verify_bank.R`,
 `check_bank.js` for the model-type filter), the proofs, `media_prompts.txt`
-(prompts for the music and the opening image; `make_title.sh` converts the
-generated images) and headless-Chrome
-tests (`smoke_play.js`, `smoke_learn.js`, `gallery.html` for all 236 diagrams).
+(the prompts for the images and the music; `make_title.sh` converts the
+generated images in `.dev/media/`, which is not committed) and headless-Chrome
+tests (`smoke_play.js`, `smoke_learn.js`, `check_library.js`,
+`check_bgm_loop.js`, `gallery.html` for all 236 diagrams).
 Dot-folders are never uploaded with the capsule.
 
-Not included yet: the opening image (a placeholder is shown until
-`assets/title-wide.webp` and `assets/title-mobile.webp` exist), the square
-cover, and background music (add `assets/bgm.mp3` and set `BGM_FILE` in
-`audio.js`).
+## Media
+
+* **Images (ChatGPT):** `sh .dev/make_title.sh` turns `.dev/media/landscape.png`,
+  `portrait.png` and `squareimg.png` into `assets/title-wide.webp`,
+  `assets/title-mobile.webp`, `cover.webp` (1080 x 1080) and
+  `../squareimg/semnest.png` (for the cover upload).
+* **Music (Suno):** `assets/bgm.mp3` (2:30, 100 BPM). It starts with the first
+  click or key press and pauses while the tab is hidden. The track plays once
+  from the start; then the 32 bars from 20.2 s loop (to 97.1 s plus a one-bar
+  crossfade; `BGM_LOOP` in `audio.js`), found by beat analysis: rhythm and
+  harmony match at the seam, and the lead-in and the cut-off at 2:30 are left
+  out. `node .dev/check_bgm_loop.js` checks the seam and writes
+  `.dev/out/bgm_seam.wav` to listen to.
 
 ## Running locally
 

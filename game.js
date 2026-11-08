@@ -115,6 +115,15 @@
     img.addEventListener('error', () => hero.classList.remove('loaded'));
     if (img.complete) ok();
   })();
+  // background music (Suno): starts with the first click or key press, since
+  // browsers only allow sound after a user gesture
+  function firstGesture() {
+    document.removeEventListener('click', firstGesture, true);
+    document.removeEventListener('keydown', firstGesture, true);
+    if (A) { A.ensure(); A.bgm.start(); }
+  }
+  document.addEventListener('click', firstGesture, true);
+  document.addEventListener('keydown', firstGesture, true);
   $('btn-play').addEventListener('click', () => { SFX('click'); if (A) A.ensure(); showLevels(); });
   $('btn-learn').addEventListener('click', () => {
     SFX('click'); if (A) A.ensure();
