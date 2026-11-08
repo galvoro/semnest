@@ -43,7 +43,7 @@ crossfade at the seam), copy it to assets/bgm.mp3 and switch the music on.
 
 calm instrumental exploration underscore for a puzzle game, light adventure, curious and warm, a little mysterious, 96 BPM, steady 4/4, D dorian, warm marimba and kalimba ostinato, soft frame drum and shaker, low log drum on the downbeats, warm low strings holding long chords, wooden alto flute melody in short singable phrases, occasional soft French horn swell, organic earthy acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
 
---- A2-A4. More playful alternatives for the Styles box --------------
+--- A2-A5. More playful alternatives for the Styles box --------------
 (same settings; for these use Exclude styles B2 and, in the Lyrics box,
 block C with the first theme line changed to [Main Theme: playful groove])
 
@@ -56,11 +56,14 @@ playful sneaking instrumental for a puzzle game, a tiptoeing explorer, curious a
 A4. Sunny expedition (the brightest)
 sunny playful adventure instrumental for a puzzle game, a cheerful expedition through a green valley, warm and upbeat but relaxed, 108 BPM, steady 4/4, D major, fingerpicked acoustic guitar and marimba groove, kalimba sparkles, light hand percussion with shaker and woodblock, tin whistle and flute melody in short catchy phrases, pizzicato strings, soft French horn swells, organic acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
 
+A5. The curious hatchling (matches opening image c2; based on A3)
+playful curious instrumental for a puzzle game, a small explorer wandering off and puzzling over a mystery, inquisitive, gently comic and warm, a little clumsy, never silly, 100 BPM, steady 4/4, D dorian with bright moments, pizzicato strings and staccato bassoon taking small careful steps, clarinet melody that asks little questions, marimba and kalimba answers, glockenspiel sparkles, soft woodblock and shaker, light brushed snare, warm low strings underneath, organic acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
+
 --- B. Exclude styles (a few strong ones work better than a long list) --
 
 vocals, choir, synthesizer, heavy drums
 
-B2 (for A2-A4: keeps the playful versions from turning into cartoon music)
+B2 (for A2-A5: keeps the playful versions from turning into cartoon music)
 vocals, choir, synthesizer, cartoon
 
 --- C. Lyrics box (tags only, no words) ------------------------------
