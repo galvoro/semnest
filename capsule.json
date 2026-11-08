@@ -27,7 +27,8 @@
     "higher-order factor model",
     "bifactor model",
     "Gaussian graphical model",
-    "network psychometrics"
+    "network psychometrics",
+    "factor analysis"
   ],
   "learning_goals": [
     "Decide whether two structural equation models are equivalent, nested (in which direction) or neither, by thinking of a model as the set of covariance matrices it can produce.",
@@ -36,6 +37,6 @@
   ],
   "creator": "Sacha Epskamp",
   "institution": "National University of Singapore",
-  "notes": "Every item in PLAY is proven mathematically (separate proofs document) and checked numerically with lavaan and psychonetrics. Parameters are treated as unrestricted real numbers (as in lavaan), so Heywood solutions count.",
+  "notes": "Every item in PLAY is proven mathematically and checked numerically with lavaan and psychonetrics. Parameters are treated as unrestricted real numbers (as in lavaan), so Heywood solutions count.",
   "license": "CC-BY-4.0"
 }
