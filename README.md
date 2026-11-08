@@ -16,12 +16,13 @@ of focus, behind the level screen and the certificate. The music is by Suno.
 
 Four levels (Easy, Medium, Hard, Psychometrika), five rounds per game. Each round
 shows two path diagrams, model **A** and model **B**, for the same observed
-variables (side by side on desktop). On phones both models share one screen
-(A above B, side by side when the phone is turned) with a row of four answer
-buttons below, each a Venn diagram over its expression (A ≡ B, A ⊂ B, B ⊂ A,
-neither); the feedback follows in a sheet, and tapping a model enlarges it
-(pinch, double-tap or drag to zoom; switch between A and B in the popup). The
-player answers:
+variables, with a row of four answer buttons below, each a Venn diagram with
+its expression (A ≡ B, A ⊂ B, B ⊂ A, neither; keys 1 to 4 on a keyboard, the
+full wording in the tooltip). On desktop the two diagrams share the full
+width and the feedback follows below; on phones A is above B (side by side
+when the phone is turned), the feedback follows in a sheet, and tapping a
+model enlarges it (pinch, double-tap or drag to zoom; switch between A and B
+in the popup). The player answers:
 
 | answer | meaning |
 |---|---|
@@ -89,7 +90,7 @@ factors, arrows (loadings, effects between items, from items to factors and
 between factors; feedback loops are allowed), covariances and network edges
 (between items: GGM; between residuals: RNM; between factors: LNM); add or
 remove items (on both sides). The layout follows PLAY: A and B side by side,
-the relation and the COMPUTE and LIBRARY buttons in the middle.
+the relation and the COMPUTE and LIBRARY buttons below them.
 
 **COMPUTE** decides the relation and shows the parameters and degrees of
 freedom of both models. Every structural change clears the result until
@@ -112,8 +113,11 @@ reproduce it exactly. As in Factor Lab (semPlot / qgraph, theme "colorblind"),
 paths are then blue (positive) or red (negative), with colour strength and
 width following the standardized value (lavaan's std.all); the labels show the
 raw values, and the slider's bar runs from zero in the path's colour. Paths
-with the same equality label move together. With *neither*, values cannot be
-transferred; network models have no values (yet).
+with the same equality label move together. A network edge (GGM, RNM, LNM)
+gets a partial correlation; with the variances of the block's members (an
+item's or residual's value, 1 for a factor) these give the block's covariance
+matrix, and its scaling (the diagonal of the precision matrix) is not shown.
+With *neither*, values cannot be transferred.
 
 On phones LEARN looks like PLAY: A above B, the relation and the two buttons
 below. Tapping a model opens it in a popup with the drawing tools; tapping the

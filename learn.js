@@ -353,10 +353,39 @@
     }
   }
   function clearValues() { L.eds.A.setDisplay(null); L.eds.B.setDisplay(null); }
+  // Network blocks (GGM, RNM, LNM): the values in the editor are the partial
+  // correlations of the edges; with the variances of the block's members (an
+  // item's or residual's value in the editor, 1 for a factor) they give the
+  // block's covariance matrix D R D, where R is the correlation matrix with
+  // these partial correlations, and K = (D R D)^-1 (sem.js parameterises a
+  // block by K). The scaling (the diagonal of K) is not shown.
+  function blockK(M, syn) {
+    const la = SN.la;
+    return M.blocks.map(b => {
+      const names = b.map(i => M.vars[i]), k = b.length;
+      const IO = la.eye(k);
+      for (const e of syn.edges) {
+        if (e.kind !== 'net') continue;
+        const i = names.indexOf(e.a), j = names.indexOf(e.b);
+        if (i >= 0 && j >= 0) { IO[i][j] = -e.v; IO[j][i] = -e.v; }
+      }
+      if (!la.chol(IO)) return IO;                // impossible partial correlations: Sigma will not be PD
+      const C = la.inv(IO);
+      const sd = names.map((v, i) => {
+        if (M.idx[v] >= M.p) return 1;
+        const r = syn.resid.find(x => x.name === v);
+        return Math.sqrt(Math.max(1e-6, r ? r.v : 0.5));
+      });
+      const Sb = C.map((row, i) => row.map((c, j) => sd[i] * sd[j] * c / Math.sqrt(C[i][i] * C[j][j])));
+      return la.inv(Sb);
+    });
+  }
   // parameter vector (std.lv) from the values stored in the editor
   function thetaFrom(M, syn) {
+    const Ks = M.blocks.length ? blockK(M, syn) : [];
     return M.groups.map(g => {
       const e = g.entries[0];
+      if (e.kind === 'K') { const b = M.blocks[e.block]; return Ks[e.block][b.indexOf(e.i)][b.indexOf(e.j)]; }
       const u = M.vars[e.i], w = M.vars[e.j];
       if (e.kind === 'A') { const ed = syn.edges.find(x => (x.kind === 'load' || x.kind === 'reg') && x.a === w && x.b === u); return ed ? ed.v : 0; }
       if (e.kind === 'S' && e.i === e.j) { const r = syn.resid.find(x => x.name === u); return r ? r.v : 0.5; }
@@ -370,26 +399,40 @@
   // the share of the variable's variance it leaves unexplained
   function standardizer(M, theta) {
     const mt = SN.sem.matrices(M, theta), F = mt && SN.sem.impliedFull(M, theta);
-    if (!F) return () => NaN;
-    return (e, v) => {
+    if (!F) return { mt: null, F: null, std: () => NaN };
+    return { mt, F, std: (e, v) => {
       if (e.kind === 'A') return v * Math.sqrt(F[e.j][e.j]) / Math.sqrt(F[e.i][e.i]);
       if (e.i === e.j) return v / F[e.i][e.i];
       return v / Math.sqrt(Math.abs(mt.S[e.i][e.i] * mt.S[e.j][e.j]));
-    };
+    } };
   }
   function displayFrom(M, syn, theta, fitted) {
     const d = { edge: {}, estd: {}, resid: {}, rstd: {}, fitted };
-    const std = standardizer(M, theta);
+    const { mt, F, std } = standardizer(M, theta);
+    const between = (kind, u, w) => syn.edges.find(x => x.kind === kind && ((x.a === u && x.b === w) || (x.a === w && x.b === u)));
     M.groups.forEach((g, k) => {
       // every entry of a labelled (shared) parameter shows its value; the
       // standardized values can differ between the entries
       for (const e of g.entries) {
-        const u = M.vars[e.i], w = M.vars[e.j], z = std(e, theta[k]);
-        if (e.kind === 'A') { const ed = syn.edges.find(x => (x.kind === 'load' || x.kind === 'reg') && x.a === w && x.b === u); if (ed) { d.edge[ed.id] = theta[k]; d.estd[ed.id] = z; } }
-        else if (e.kind === 'S' && e.i === e.j) { const r = syn.resid.find(x => x.name === u); if (r) { d.resid[r.id] = theta[k]; d.rstd[r.id] = z; } }
-        else if (e.kind === 'S') { const ed = syn.edges.find(x => x.kind === 'cov' && ((x.a === u && x.b === w) || (x.a === w && x.b === u))); if (ed) { d.edge[ed.id] = theta[k]; d.estd[ed.id] = z; } }
+        const u = M.vars[e.i], w = M.vars[e.j];
+        if (e.kind === 'A') { const ed = syn.edges.find(x => (x.kind === 'load' || x.kind === 'reg') && x.a === w && x.b === u); if (ed) { d.edge[ed.id] = theta[k]; d.estd[ed.id] = std(e, theta[k]); } }
+        else if (e.kind === 'S' && e.i === e.j) { const r = syn.resid.find(x => x.name === u); if (r) { d.resid[r.id] = theta[k]; d.rstd[r.id] = std(e, theta[k]); } }
+        else if (e.kind === 'S') { const ed = between('cov', u, w); if (ed) { d.edge[ed.id] = theta[k]; d.estd[ed.id] = std(e, theta[k]); } }
+        else if (e.kind === 'K' && e.i !== e.j && mt) {
+          // network edge: its partial correlation (raw and standardized alike)
+          const K = mt.K[e.block], b = M.blocks[e.block], bi = b.indexOf(e.i), bj = b.indexOf(e.j);
+          const pc = -K[bi][bj] / Math.sqrt(K[bi][bi] * K[bj][bj]);
+          const ed = between('net', u, w);
+          if (ed) { d.edge[ed.id] = pc; d.estd[ed.id] = pc; }
+        }
       }
     });
+    // the members of a network block: their (residual) variance follows from K
+    if (mt) for (const b of M.blocks) for (const i of b) {
+      if (i >= M.p) continue;
+      const r = syn.resid.find(x => x.name === M.vars[i]);
+      if (r) { d.resid[r.id] = mt.S[i][i]; d.rstd[r.id] = mt.S[i][i] / F[i][i]; }
+    }
     return d;
   }
   function isPD(S) { return !!SN.la.chol(S); }
@@ -397,11 +440,6 @@
   function refreshValues() {
     if (!L.values) return;
     if (!L.res) { clearValues(); setLocks(null); setNote('Press COMPUTE to see how the models relate; then the values follow.'); return; }
-    if (L.eds.A.toSyntax().hasNet || L.eds.B.toSyntax().hasNet) {
-      setLocks(null); clearValues();
-      setNote('Values are not available for network models.');
-      return;
-    }
     const rel = L.res.rel;
     let src = rel === 'AinB' ? 'A' : rel === 'BinA' ? 'B' : rel === 'equiv' ? L.source : null;
     if (!src) {
@@ -425,7 +463,7 @@
     }
     if (!Sig || !isPD(Sig)) {
       L.eds[tgt].setDisplay(null);
-      setNote('These values of model ' + src + ' imply an impossible covariance matrix (not positive definite). Lower a covariance or raise a residual variance.', true);
+      setNote('These values of model ' + src + ' imply an impossible covariance matrix (not positive definite). Lower a covariance or a partial correlation, or raise a residual variance.', true);
       return;
     }
     const MT = SN.sem.compile(st.text, st.obs, { stdlv: true });
@@ -447,14 +485,14 @@
       // perfect only with an improper solution (e.g. a negative factor variance)?
       const Mm = SN.sem.compile(st.text, st.obs);
       const rm = SN.sem.bestFitLS(Mm, Sig, { starts: 10, seed: 5 });
-      if (rm.F < 1e-14) setNote('Model ' + tgt + ' can only reproduce this exactly with an impossible value (a negative factor variance). The values shown are the closest proper solution.', true);
+      if (rm.F < 1e-14) setNote('Model ' + tgt + ' can only reproduce this exactly with a factor variance of zero or below. The values shown are the closest proper solution.', true);
       else setNote('Model ' + tgt + ' does not reproduce these values exactly (misfit ' + r.F.toExponential(1) + '). The nesting check may have been wrong here; try other values.', true);
     }
   }
 
   // value popup
-  const RANGES = { load: [-1.5, 1.5], reg: [-1.2, 1.2], fcov: [-0.95, 0.95], rcov: [-0.7, 0.7], rvar: [0.02, 2] };
-  const TITLES = { load: 'Factor loading', reg: 'Structural effect', fcov: 'Factor covariance', rcov: 'Residual covariance', rvar: 'Residual variance' };
+  const RANGES = { load: [-1.5, 1.5], reg: [-1.2, 1.2], fcov: [-0.95, 0.95], rcov: [-0.7, 0.7], rvar: [0.02, 2], net: [-0.9, 0.9] };
+  const TITLES = { load: 'Factor loading', reg: 'Structural effect', fcov: 'Factor covariance', rcov: 'Residual covariance', rvar: 'Residual variance', net: 'Network edge' };
   function openParam(side, t, ev) {
     if (!t) { closeParam(); return; }
     if (!L.values) return;
@@ -476,7 +514,8 @@
     pop.classList.remove('hidden');
     $('pr-title').textContent = TITLES[v.kind] || 'Value';
     const syn = ed.toSyntax(), nm = (id) => syn.latName[id] || syn.obsName[id];
-    const what = v.kind === 'rvar' ? nm(v.a) : nm(v.a) + (v.kind === 'fcov' || v.kind === 'rcov' ? ' \u2194 ' : ' \u2192 ') + nm(v.b);
+    const what = v.kind === 'rvar' ? nm(v.a) : v.kind === 'net' ? nm(v.a) + ' \u2014 ' + nm(v.b) + ', partial correlation'
+      : nm(v.a) + (v.kind === 'fcov' || v.kind === 'rcov' ? ' \u2194 ' : ' \u2192 ') + nm(v.b);
     const lab = t.type === 'edge' && (ed.edges.find(x => x.id === t.id) || {}).label;
     $('pr-sub').textContent = 'Model ' + side + ' \u00b7 ' + what + (lab ? '. Every path labelled ' + lab + ' has this value.' : '');
     const [lo, hi] = RANGES[v.kind] || [-1.5, 1.5];
@@ -516,7 +555,7 @@
     zero.hidden = !(lo < 0 && hi > 0);
     if (!zero.hidden) zero.style.left = (r.offsetLeft + 10 + (r.offsetWidth - 20) * z / 100 - 1) + 'px';
     const f2 = (x) => (x < -0.005 ? '\u2212' : '') + Math.abs(x).toFixed(2).replace(/^0\./, '.');
-    $('pr-std').innerHTML = std === null || std === undefined ? '' : !isFinite(std) ? 'standardized: not defined (a negative variance)'
+    $('pr-std').innerHTML = std === null || std === undefined || kind === 'net' ? '' : !isFinite(std) ? 'standardized: not defined (a negative variance)'
       : (kind === 'rvar' ? 'standardized (share of the variance): ' : 'standardized: ') + '<b>' + f2(std) + '</b>';
   }
   function closeParam() {

@@ -44,7 +44,9 @@
   const hyp = Math.hypot;
   const Y_OBS = 0.6;         // items row (leaves room below for residuals)
   // LEARN-mode parameter values given to new paths / items
-  const DEFAULTS = { load: 0.7, reg: 0.4, fcov: 0.4, rcov: 0.2, rvar: 0.5 };
+  // net: a network edge's partial correlation (0.25 keeps every network of the
+  // library positive definite: at most 0.25 x 3 < 1)
+  const DEFAULTS = { load: 0.7, reg: 0.4, fcov: 0.4, rcov: 0.2, rvar: 0.5, net: 0.25 };
   const MAX_ITEMS = 10, MIN_ITEMS = 3;
 
   function create(svg, opts) {
@@ -306,7 +308,7 @@
     }
 
     function newEdge(kind, a, b) {
-      const v = kind === 'load' ? DEFAULTS.load : kind === 'reg' ? DEFAULTS.reg : kind === 'net' ? 0 : isLat(a) ? DEFAULTS.fcov : DEFAULTS.rcov;
+      const v = kind === 'load' ? DEFAULTS.load : kind === 'reg' ? DEFAULTS.reg : kind === 'net' ? DEFAULTS.net : isLat(a) ? DEFAULTS.fcov : DEFAULTS.rcov;
       return { id: 'e' + (S.nextEdge++), kind, a, b, v };
     }
     function GA(name) { const a = global.GaltonAudio; if (a && a.SFX && a.SFX[name]) a.SFX[name](); }
@@ -954,7 +956,7 @@
     // LEARN: value of a path ({type:'edge', id}) or residual variance ({type:'obs', id})
     function getValue(t) {
       if (!t) return null;
-      if (t.type === 'edge') { const e = S.edges.find(x => x.id === t.id); return e && e.kind !== 'net' ? { kind: e.kind === 'cov' ? (isLat(e.a) ? 'fcov' : 'rcov') : e.kind, v: e.v, a: e.a, b: e.b } : null; }
+      if (t.type === 'edge') { const e = S.edges.find(x => x.id === t.id); return e ? { kind: e.kind === 'cov' ? (isLat(e.a) ? 'fcov' : 'rcov') : e.kind, v: e.v, a: e.a, b: e.b } : null; }
       const o = node(t.id);
       return o ? { kind: 'rvar', v: o.v, a: o.id } : null;
     }
