@@ -43,9 +43,25 @@ crossfade at the seam), copy it to assets/bgm.mp3 and switch the music on.
 
 calm instrumental exploration underscore for a puzzle game, light adventure, curious and warm, a little mysterious, 96 BPM, steady 4/4, D dorian, warm marimba and kalimba ostinato, soft frame drum and shaker, low log drum on the downbeats, warm low strings holding long chords, wooden alto flute melody in short singable phrases, occasional soft French horn swell, organic earthy acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
 
+--- A2-A4. More playful alternatives for the Styles box --------------
+(same settings; for these use Exclude styles B2 and, in the Lyrics box,
+block C with the first theme line changed to [Main Theme: playful groove])
+
+A2. A bit more playful (closest to A)
+calm but playful instrumental exploration music for a puzzle game, light adventure, curious, cheerful and warm, a little mischievous, 104 BPM, steady 4/4, D mixolydian, bouncy marimba and kalimba ostinato, pizzicato strings, woodblock and shaker, soft frame drum, staccato bassoon bass line, wooden flute melody in short playful phrases, occasional bright French horn call, organic acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
+
+A3. Tiptoeing past the nest (playful, a little sneaky)
+playful sneaking instrumental for a puzzle game, a tiptoeing explorer, curious and cheeky but gentle, 100 BPM, steady 4/4, D minor with bright moments, pizzicato strings and staccato bassoon walking line, clarinet melody with little grace notes, marimba and glockenspiel accents, soft bongos and shaker, light brushed snare, organic acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
+
+A4. Sunny expedition (the brightest)
+sunny playful adventure instrumental for a puzzle game, a cheerful expedition through a green valley, warm and upbeat but relaxed, 108 BPM, steady 4/4, D major, fingerpicked acoustic guitar and marimba groove, kalimba sparkles, light hand percussion with shaker and woodblock, tin whistle and flute melody in short catchy phrases, pizzicato strings, soft French horn swells, organic acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
+
 --- B. Exclude styles (a few strong ones work better than a long list) --
 
 vocals, choir, synthesizer, heavy drums
+
+B2 (for A2-A4: keeps the playful versions from turning into cartoon music)
+vocals, choir, synthesizer, cartoon
 
 --- C. Lyrics box (tags only, no words) ------------------------------
 
