@@ -331,7 +331,7 @@
       const m = b.querySelector('.mark'); if (m) m.remove();
     }
     $('feedback').classList.add('hidden');
-    playEl.classList.remove('answered'); sheet(null); closeZoom();
+    playEl.classList.remove('answered', 'revealed'); sheet(null); closeZoom();
     // HUD eggs
     const eggs = $('hud-eggs').children;
     for (let j = 0; j < eggs.length; j++) eggs[j].classList.toggle('now', j === k);
@@ -339,17 +339,14 @@
   }
 
   // ------------------------------------------------------------------
-  // Phones: both models on one screen (A above B); DECIDE opens a sheet with
-  // the answers, the feedback follows in a sheet; tap a model to enlarge it
+  // Phones: both models on one screen (A above B) with a row of four answer
+  // buttons below; after answering, the feedback comes in a sheet and the
+  // verdict bar takes the place of the answer row; tap a model to enlarge it
   // ------------------------------------------------------------------
   const playEl = $('play');
   const PHONE = global.matchMedia('(max-width: 860px), (max-aspect-ratio: 4/5)');
-  function sheet(name) {           // 'decide' | 'fb' | null
-    playEl.classList.toggle('sheet-decide', name === 'decide');
-    playEl.classList.toggle('sheet-fb', name === 'fb');
-  }
-  function sheetOpen() { return playEl.classList.contains('sheet-decide') || playEl.classList.contains('sheet-fb'); }
-  $('btn-decide').addEventListener('click', () => { SFX('click'); sheet('decide'); });
+  function sheet(name) { playEl.classList.toggle('sheet-fb', name === 'fb'); }   // 'fb' | null
+  function sheetOpen() { return playEl.classList.contains('sheet-fb'); }
   $('pb-why').addEventListener('click', () => { SFX('click'); sheet('fb'); });
   $('pb-next').addEventListener('click', () => next());
   $('sheet-bg').addEventListener('click', () => sheet(null));
@@ -492,8 +489,9 @@
     const egg = $('hud-eggs').children[g.k];
     egg.classList.add(cls); egg.classList.remove('now');
     // phones: let the marked answers show for a moment, then the feedback sheet
+    // (and the verdict bar in place of the answer row)
     const k = g.k;
-    setTimeout(() => { if (G.game === g && g.k === k && g.answered) sheet('fb'); }, playEl.classList.contains('sheet-decide') ? 700 : 0);
+    setTimeout(() => { if (G.game === g && g.k === k && g.answered) { playEl.classList.add('revealed'); sheet('fb'); } }, PHONE.matches ? 750 : 0);
   }
   function pick(arr) { return arr[Math.floor(rand() * arr.length)]; }
 

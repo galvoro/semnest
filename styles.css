@@ -170,7 +170,7 @@ body.mode-learn .learn-only { display: flex !important; }
 @keyframes cardwin { 40% { transform: scale(1.012); } }
 
 /* phone-only parts of PLAY (see the phone section below) */
-.zoom-hint, .sheet-x, .play-bar, .sheet-bg, .fb-you { display: none; }
+.zoom-hint, .sheet-x, .play-bar, .sheet-bg, .fb-you, .ans-x { display: none; }
 
 /* one model enlarged (phones) */
 .zoom { position: fixed; inset: 0; z-index: 55; background: var(--backdrop); display: flex; align-items: center; justify-content: center;
@@ -573,13 +573,16 @@ body.mode-learn .learn-only { display: flex !important; }
   .hud-stats { gap: 14px; }
   .stat-val { font-size: 19px; } .stat-val.small { font-size: 14px; }
   .icon-btn { width: 32px; height: 32px; }
-  /* PLAY: both models in one screen (A above B), DECIDE opens a sheet with the
-     answers, the feedback comes in a sheet too; tap a model to enlarge it */
+  /* PLAY: both models in one screen (A above B) and a row of four answers
+     below (Venn + expression); after answering, the feedback comes in a sheet
+     and the verdict bar replaces the answer row; tap a model to enlarge it */
   body.mode-play { overflow: hidden; }
   body.mode-play #app { position: fixed; inset: 0; }
   body.mode-play #hud { position: relative; }
   #play { padding: 8px 8px 0; gap: 0; overflow: hidden; }
-  .pair { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 0; }
+  .pair { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) minmax(0, 1fr) auto; grid-template-areas: "a" "b" "ans"; gap: 8px; }
+  #card-a { grid-area: a; } #card-b { grid-area: b; }
+  #play.revealed .pair { grid-template-rows: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "a" "b"; }
   .model-card { flex: 1 1 0; min-height: 0; border-radius: 14px; cursor: zoom-in; }
   .model-card figcaption { position: absolute; top: 7px; left: 8px; right: 44px; z-index: 2; padding: 0; border: 0; gap: 6px; pointer-events: none; }
   .model-card figcaption .badge { width: 24px; height: 28px; font-size: 14px; }
@@ -589,33 +592,35 @@ body.mode-learn .learn-only { display: flex !important; }
   .zoom-hint { display: grid; place-items: center; position: absolute; top: 8px; right: 8px; z-index: 2; width: 30px; height: 30px; border-radius: 50%;
     background: rgba(255, 252, 243, .92); border: 1px solid #DAD3BE; pointer-events: none; }
   .zoom-hint svg { width: 16px; height: 16px; fill: none; stroke: #56554A; stroke-width: 1.8; stroke-linecap: round; }
-  .play-bar { display: flex; flex: none; align-items: center; gap: 8px; padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px)); }
-  .pb-decide { flex: 1; min-width: 0; padding: 11px 16px; font-size: 19px; }
-  .pb-done { display: none; flex: 1; align-items: center; gap: 8px; min-width: 0; }
-  #play.answered .pb-decide { display: none; }
-  #play.answered .pb-done { display: flex; }
+  .play-bar { display: none; flex: none; align-items: center; gap: 8px; min-height: 60px; padding: 8px 0 calc(8px + env(safe-area-inset-bottom, 0px)); }
+  #play.revealed .play-bar { display: flex; }
+  #play.revealed .answers { display: none; }
+  .pb-done { display: flex; flex: 1; align-items: center; gap: 8px; min-width: 0; }
   .pb-verdict { flex: 1; min-width: 0; font-family: var(--f-head); font-weight: 800; font-size: 16px; line-height: 1.15; }
   .pb-verdict.good { color: var(--leaf); } .pb-verdict.half { color: var(--accent-deep); } .pb-verdict.bad { color: var(--berry); }
   .pb-done .pill-btn { flex: none; padding-left: 14px; padding-right: 14px; }
   /* sheets */
   .sheet-bg { display: block; position: fixed; inset: 0; z-index: 40; background: rgba(18, 22, 14, .28); opacity: 0; pointer-events: none; transition: opacity .2s; }
-  #play.sheet-decide .sheet-bg, #play.sheet-fb .sheet-bg { opacity: 1; pointer-events: auto; }
-  .answers, #feedback {
+  #play.sheet-fb .sheet-bg { opacity: 1; pointer-events: auto; }
+  #feedback {
     position: fixed; left: max(8px, calc(50% - 330px)); right: max(8px, calc(50% - 330px)); bottom: calc(8px + env(safe-area-inset-bottom, 0px)); z-index: 41;
     background: var(--card); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 -8px 30px rgba(0, 0, 0, .22);
     transform: translateY(calc(100% + 40px)); visibility: hidden;
     transition: transform .26s cubic-bezier(.2, .9, .3, 1), visibility 0s linear .26s;
   }
-  #play.sheet-decide .answers, #play.sheet-fb #feedback { transform: none; visibility: visible; transition: transform .26s cubic-bezier(.2, .9, .3, 1), visibility 0s; }
+  #play.sheet-fb #feedback { transform: none; visibility: visible; transition: transform .26s cubic-bezier(.2, .9, .3, 1), visibility 0s; }
   .sheet-x { display: grid; place-items: center; position: absolute; top: 8px; right: 8px; width: 30px; height: 30px; border-radius: 50%;
     border: 1px solid var(--line); background: var(--bg); color: var(--ink-2); font-size: 13px; cursor: pointer; }
-  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; padding: 12px 10px 10px; }
-  .ans-q { grid-column: 1 / -1; margin: 0 40px 2px; font-size: 16px; line-height: 30px; }
-  .ans { padding: 8px 8px; gap: 6px; align-items: center; }
-  .ans .venn { width: 38px; height: 25px; flex: none; }
-  .ans .ans-t b { font-size: 14px; }
-  .ans .ans-t small { font-size: 10.5px; }
-  .ans kbd { display: none; }
+  /* the answer row: four buttons, each a Venn diagram over its expression */
+  .answers { grid-area: ans; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; padding: 0 0 calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .ans-q, .ans kbd { display: none; }
+  .ans { flex-direction: column; justify-content: center; gap: 3px; min-height: 60px; padding: 7px 2px 6px; border-radius: 12px; text-align: center; }
+  .ans .venn { width: 44px; height: 27px; }
+  .ans .ans-t { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }   /* kept for screen readers */
+  .ans-x { display: block; font-weight: 800; font-size: 15px; line-height: 1.1; white-space: nowrap; color: var(--ink); }
+  .ans-x .ta { color: var(--a); } .ans-x .tb { color: var(--b); }
+  .ans-x i { font-style: normal; font-family: 'STIX Two Math', 'Cambria Math', 'Noto Sans Math', serif; font-weight: 400; font-size: 1.3em; line-height: 0; margin: 0 .16em; }
+  .ans .mark { top: 3px; right: 6px; bottom: auto; font-size: 13px; }
   #feedback { max-height: min(64vh, 560px); overflow: auto; padding: 12px 14px 12px; animation: none; }
   .fb-head { padding-right: 36px; }
   .fb-head .sheet-x { top: 10px; }
@@ -675,9 +680,12 @@ body.mode-learn .learn-only { display: flex !important; }
   .diploma { box-shadow: none; }
 }
 @media (max-width: 860px) and (min-aspect-ratio: 5/4) {
-  .pair { flex-direction: row; }
-  .play-bar { padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
-  .pb-decide { padding: 7px 16px; font-size: 17px; }
+  .pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; grid-template-areas: "a b" "ans ans"; }
+  #play.revealed .pair { grid-template-rows: minmax(0, 1fr); grid-template-areas: "a b"; }
+  .answers { width: 100%; max-width: 640px; justify-self: center; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
+  .ans { flex-direction: row; gap: 8px; min-height: 40px; padding: 4px 6px; }
+  .ans .venn { width: 36px; height: 22px; }
+  .play-bar { min-height: 48px; padding-top: 6px; padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px)); }
   #feedback { max-height: 78vh; }
 }
 @media (prefers-reduced-motion: reduce) {

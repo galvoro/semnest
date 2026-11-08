@@ -34,12 +34,12 @@ const W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900), MOB = proce
     for (let k = 0; k < 5; k++) {
       const truth = await b.eval('SN.game.G.game.cur.rel');
       const pickAns = k === 1 ? (truth === 'equiv' ? 'AinB' : truth === 'neither' ? 'equiv' : 'equiv') : k === 3 ? 'neither' : truth;
-      if (MOB) {   // phones: DECIDE opens the answer sheet; tap a model to enlarge it
-        if (k === 0) { await b.clickSel('#card-b'); await sleep(350); await b.shot(path.join(OUT, tag + '04_zoomB.png')); await b.clickSel('#zoom-close'); await sleep(200); }
-        await b.clickSel('#btn-decide'); await sleep(400);
-        if (k === 0) await b.shot(path.join(OUT, tag + '04_decide.png'));
+      if (MOB && k === 0) {   // phones: tap a model to enlarge it
+        await b.clickSel('#card-b'); await sleep(350); await b.shot(path.join(OUT, tag + '04_zoomB.png')); await b.clickSel('#zoom-close'); await sleep(200);
       }
-      await b.clickSel(`.ans[data-ans="${pickAns}"]`); await sleep(MOB ? 1100 : 500);
+      await b.clickSel(`.ans[data-ans="${pickAns}"]`);
+      if (MOB && k === 1) { await sleep(250); await b.shot(path.join(OUT, tag + '05_marked.png')); }   // the marked row, before the sheet
+      await sleep(MOB ? 1100 : 500);
       if (k === 0 || k === 1) await b.shot(path.join(OUT, tag + '05_feedback' + k + '.png'));
       if (MOB && k === 0) { await b.clickSel('#feedback .sheet-x'); await sleep(400); await b.shot(path.join(OUT, tag + '05_feedback0_closed.png')); await b.clickSel('#pb-why'); await sleep(400); }
       console.log('round', k + 1, SN_id = await b.eval('SN.game.G.game.cur.id'), 'truth', truth, 'answered', pickAns, 'score', await b.eval('SN.game.G.game.score'));
