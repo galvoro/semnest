@@ -221,7 +221,7 @@
 
   function startGame(level) {
     G.game = { level, fams: activeFams(), items: pickItems(level), k: 0, score: 0, results: [], answered: false, over: false };
-    hideScreens(); setMode('play');
+    hideScreens(); setMode('play'); hudHeight();
     $('hud-level').textContent = SN.bank.LEVELS[level];
     $('hud-score').textContent = '0';
     const eggs = $('hud-eggs'); eggs.innerHTML = '';
@@ -282,6 +282,9 @@
     $('play').scrollTop = 0;
   }
 
+  // phones: the A/B tabs stick below the HUD
+  function hudHeight() { document.documentElement.style.setProperty('--hud-h', $('hud').offsetHeight + 'px'); }
+  global.addEventListener('resize', hudHeight); hudHeight();
   // phones: one model at a time (tabs and swipes)
   const pairEl = document.querySelector('#play .pair');
   function setTab(t) {

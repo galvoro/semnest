@@ -157,7 +157,7 @@ body.mode-learn .learn-only { display: flex !important; }
 @keyframes cardwin { 40% { transform: scale(1.012); } }
 
 /* A / B tabs (phones only) */
-.ab-tabs { display: none; scroll-margin-top: 66px; }
+.ab-tabs { display: none; }
 .ab-tab {
   display: flex; align-items: center; justify-content: center; gap: 8px; padding: 6px 10px;
   border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); color: var(--ink-2);
@@ -535,7 +535,11 @@ body.mode-learn .learn-only { display: flex !important; }
   #play { padding: 10px 10px 14px; overflow: visible; }
   .pair { display: flex; flex-direction: column; gap: 9px; }
   /* one model at a time: tabs above, the four answers below */
-  .ab-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; order: 0; }
+  .ab-tabs {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; order: 0;
+    position: sticky; top: var(--hud-h, 56px); z-index: 4;
+    margin: -10px -10px 0; padding: 10px 10px 6px; background: var(--bg);
+  }
   .model-card { order: 1; min-height: 48vh; flex: none; }
   .pair[data-tab="A"] #card-b, .pair[data-tab="B"] #card-a { display: none; }
   .model-card figcaption { display: none; }
@@ -598,5 +602,15 @@ body.mode-learn .learn-only { display: flex !important; }
   .hud-stats { gap: 10px; margin-left: 0; }
   .eggs { gap: 3px; } .eggs i { width: 11px; height: 14px; }
   .hud-btns { gap: 4px; }
+  .icon-btn { width: 30px; height: 30px; font-size: 14px; }
+  .stat-val.small { font-size: 13px; }
+  #hud { gap: 6px; }
 }
 .dip-table tr.th td { font-size: 11px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #9C5F12; border-top: 0; }
+@media (max-width: 380px) {
+  .icon-btn { width: 28px; height: 28px; font-size: 13px; }
+  .hud-btns { gap: 3px; }
+  .hud-stats { gap: 7px; }
+  .eggs { gap: 2px; } .eggs i { width: 9px; height: 12px; }
+  .stat-label { font-size: 9.5px; letter-spacing: .1em; }
+}
