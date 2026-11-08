@@ -141,6 +141,21 @@
       A: cfa3x2 + '; F3 ~ F1 + F2; F1 ~~ F2', B: cfa3x2 + '; F3 ~ F1 + F2',
       why: 'B is A with the covariance between the two predicting factors (F1 and F2) fixed to zero.' },
 
+    // networks (switched off by default below Psychometrika): simple GGMs and
+    // "one factor = one cluster"
+    { id: 'E28', level: 1, rel: 'equiv', obs: ys(3), posB: triY,
+      A: 'F =~ y1 + y2 + y3', B: 'network y1 y2 y3; y1 -- y2 + y3; y2 -- y3',
+      why: 'One factor = one fully connected cluster. A factor with three indicators is saturated (Heywood values allowed), and so is the complete network: both reproduce every covariance matrix of three variables.' },
+    { id: 'E29', level: 1, rel: 'AinB', obs: ys(4), posB: sq,
+      A: 'F =~ y1 + y2 + y3 + y4', B: 'network y1 y2 y3 y4; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4',
+      why: 'The complete network (every edge in the cluster) is saturated, so it contains the one-factor model. Not the other way round: one factor on four items has 8 parameters for 10 variances and covariances and imposes tetrad constraints.' },
+    { id: 'E30', level: 1, rel: 'BinA', obs: ys(3), posB: triY,
+      A: 'F =~ y1 + y2 + y3', B: 'network y1 y2 y3; y1 -- y2; y2 -- y3',
+      why: 'A factor with three indicators is saturated, so every model for three variables is nested in it, also the network without the edge y1 — y3 (y1 and y3 independent given y2).' },
+    { id: 'E31', level: 1, rel: 'equiv', obs: ys(4), pos: star,
+      A: 'network y1 y2 y3 y4; y1 -- y2 + y3 + y4', B: 'y2 ~ y1; y3 ~ y1; y4 ~ y1',
+      why: 'Both say that y2, y3 and y4 are independent once you know y1. A fork has no colliders, so it makes exactly the claims of the network with the same lines.' },
+
     // ================================================================
     // MEDIUM
     // ================================================================
@@ -245,6 +260,20 @@
       A: 'network y1 y2 y3; y1 -- y3; y3 -- y2', B: 'y3 ~ y1 + y2',
       why: 'The network says y1 and y2 are independent given y3; the collider says they are independent without conditioning (and dependent given y3).' },
 
+    // latent and residual networks
+    { id: 'M33', level: 2, rel: 'equiv', obs: ys(6),
+      A: cfa3x2 + '; network F1 F2 F3; F1 -- F2 + F3; F2 -- F3', B: cfa3x2 + '; ' + corr3,
+      why: 'A latent network model (LNM) with every edge between the factors leaves all latent partial correlations free, so the latent covariance matrix is free too: the same as three correlated factors.' },
+    { id: 'M34', level: 2, rel: 'equiv', obs: ys(4),
+      A: 'F =~ y1 + y2 + y3 + y4; network y1 y2; y1 -- y2', B: 'F =~ y1 + y2 + y3 + y4; y1 ~~ y2',
+      why: 'A residual network (RNM) with one edge between two residuals that have no other edges is one free residual partial correlation, and for a pair that is the same as one free residual covariance.' },
+    { id: 'M35', level: 2, rel: 'AinB', obs: ys(6),
+      A: cfa3x2 + '; network F1 F2 F3; F1 -- F2; F2 -- F3', B: cfa3x2 + '; ' + corr3,
+      why: 'Without the latent edge F1 — F3, factors F1 and F3 are independent given F2 (one restriction). Correlated factors leave the latent covariances free, so they contain A.' },
+    { id: 'M36', level: 2, rel: 'neither', obs: ys(6),
+      A: cfa3x2 + '; network F1 F2 F3; F1 -- F2; F2 -- F3', B: cfa3x2 + '; F1 ~~ F2; F2 ~~ F3',
+      why: 'Same picture, different restriction: the missing network edge sets the partial correlation of F1 and F3 (given F2) to zero, the missing curved arrow sets their covariance to zero. Neither model contains the other.' },
+
     // ================================================================
     // HARD
     // ================================================================
@@ -339,6 +368,23 @@
     { id: 'H29', level: 3, rel: 'neither', obs: ys(9),
       A: bif3x3, B: 'S1 =~ y1 + y2 + y3 + y4; S2 =~ y5 + y6 + y7 + y8 + y9; G =~ ' + sum(1, 9),
       why: 'Both bifactor models have 27 parameters but group the items differently: y4 shares a group factor with y5 and y6 in A, with y1 to y3 in B. Each allows covariance that the other routes through G alone.' },
+
+    // networks
+    { id: 'H30', level: 3, rel: 'equiv', obs: ys(4), pos: { y1: [0, 0], y2: [0, 1.7], y3: [1.6, 0.85], y4: [3.2, 0.85] },
+      A: 'y2 ~ y1; y3 ~ y1 + y2; y4 ~ y3', B: 'network y1 y2 y3 y4; y1 -- y2 + y3; y2 -- y3; y3 -- y4',
+      why: 'y3 has two parents, but they are linked (y1 → y2): a shielded collider adds no independence. Both models leave y1, y2, y3 saturated and only say that y4 is independent of y1 and y2 given y3.' },
+    { id: 'H31', level: 3, rel: 'neither', obs: ys(4), pos: sq,
+      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4; y4 -- y1', B: 'y2 ~ y1; y4 ~ y1; y3 ~ y2 + y4',
+      why: 'Same lines, different independencies. The 4-cycle network says y2 and y4 are independent given y1 and y3. In the DAG y3 is a collider: y2 and y4 are independent given y1 alone, and conditioning on y3 makes them dependent. No DAG is equivalent to a 4-cycle.' },
+    { id: 'H32', level: 3, rel: 'AinB', obs: ys(4), posB: { y1: [0, 1], y2: [1.4, 1], y3: [2.8, 1], y4: [4.2, 1] },
+      A: 'F1 =~ y1 + y2; F2 =~ y3 + y4', B: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4',
+      why: 'Counting trap: A has 8 parameters and B 7, yet A is nested in B. Two uncorrelated factors give two separate saturated pairs, which is the network with only the edges y1 — y2 and y3 — y4. B adds the edge y2 — y3.' },
+    { id: 'H33', level: 3, rel: 'equiv', obs: ys(4),
+      A: 'F =~ y1 + y2 + y3 + y4; network y1 y2 y3 y4; y1 -- y2; y3 -- y4', B: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~~ F2',
+      why: 'Two separate residual edges are two residual covariances, and a residual covariance within a pair acts like a factor for that pair. Both models leave each pair free and impose one tetrad across the pairs. Counting trap: A has 10 parameters, B 9.' },
+    { id: 'H34', level: 3, rel: 'BinA', obs: ys(6),
+      A: cfa3x2 + '; network F1 F2 F3; F1 -- F2; F2 -- F3', B: cfa3x2 + '; F1 ~~ F2',
+      why: 'In B only F1 and F2 are correlated and F3 is independent of both. Then the inverse of the latent covariance matrix is block-diagonal too: no edge F1 — F3 and no edge F2 — F3. So B is A with the edge F2 — F3 fixed to zero.' },
 
     // ================================================================
     // PSYCHOMETRIKA
@@ -458,6 +504,9 @@
   ];
   const BUILDS_ON = { sem: ['cfa', 'path'], ho: ['cfa'], bif: ['cfa', 'ho'], ggm: ['path'], net: ['cfa', 'ggm'] };
   const MIN_POOL = 5;
+  // switched off when a level is first opened: network models are part of
+  // every level, but only on by default at Psychometrika
+  const DEFAULT_OFF = { 1: ['ggm'], 2: ['ggm'], 3: ['ggm'], 4: [] };
 
   function modelFamilies(text, obs) {
     const s = SN.sem.parse(text, obs);
@@ -515,5 +564,5 @@
   // families that can never be switched off at a level
   function locked(level) { const P = present(level); return P.filter(t => !canSwitchOff(level, P, t)); }
 
-  SN.bank = { items, LEVELS, FAMILIES, BUILDS_ON, MIN_POOL, modelFamilies, itemTags, needs, closure, above, present, pool, switchOn, switchOff, canSwitchOff, locked };
+  SN.bank = { items, LEVELS, FAMILIES, BUILDS_ON, MIN_POOL, DEFAULT_OFF, modelFamilies, itemTags, needs, closure, above, present, pool, switchOn, switchOff, canSwitchOff, locked };
 })(typeof window !== 'undefined' ? window : globalThis);

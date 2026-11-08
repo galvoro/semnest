@@ -28,7 +28,7 @@ for the level. After every answer the feedback shows the relation, a short
 explanation, the number of parameters and degrees of freedom of both models,
 and highlights what differs between the diagrams.
 
-The bank has 118 items: Easy 27, Medium 32, Hard 29, Psychometrika 30, with
+The bank has 131 items: Easy 31, Medium 36, Hard 34, Psychometrika 30, with
 all four relations at every level. A game draws 5 items, with at most two of
 each relation and at least three kinds when the pool allows it (`game.js`).
 
@@ -56,12 +56,18 @@ is switched on (`SN.bank.needs`). Types that no item of a level uses are greyed
 out there. A type cannot be switched off when fewer than five pairs would be
 left; it then shows a lock. Each level remembers its own selection.
 
-| level | types used | always on | blocked combinations |
-|---|---|---|---|
-| Easy | CFA, path analysis, SEM, GGM | – | none (one of CFA and path analysis stays on) |
-| Medium | CFA, path analysis, SEM, higher-order, GGM | – | none (idem) |
-| Hard | CFA, path analysis, SEM, higher-order, bifactor | – | none (idem) |
-| Psychometrika | all seven | CFA | CFA alone, CFA + path analysis (one of SEM, higher-order and GGM stays on) |
+Network models (GGM, latent and residual networks) are in every level but
+switched off by default below Psychometrika (`SN.bank.DEFAULT_OFF`). At Easy
+they are simple: GGMs against path models and other GGMs, and "one factor =
+one cluster" (E28 to E31). The certificate lists the model types only when they
+differ from the default.
+
+| level | types used | network pairs | default | always on | blocked combinations |
+|---|---|---|---|---|---|
+| Easy | CFA, path analysis, SEM, GGM | 10 of 31 | networks off | – | none (one of CFA and path analysis stays on) |
+| Medium | all but bifactor | 9 of 36 | networks off | – | none (idem) |
+| Hard | all seven | 5 of 34 | networks off | – | none (idem) |
+| Psychometrika | all seven | 15 of 30 | all on | CFA | CFA alone, CFA + path analysis (one of SEM, higher-order and GGM stays on) |
 
 `node .dev/check_bank.js` walks through every configuration a player can reach
 and checks that each has at least five pairs (and that every closed set of
@@ -118,7 +124,7 @@ factors is equivalent to three correlated factors.
 |---|---|
 | `index.html`, `styles.css` | screens, HUD, light / dark / auto themes |
 | `sem.js` | RAM engine with network (precision) blocks; ML and least-squares fitting; Jacobian rank; nesting check |
-| `bank.js` | the 118 items and the model types |
+| `bank.js` | the 131 items and the model types |
 | `diagram.js` | layout of the path diagrams; SVG and TikZ output |
 | `game.js` | app shell and PLAY |
 | `learn.js`, `editor.js` | LEARN (editor adapted from Factor Lab) |

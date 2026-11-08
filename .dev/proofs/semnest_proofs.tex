@@ -33,7 +33,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{3pt}
 
-\title{SEMNEST: proofs of the nesting and equivalence relations\\[4pt]\large all 118 items of the capsule}
+\title{SEMNEST: proofs of the nesting and equivalence relations\\[4pt]\large all 131 items of the capsule}
 \author{Generated with the capsule's item bank (\texttt{bank.js}) and checked in exact arithmetic\\ (\texttt{.dev/proofs/build.js}); see also \texttt{.dev/verify\_bank.js} and \texttt{.dev/verify\_bank.R}}
 \date{}
 
@@ -1520,7 +1520,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,0.000) {$A$};
 \node[obs] at (1.750,0.000) {$B$};
 \node[obs] at (3.500,0.000) {$C$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network A B C; A -- B; B -- C}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network A B C; A -{}- B; B -{}- C}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=5$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -1566,7 +1566,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-1.563) {$y_{1}$};
 \node[obs] at (1.375,0.000) {$y_{2}$};
 \node[obs] at (2.750,-1.563) {$y_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -- y2; y2 -- y3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y2; y2 -{}- y3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=6$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -1583,7 +1583,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-1.563) {$y_{1}$};
 \node[obs] at (1.375,0.000) {$y_{2}$};
 \node[obs] at (2.750,-1.563) {$y_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -- y2; y2 -- y3; y1 -- y3}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y2; y2 -{}- y3; y1 -{}- y3}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. Fix the precision element $k_{13}$ of $B$ to 0 (Lemma~R).\par\smallskip
@@ -1611,7 +1611,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (1.250,-2.875) {$y_{2}$};
 \node[obs] at (2.500,-2.875) {$y_{3}$};
 \node[obs] at (3.750,-2.875) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=6$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -1628,7 +1628,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (1.250,-2.875) {$y_{2}$};
 \node[obs] at (2.500,-2.875) {$y_{3}$};
 \node[obs] at (3.750,-2.875) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2; y3 -- y4}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y3 -{}- y4}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 7 at the rational point listed in Appendix~B, while model $B$ has only $q_B=6$ free parameters.\par\smallskip
@@ -1654,7 +1654,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-1.563) {$y_{1}$};
 \node[obs] at (1.375,0.000) {$y_{2}$};
 \node[obs] at (2.750,-1.563) {$y_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -- y2; y2 -- y3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y2; y2 -{}- y3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=5$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -1670,7 +1670,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-1.563) {$y_{1}$};
 \node[obs] at (1.375,0.000) {$y_{2}$};
 \node[obs] at (2.750,-1.563) {$y_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -- y3; y3 -- y2}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y3; y3 -{}- y2}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nnest B$ and $B \nnest A$: \textbf{neither} is nested in the other.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\sigma_{12}\sigma_{33} - \sigma_{13}\sigma_{23}$. In $B$ there is no edge $y_1-y_2$, so $k_{12}=0$, which by Lemma~I means $\sigma_{12}\sigma_{33}=\sigma_{13}\sigma_{23}$. So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$ at the point of Appendix~B, $f=0.04852\neq0$.\par\smallskip
@@ -1698,7 +1698,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.250,-2.875) {$y_{2}$};
 \node[obs] at (1.875,-2.875) {$y_{3}$};
 \node[obs] at (3.500,-2.875) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2 + y3 + y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2 + y3 + y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=4$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -1740,7 +1740,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-1.563) {$y_{1}$};
 \node[obs] at (1.375,0.000) {$y_{2}$};
 \node[obs] at (2.750,-1.563) {$y_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -- y2 + y3; y2 -- y3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y2 + y3; y2 -{}- y3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=6$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -1858,6 +1858,218 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 15 at the rational point listed in Appendix~B, while model $B$ has only $q_B=14$ free parameters.\par\smallskip
 \noindent(ii) $B\nest A$. Fix $\psi_{12}=\mathrm{Cov}(F_1,F_2)=0$ in $A$ (Lemma~R).\hfill$\square$\par\medskip
 \noindent{\small\textit{In the game:} B is A with the covariance between the two predicting factors (F1 and F2) fixed to zero.}
+
+\clearpage
+\section*{E28 \quad One factor equals one cluster}
+\addcontentsline{toc}{subsection}{E28\quad One factor equals one cluster}
+\noindent\textit{Level: Easy. Model families: CFA, GGM.} Observed variables: $y_{1}, y_{2}, y_{3}$ ($p=3$, 6 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=6$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (3.300,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[path] (0.959,-1.743) -- (0.307,-2.512);
+\draw[path] (1.250,-1.850) -- (1.250,-2.512);
+\draw[path] (1.541,-1.743) -- (2.193,-2.512);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[lat] at (1.250,-1.400) {$F$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=6$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (3.300,-3.925);
+\draw[net] (0.319,-1.200) -- (1.056,-0.362);
+\draw[net] (0.362,-1.563) -- (2.388,-1.563);
+\draw[net] (1.694,-0.362) -- (2.431,-1.200);
+\node[obs] at (0.000,-1.563) {$y_{1}$};
+\node[obs] at (1.375,0.000) {$y_{2}$};
+\node[obs] at (2.750,-1.563) {$y_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y2 + y3; y2 -{}- y3}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. Both models are saturated: $A$ by Lemma~B(a) (one factor with three indicators), $B$ because every element of $K$ is free, so $\Sigma=K^{-1}$ is any positive definite matrix (as in E26).\par\smallskip
+\noindent(ii) $B\nest A$. See above: $\overline{\mathcal M_A}=\overline{\mathcal M_B}$.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} One factor = one fully connected cluster. A factor with three indicators is saturated (Heywood values allowed), and so is the complete network: both reproduce every covariance matrix of three variables.}
+
+\clearpage
+\section*{E29 \quad One factor inside a complete cluster}
+\addcontentsline{toc}{subsection}{E29\quad One factor inside a complete cluster}
+\noindent\textit{Level: Easy. Model families: CFA, GGM.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=8$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (4.300,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[path] (1.521,-1.678) -- (0.362,-2.590);
+\draw[path] (1.699,-1.814) -- (1.404,-2.512);
+\draw[path] (2.051,-1.814) -- (2.346,-2.512);
+\draw[path] (2.229,-1.678) -- (3.388,-2.590);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[lat] at (1.875,-1.400) {$F$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=10$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (4.300,-3.925);
+\draw[net] (0.362,0.000) -- (1.638,0.000);
+\draw[net] (0.362,-0.362) -- (1.638,-1.638);
+\draw[net] (0.000,-0.362) -- (0.000,-1.638);
+\draw[net] (2.000,-0.362) -- (2.000,-1.638);
+\draw[net] (1.638,-0.362) -- (0.362,-1.638);
+\draw[net] (1.638,-2.000) -- (0.362,-2.000);
+\node[obs] at (0.000,0.000) {$y_{1}$};
+\node[obs] at (2.000,0.000) {$y_{2}$};
+\node[obs] at (2.000,-2.000) {$y_{3}$};
+\node[obs] at (0.000,-2.000) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2 + y3 + y4; y2 -{}- y3 + y4; y3 -{}- y4}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. $B$ is saturated: every element of $K$ is free, so $\Sigma=K^{-1}$ is any positive definite matrix.\par\smallskip
+\noindent(ii) $B\nnest A$ by Lemma~D: the Jacobian of model $B$ has rank 10 at the rational point listed in Appendix~B, while model $A$ has only $q_A=8$ free parameters.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} The complete network (every edge in the cluster) is saturated, so it contains the one-factor model. Not the other way round: one factor on four items has 8 parameters for 10 variances and covariances and imposes tetrad constraints.}
+
+\clearpage
+\section*{E30 \quad A network inside a saturated factor}
+\addcontentsline{toc}{subsection}{E30\quad A network inside a saturated factor}
+\noindent\textit{Level: Easy. Model families: CFA, GGM.} Observed variables: $y_{1}, y_{2}, y_{3}$ ($p=3$, 6 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=6$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (3.300,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[path] (0.959,-1.743) -- (0.307,-2.512);
+\draw[path] (1.250,-1.850) -- (1.250,-2.512);
+\draw[path] (1.541,-1.743) -- (2.193,-2.512);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[lat] at (1.250,-1.400) {$F$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=5$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (3.300,-3.925);
+\draw[net] (0.319,-1.200) -- (1.056,-0.362);
+\draw[net] (1.694,-0.362) -- (2.431,-1.200);
+\node[obs] at (0.000,-1.563) {$y_{1}$};
+\node[obs] at (1.375,0.000) {$y_{2}$};
+\node[obs] at (2.750,-1.563) {$y_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y2; y2 -{}- y3}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 6 at the rational point listed in Appendix~B, while model $B$ has only $q_B=5$ free parameters.\par\smallskip
+\noindent(ii) $B\nest A$. $A$ is saturated (Lemma~B(a): one factor with three indicators), so every model for $y_1,y_2,y_3$ is nested in it.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} A factor with three indicators is saturated, so every model for three variables is nested in it, also the network without the edge y1 — y3 (y1 and y3 independent given y2).}
+
+\clearpage
+\section*{E31 \quad A star network equals a fork}
+\addcontentsline{toc}{subsection}{E31\quad A star network equals a fork}
+\noindent\textit{Level: Easy. Model families: GGM.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=7$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.300,-0.887) rectangle (4.050,-3.925);
+\draw[net] (1.512,-1.758) -- (0.613,-2.554);
+\draw[net] (1.875,-1.800) -- (1.875,-2.512);
+\draw[net] (2.237,-1.758) -- (3.137,-2.554);
+\node[obs] at (1.875,-1.438) {$y_{1}$};
+\node[obs] at (0.250,-2.875) {$y_{2}$};
+\node[obs] at (1.875,-2.875) {$y_{3}$};
+\node[obs] at (3.500,-2.875) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2 + y3 + y4}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=7$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.300,-0.887) rectangle (4.050,-3.925);
+\draw[resid] (0.250,-3.612) circle (0.125);
+\draw[residarrow] (0.250,-3.487) -- (0.250,-3.237);
+\draw[resid] (1.875,-3.612) circle (0.125);
+\draw[residarrow] (1.875,-3.487) -- (1.875,-3.237);
+\draw[resid] (3.500,-3.612) circle (0.125);
+\draw[residarrow] (3.500,-3.487) -- (3.500,-3.237);
+\draw[path] (1.512,-1.758) -- (0.613,-2.554);
+\draw[path] (1.875,-1.800) -- (1.875,-2.512);
+\draw[path] (2.237,-1.758) -- (3.137,-2.554);
+\node[obs] at (1.875,-1.438) {$y_{1}$};
+\node[obs] at (0.250,-2.875) {$y_{2}$};
+\node[obs] at (1.875,-2.875) {$y_{3}$};
+\node[obs] at (3.500,-2.875) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{y2 \char`\~{} y1; y3 \char`\~{} y1; y4 \char`\~{} y1}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. Lemma~C: the fork $y_1\to y_2,y_3,y_4$ has a tree (the star) as skeleton and no collider, so it equals the GGM on the star, which is $A$.\par\smallskip
+\noindent(ii) $B\nest A$. See above.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} Both say that y2, y3 and y4 are independent once you know y1. A fork has no colliders, so it makes exactly the claims of the network with the same lines.}
 
 \clearpage
 \section*{M01 \quad Residual covariance versus a second factor}
@@ -4204,7 +4416,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (2.000,0.000) {$y_{2}$};
 \node[obs] at (2.000,-2.000) {$y_{3}$};
 \node[obs] at (0.000,-2.000) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=7$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -4222,7 +4434,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (2.000,0.000) {$y_{2}$};
 \node[obs] at (2.000,-2.000) {$y_{3}$};
 \node[obs] at (0.000,-2.000) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y2 -- y1 + y3 + y4}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y2 -{}- y1 + y3 + y4}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nnest B$ and $B \nnest A$: \textbf{neither} is nested in the other.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\det\!\begin{pmatrix}\sigma_{11} & \sigma_{12} & \sigma_{13} \\ \sigma_{21} & \sigma_{22} & \sigma_{23} \\ \sigma_{41} & \sigma_{42} & \sigma_{43}\end{pmatrix}$. This is the minor of $\Sigma$ without row 3 and column 4. By Lemma~I it vanishes iff $(\Sigma^{-1})_{34}=0$, which holds in $B$ (no edge $y_3-y_4$). So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$ at the point of Appendix~B, $f=0.01346\neq0$.\par\smallskip
@@ -4250,7 +4462,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (1.250,-2.875) {$y_{2}$};
 \node[obs] at (2.500,-2.875) {$y_{3}$};
 \node[obs] at (3.750,-2.875) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=7$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -4325,7 +4537,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-2.125) {$B$};
 \node[obs] at (2.000,-1.063) {$C$};
 \node[obs] at (4.000,-1.063) {$D$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network A B C D; A -- B + C; B -- C; C -- D}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network A B C D; A -{}- B + C; B -{}- C; C -{}- D}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. In $A$, $D$ is independent of $\{A,B\}$ given $C$ (local Markov property), so $(\Sigma^{-1})_{AD}=(\Sigma^{-1})_{BD}=0$: $\Sigma\in\mathcal M_B$.\par\smallskip
@@ -4354,7 +4566,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (2.000,0.000) {$y_{2}$};
 \node[obs] at (2.000,-2.000) {$y_{3}$};
 \node[obs] at (0.000,-2.000) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4; y4 -- y1}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4; y4 -{}- y1}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=7$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -4404,7 +4616,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.000,-1.625) {$y_{1}$};
 \node[obs] at (3.000,-1.625) {$y_{2}$};
 \node[obs] at (1.500,0.000) {$y_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -- y3; y3 -- y2}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3; y1 -{}- y3; y3 -{}- y2}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=5$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -4428,6 +4640,347 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\sigma_{12}$. In $B$, $y_1$ and $y_2$ are exogenous and unconnected. So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$ at the point of Appendix~B, $f=0.01929\neq0$.\par\smallskip
 \noindent(ii) $B\nnest A$ by Lemma~S with $f(\Sigma)=\sigma_{12}\sigma_{33} - \sigma_{13}\sigma_{23}$. In $A$, $k_{12}=0$ (Lemma~I). So $f\equiv0$ on $\mathcal M_A$, whereas in model $B$, $f=-\sigma_{13}\sigma_{23}\neq0$ for generic parameters; e.g.\ at the point of Appendix~B, $f=-0.3600\neq0$.\hfill$\square$\par\medskip
 \noindent{\small\textit{In the game:} The network says y1 and y2 are independent given y3; the collider says they are independent without conditioning (and dependent given y3).}
+
+\clearpage
+\section*{M33 \quad A complete latent network is correlated factors}
+\addcontentsline{toc}{subsection}{M33\quad A complete latent network is correlated factors}
+\noindent\textit{Level: Medium. Model families: Latent / residual.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}, y_{5}, y_{6}$ ($p=6$, 21 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=15$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.259) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[net] (1.075,-1.400) -- (2.675,-1.400);
+\draw[net] (1.011,-1.168) .. controls (2.420,-0.323) and (3.830,-0.323) .. (5.239,-1.168);
+\draw[net] (3.575,-1.400) -- (5.175,-1.400);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -{}- F2 + F3; F2 -{}- F3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=15$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.259) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[cov] (0.943,-1.082) .. controls (1.564,-0.461) and (2.186,-0.461) .. (2.807,-1.082);
+\draw[cov] (0.943,-1.082) .. controls (2.398,0.373) and (3.852,0.373) .. (5.307,-1.082);
+\draw[cov] (3.443,-1.082) .. controls (4.064,-0.461) and (4.686,-0.461) .. (5.307,-1.082);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; F1 \char`\~{}\char`\~{} F2 + F3; F2 \char`\~{}\char`\~{} F3}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. Same measurement part. In $A$ the latent covariance matrix is $\Psi=K^{-1}$ with every element of $K$ free (all edges), so $\Psi$ ranges over all invertible symmetric matrices; in $B$, $\Psi$ is free. Lemma~B(b).\par\smallskip
+\noindent(ii) $B\nest A$. See above.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} A latent network model (LNM) with every edge between the factors leaves all latent partial correlations free, so the latent covariance matrix is free too: the same as three correlated factors.}
+
+\clearpage
+\section*{M34 \quad One residual edge is one residual covariance}
+\addcontentsline{toc}{subsection}{M34\quad One residual edge is one residual covariance}
+\noindent\textit{Level: Medium. Model families: Latent / residual.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=9$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.763) rectangle (4.300,-4.219);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[path] (1.521,-1.678) -- (0.362,-2.590);
+\draw[path] (1.699,-1.814) -- (1.404,-2.512);
+\draw[path] (2.051,-1.814) -- (2.346,-2.512);
+\draw[path] (2.229,-1.678) -- (3.388,-2.590);
+\draw[net] (0.125,-3.612) -- (1.125,-3.612);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[lat] at (1.875,-1.400) {$F$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4; network y1 y2; y1 -{}- y2}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=9$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.763) rectangle (4.300,-4.219);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[path] (1.521,-1.678) -- (0.362,-2.590);
+\draw[path] (1.699,-1.814) -- (1.404,-2.512);
+\draw[path] (2.051,-1.814) -- (2.346,-2.512);
+\draw[path] (2.229,-1.678) -- (3.388,-2.590);
+\draw[cov] (0.088,-3.701) .. controls (0.446,-4.059) and (0.804,-4.059) .. (1.162,-3.701);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[lat] at (1.875,-1.400) {$F$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4; y1 \char`\~{}\char`\~{} y2}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. Same factor part. In $A$ the residuals of $y_1,y_2$ have covariance matrix $K^{-1}$ with $K$ a free $2\times2$ matrix, so a free $2\times2$ block (Lemma~I), and they are uncorrelated with the residuals of $y_3,y_4$; that is $\Theta$ of $B$ (free $\theta_{12}$).\par\smallskip
+\noindent(ii) $B\nest A$. See above.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} A residual network (RNM) with one edge between two residuals that have no other edges is one free residual partial correlation, and for a pair that is the same as one free residual covariance.}
+
+\clearpage
+\section*{M35 \quad A latent network chain inside correlated factors}
+\addcontentsline{toc}{subsection}{M35\quad A latent network chain inside correlated factors}
+\noindent\textit{Level: Medium. Model families: Latent / residual.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}, y_{5}, y_{6}$ ($p=6$, 21 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=14$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.259) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[net] (1.075,-1.400) -- (2.675,-1.400);
+\draw[net] (3.575,-1.400) -- (5.175,-1.400);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -{}- F2; F2 -{}- F3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=15$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.259) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[cov] (0.943,-1.082) .. controls (1.564,-0.461) and (2.186,-0.461) .. (2.807,-1.082);
+\draw[cov] (0.943,-1.082) .. controls (2.398,0.373) and (3.852,0.373) .. (5.307,-1.082);
+\draw[cov] (3.443,-1.082) .. controls (4.064,-0.461) and (4.686,-0.461) .. (5.307,-1.082);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; F1 \char`\~{}\char`\~{} F2 + F3; F2 \char`\~{}\char`\~{} F3}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. Same measurement part; $B$ leaves $\Psi$ free and $A$ produces particular $\Psi$ (those with $k_{13}=0$). Lemma~B(b).\par\smallskip
+\noindent(ii) $B\nnest A$ by Lemma~D: the Jacobian of model $B$ has rank 15 at the rational point listed in Appendix~B, while model $A$ has only $q_A=14$ free parameters.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} Without the latent edge F1 — F3, factors F1 and F3 are independent given F2 (one restriction). Correlated factors leave the latent covariances free, so they contain A.}
+
+\clearpage
+\section*{M36 \quad Latent partial correlation or latent covariance}
+\addcontentsline{toc}{subsection}{M36\quad Latent partial correlation or latent covariance}
+\noindent\textit{Level: Medium. Model families: Latent / residual.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}, y_{5}, y_{6}$ ($p=6$, 21 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=14$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.366) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[net] (1.075,-1.400) -- (2.675,-1.400);
+\draw[net] (3.575,-1.400) -- (5.175,-1.400);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -{}- F2; F2 -{}- F3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=14$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.366) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[cov] (0.943,-1.082) .. controls (1.564,-0.461) and (2.186,-0.461) .. (2.807,-1.082);
+\draw[cov] (3.443,-1.082) .. controls (4.064,-0.461) and (4.686,-0.461) .. (5.307,-1.082);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; F1 \char`\~{}\char`\~{} F2; F2 \char`\~{}\char`\~{} F3}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \nnest B$ and $B \nnest A$: \textbf{neither} is nested in the other.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\sigma_{15}$. In $B$, $\psi_{13}=0$, so $\sigma_{15}=\lambda_1\lambda_5\psi_{13}=0$. So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$, $f=\lambda_1\lambda_5\psi_{13}\neq0$ for generic parameters; e.g.\ at the point of Appendix~B, $f=0.01941\neq0$.\par\smallskip
+\noindent(ii) $B\nnest A$ by Lemma~S with $f(\Sigma)=\sigma_{13}\sigma_{45} - \sigma_{15}\sigma_{34}$. With $\sigma_{13}=\lambda_1\lambda_3\psi_{12}$, $\sigma_{45}=\lambda_4\lambda_5\psi_{23}$, $\sigma_{15}=\lambda_1\lambda_5\psi_{13}$ and $\sigma_{34}=\lambda_3\lambda_4\psi_{22}$, $f=\lambda_1\lambda_3\lambda_4\lambda_5(\psi_{12}\psi_{23}-\psi_{13}\psi_{22})$; in $A$, $k_{13}=0$ means $\psi_{13}\psi_{22}=\psi_{12}\psi_{23}$ (Lemma~I). So $f\equiv0$ on $\mathcal M_A$, whereas in model $B$, $f=\lambda_1\lambda_3\lambda_4\lambda_5\psi_{12}\psi_{23}\neq0$ for generic parameters; e.g.\ at the point of Appendix~B, $f=0.05400\neq0$.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} Same picture, different restriction: the missing network edge sets the partial correlation of F1 and F3 (given F2) to zero, the missing curved arrow sets their covariance to zero. Neither model contains the other.}
 
 \clearpage
 \section*{H01 \quad Equivalent residual covariances}
@@ -7133,6 +7686,330 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \noindent{\small\textit{In the game:} Both bifactor models have 27 parameters but group the items differently: y4 shares a group factor with y5 and y6 in A, with y1 to y3 in B. Each allows covariance that the other routes through G alone.}
 
 \clearpage
+\section*{H30 \quad A shielded collider}
+\addcontentsline{toc}{subsection}{H30\quad A shielded collider}
+\noindent\textit{Level: Hard. Model families: GGM.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=8$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (4.550,-3.175);
+\draw[resid] (0.000,-2.862) circle (0.125);
+\draw[residarrow] (0.000,-2.737) -- (0.000,-2.487);
+\draw[resid] (2.000,-1.800) circle (0.125);
+\draw[residarrow] (2.000,-1.675) -- (2.000,-1.425);
+\draw[resid] (4.000,-1.800) circle (0.125);
+\draw[residarrow] (4.000,-1.675) -- (4.000,-1.425);
+\draw[path] (0.000,-0.362) -- (0.000,-1.762);
+\draw[path] (0.362,-0.193) -- (1.638,-0.870);
+\draw[path] (0.362,-1.932) -- (1.638,-1.255);
+\draw[path] (2.363,-1.063) -- (3.638,-1.063);
+\node[obs] at (0.000,0.000) {$y_{1}$};
+\node[obs] at (0.000,-2.125) {$y_{2}$};
+\node[obs] at (2.000,-1.063) {$y_{3}$};
+\node[obs] at (4.000,-1.063) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{y2 \char`\~{} y1; y3 \char`\~{} y1 + y2; y4 \char`\~{} y3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=8$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,0.550) rectangle (4.550,-3.175);
+\draw[net] (0.000,-0.362) -- (0.000,-1.762);
+\draw[net] (0.362,-0.193) -- (1.638,-0.870);
+\draw[net] (0.362,-1.932) -- (1.638,-1.255);
+\draw[net] (2.363,-1.063) -- (3.638,-1.063);
+\node[obs] at (0.000,0.000) {$y_{1}$};
+\node[obs] at (0.000,-2.125) {$y_{2}$};
+\node[obs] at (2.000,-1.063) {$y_{3}$};
+\node[obs] at (4.000,-1.063) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2 + y3; y2 -{}- y3; y3 -{}- y4}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. In $A$, $\Sigma^{-1}=(I-B)^\top D^{-1}(I-B)$ is nonzero off the diagonal only for pairs joined by an arrow or with a common child; the only common child is $y_3$, of $y_1$ and $y_2$, which are joined anyway. So $(\Sigma^{-1})_{14}=(\Sigma^{-1})_{24}=0$ and $\mathcal M_A\subseteq\mathcal M_B$. Conversely, if $(\Sigma^{-1})_{14}=(\Sigma^{-1})_{24}=0$, the conditional distribution of $y_4$ given the other variables depends on $y_3$ only. So $\Sigma$ is a covariance matrix of $(y_1,y_2,y_3)$ (any positive definite matrix, reproduced by the complete recursive part of $A$, Lemma~B(a)) followed by the regression $y_4=\beta y_3+e_4$, which is model $A$.\par\smallskip
+\noindent(ii) $B\nest A$. See above: $\mathcal M_A=\mathcal M_B$.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} y3 has two parents, but they are linked (y1 → y2): a shielded collider adds no independence. Both models leave y1, y2, y3 saturated and only say that y4 is independent of y1 and y2 given y3.}
+
+\clearpage
+\section*{H31 \quad A 4-cycle network versus a DAG with a collider}
+\addcontentsline{toc}{subsection}{H31\quad A 4-cycle network versus a DAG with a collider}
+\noindent\textit{Level: Hard. Model families: GGM.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=8$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,1.050) rectangle (2.550,-3.050);
+\draw[net] (0.362,0.000) -- (1.638,0.000);
+\draw[net] (2.000,-0.362) -- (2.000,-1.638);
+\draw[net] (1.638,-2.000) -- (0.362,-2.000);
+\draw[net] (0.000,-1.638) -- (0.000,-0.362);
+\node[obs] at (0.000,0.000) {$y_{1}$};
+\node[obs] at (2.000,0.000) {$y_{2}$};
+\node[obs] at (2.000,-2.000) {$y_{3}$};
+\node[obs] at (0.000,-2.000) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4; y4 -{}- y1}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=8$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,1.050) rectangle (2.550,-3.050);
+\draw[resid] (2.000,0.737) circle (0.125);
+\draw[residarrow] (2.000,0.613) -- (2.000,0.362);
+\draw[resid] (2.000,-2.737) circle (0.125);
+\draw[residarrow] (2.000,-2.612) -- (2.000,-2.363);
+\draw[resid] (0.000,-2.737) circle (0.125);
+\draw[residarrow] (0.000,-2.612) -- (0.000,-2.363);
+\draw[path] (0.362,0.000) -- (1.638,0.000);
+\draw[path] (0.000,-0.362) -- (0.000,-1.638);
+\draw[path] (2.000,-0.362) -- (2.000,-1.638);
+\draw[path] (0.362,-2.000) -- (1.638,-2.000);
+\node[obs] at (0.000,0.000) {$y_{1}$};
+\node[obs] at (2.000,0.000) {$y_{2}$};
+\node[obs] at (2.000,-2.000) {$y_{3}$};
+\node[obs] at (0.000,-2.000) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{y2 \char`\~{} y1; y4 \char`\~{} y1; y3 \char`\~{} y2 + y4}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \nnest B$ and $B \nnest A$: \textbf{neither} is nested in the other.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\sigma_{11}\sigma_{24} - \sigma_{12}\sigma_{14}$. In $B$, $y_4$ has the single parent $y_1$ and $y_2$ is not a descendant of $y_4$, so $y_2\perp y_4\mid y_1$: the partial covariance $\sigma_{24}-\sigma_{12}\sigma_{14}/\sigma_{11}$ is zero. So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$ at the point of Appendix~B, $f=0.005475\neq0$.\par\smallskip
+\noindent(ii) $B\nnest A$ by Lemma~S with $f(\Sigma)=\det\!\begin{pmatrix}\sigma_{11} & \sigma_{12} & \sigma_{13} \\ \sigma_{31} & \sigma_{32} & \sigma_{33} \\ \sigma_{41} & \sigma_{42} & \sigma_{43}\end{pmatrix}$. The minor without row 2 and column 4; by Lemma~I it vanishes iff $(\Sigma^{-1})_{24}=0$, which holds in $A$ (no edge $y_2-y_4$). So $f\equiv0$ on $\mathcal M_A$, whereas in model $B$ at the point of Appendix~B, $f=0.2688\neq0$.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} Same lines, different independencies. The 4-cycle network says y2 and y4 are independent given y1 and y3. In the DAG y3 is a collider: y2 and y4 are independent given y1 alone, and conditioning on y3 makes them dependent. No DAG is equivalent to a 4-cycle.}
+
+\clearpage
+\section*{H32 \quad Two pairs inside a path network}
+\addcontentsline{toc}{subsection}{H32\quad Two pairs inside a path network}
+\noindent\textit{Level: Hard. Model families: CFA, GGM.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=8$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.700) rectangle (5.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=7$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.700) rectangle (5.800,-3.925);
+\draw[net] (0.362,-1.250) -- (1.387,-1.250);
+\draw[net] (2.112,-1.250) -- (3.137,-1.250);
+\draw[net] (3.862,-1.250) -- (4.888,-1.250);
+\node[obs] at (0.000,-1.250) {$y_{1}$};
+\node[obs] at (1.750,-1.250) {$y_{2}$};
+\node[obs] at (3.500,-1.250) {$y_{3}$};
+\node[obs] at (5.250,-1.250) {$y_{4}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. In $A$ the factors are uncorrelated, so $\Sigma$ is block-diagonal with blocks $\{y_1,y_2\}$ and $\{y_3,y_4\}$, and so is $\Sigma^{-1}$ (Lemma~I): $k_{13}=k_{14}=k_{23}=k_{24}=0$. Such a $\Sigma$ is a covariance matrix of $B$ (with $k_{23}=0$), so $\mathcal M_A\subseteq\mathcal M_B$, although $A$ has more parameters (it is not identified).\par\smallskip
+\noindent(ii) $B\nnest A$ by Lemma~S with $f(\Sigma)=\sigma_{13}$. In $A$, $y_1$ and $y_3$ load on uncorrelated factors. So $f\equiv0$ on $\mathcal M_A$, whereas in model $B$ at the point of Appendix~B, $f=0.01974\neq0$.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} Counting trap: A has 8 parameters and B 7, yet A is nested in B. Two uncorrelated factors give two separate saturated pairs, which is the network with only the edges y1 — y2 and y3 — y4. B adds the edge y2 — y3.}
+
+\clearpage
+\section*{H33 \quad Residual edges or two correlated factors}
+\addcontentsline{toc}{subsection}{H33\quad Residual edges or two correlated factors}
+\noindent\textit{Level: Hard. Model families: Latent / residual.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}$ ($p=4$, 10 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=10$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.366) rectangle (4.300,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[path] (1.521,-1.678) -- (0.362,-2.590);
+\draw[path] (1.699,-1.814) -- (1.404,-2.512);
+\draw[path] (2.051,-1.814) -- (2.346,-2.512);
+\draw[path] (2.229,-1.678) -- (3.388,-2.590);
+\draw[net] (0.125,-3.612) -- (1.125,-3.612);
+\draw[net] (2.625,-3.612) -- (3.625,-3.612);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[lat] at (1.875,-1.400) {$F$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4; network y1 y2 y3 y4; y1 -{}- y2; y3 -{}- y4}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=9$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.366) rectangle (4.300,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[cov] (0.943,-1.082) .. controls (1.564,-0.461) and (2.186,-0.461) .. (2.807,-1.082);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F1 \char`\~{}\char`\~{} F2}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nest B$. By Lemma~I the residual network with the separate edges $y_1-y_2$ and $y_3-y_4$ gives a residual covariance matrix with free $\theta_{12},\theta_{34}$ and no other residual covariances. In both models the covariances between the pairs form a rank-one block ($\sigma_{ij}=\lambda_i\lambda_j\psi$ in $A$, $\lambda_i\lambda_j\psi_{12}$ in $B$, for $i\in\{1,2\}$, $j\in\{3,4\}$), so both lie in $\{\Sigma:\sigma_{13}\sigma_{24}=\sigma_{14}\sigma_{23}\}$. Conversely, for a generic $\Sigma$ in this set: in $B$ take $\lambda_1=\lambda_3=1$, $\psi_{12}=\sigma_{13}$, $\lambda_2=\sigma_{23}/\sigma_{13}$, $\lambda_4=\sigma_{14}/\sigma_{13}$, $\psi_{11}=\sigma_{12}/\lambda_2$, $\psi_{22}=\sigma_{34}/\lambda_4$; in $A$ take $\lambda_1=\lambda_3=1$, $\psi=\sigma_{13}$, $\lambda_2=\sigma_{23}/\sigma_{13}$, $\lambda_4=\sigma_{14}/\sigma_{13}$, $\theta_{12}=\sigma_{12}-\lambda_2\psi$, $\theta_{34}=\sigma_{34}-\lambda_4\psi$; in both, each residual variance is $\sigma_{ii}$ minus $\lambda_i^2$ times the variance of its factor. Both reproduce $\Sigma$ ($\sigma_{24}=\lambda_2\lambda_4\sigma_{13}=\sigma_{14}\sigma_{23}/\sigma_{13}$ by the constraint), so by Lemma~G both have the same closure. $A$ has one parameter more and is not identified.\par\smallskip
+\noindent(ii) $B\nest A$. See above.\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} Two separate residual edges are two residual covariances, and a residual covariance within a pair acts like a factor for that pair. Both models leave each pair free and impose one tetrad across the pairs. Counting trap: A has 10 parameters, B 9.}
+
+\clearpage
+\section*{H34 \quad A latent pair inside a latent network chain}
+\addcontentsline{toc}{subsection}{H34\quad A latent pair inside a latent network chain}
+\noindent\textit{Level: Hard. Model families: Latent / residual.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}, y_{5}, y_{6}$ ($p=6$, 21 moments).\par\medskip
+\noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=14$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.366) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[net] (1.075,-1.400) -- (2.675,-1.400);
+\draw[net] (3.575,-1.400) -- (5.175,-1.400);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -{}- F2; F2 -{}- F3}}\end{minipage}\hfill
+\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=13$}\\[2pt]
+\begin{tikzpicture}[x=1cm, y=1cm,
+    obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
+    lat/.style={draw, circle, minimum size=0.900cm, inner sep=0pt, fill=latfill, font=\fontsize{9.0}{10}\selectfont},
+    resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
+    path/.style={-{Stealth[length=3.4pt]}, line width=0.55pt},
+    cov/.style={{Stealth[length=3.4pt]}-{Stealth[length=3.4pt]}, line width=0.55pt},
+    net/.style={draw, line width=0.55pt, line cap=round},
+    elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]
+\useasboundingbox (-0.550,-0.366) rectangle (6.800,-3.925);
+\draw[resid] (0.000,-3.612) circle (0.125);
+\draw[residarrow] (0.000,-3.487) -- (0.000,-3.237);
+\draw[resid] (1.250,-3.612) circle (0.125);
+\draw[residarrow] (1.250,-3.487) -- (1.250,-3.237);
+\draw[resid] (2.500,-3.612) circle (0.125);
+\draw[residarrow] (2.500,-3.487) -- (2.500,-3.237);
+\draw[resid] (3.750,-3.612) circle (0.125);
+\draw[residarrow] (3.750,-3.487) -- (3.750,-3.237);
+\draw[resid] (5.000,-3.612) circle (0.125);
+\draw[residarrow] (5.000,-3.487) -- (5.000,-3.237);
+\draw[resid] (6.250,-3.612) circle (0.125);
+\draw[residarrow] (6.250,-3.487) -- (6.250,-3.237);
+\draw[path] (0.449,-1.814) -- (0.154,-2.512);
+\draw[path] (0.801,-1.814) -- (1.096,-2.512);
+\draw[path] (2.949,-1.814) -- (2.654,-2.512);
+\draw[path] (3.301,-1.814) -- (3.596,-2.512);
+\draw[path] (5.449,-1.814) -- (5.154,-2.512);
+\draw[path] (5.801,-1.814) -- (6.096,-2.512);
+\draw[cov] (0.943,-1.082) .. controls (1.564,-0.461) and (2.186,-0.461) .. (2.807,-1.082);
+\node[obs] at (0.000,-2.875) {$y_{1}$};
+\node[obs] at (1.250,-2.875) {$y_{2}$};
+\node[obs] at (2.500,-2.875) {$y_{3}$};
+\node[obs] at (3.750,-2.875) {$y_{4}$};
+\node[obs] at (5.000,-2.875) {$y_{5}$};
+\node[obs] at (6.250,-2.875) {$y_{6}$};
+\node[lat] at (0.625,-1.400) {$F_{1}$};
+\node[lat] at (3.125,-1.400) {$F_{2}$};
+\node[lat] at (5.625,-1.400) {$F_{3}$};
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; F1 \char`\~{}\char`\~{} F2}}\end{minipage}
+\par\bigskip
+\noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
+\noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 14 at the rational point listed in Appendix~B, while model $B$ has only $q_B=13$ free parameters.\par\smallskip
+\noindent(ii) $B\nest A$. In $B$, $\Psi$ is block-diagonal with blocks $\{F_1,F_2\}$ and $\{F_3\}$, so $K=\Psi^{-1}$ is too (Lemma~I): $k_{13}=k_{23}=0$. That is $A$ with the edge $F_2-F_3$ fixed to 0 (Lemma~R; same measurement part).\hfill$\square$\par\medskip
+\noindent{\small\textit{In the game:} In B only F1 and F2 are correlated and F3 is independent of both. Then the inverse of the latent covariance matrix is block-diagonal too: no edge F1 — F3 and no edge F2 — F3. So B is A with the edge F2 — F3 fixed to zero.}
+
+\clearpage
 \section*{P01 \quad A third-order factor on two second-order factors}
 \addcontentsline{toc}{subsection}{P01\quad A third-order factor on two second-order factors}
 \noindent\textit{Level: Psychometrika. Model families: Higher-order.} Observed variables: $y_{1}, y_{2}, y_{3}, y_{4}, y_{5}, y_{6}, y_{7}, y_{8}$ ($p=8$, 36 moments).\par\medskip
@@ -7335,7 +8212,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.000,-1.438) {$y_{4}$};
 \node[obs] at (4.063,-2.875) {$y_{5}$};
 \node[obs] at (5.938,-2.875) {$y_{6}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6; y1 -- y2 + y3; y2 -- y3; y4 -- y5 + y6; y5 -- y6}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6; y1 -{}- y2 + y3; y2 -{}- y3; y4 -{}- y5 + y6; y5 -{}- y6}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \equiv B$: the models are \textbf{equivalent}.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. $\mathcal M_A$: block-diagonal $\Sigma$ with blocks $\{1,2,3\},\{4,5,6\}$, each block a one-factor model with three indicators, which reproduces every positive definite block generically (Lemma~B(a)). By Lemma~I, $\Sigma$ is block-diagonal iff $\Sigma^{-1}$ is, which is $\mathcal M_B$ (two cliques, no edges between). Hence $\overline{\mathcal M_A}=\overline{\mathcal M_B}$.\par\smallskip
@@ -7385,7 +8262,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[lat] at (0.625,-1.400) {$F_{1}$};
 \node[lat] at (3.125,-1.400) {$F_{2}$};
 \node[lat] at (5.625,-1.400) {$F_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -- F2; F2 -- F3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -{}- F2; F2 -{}- F3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=14$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -7604,7 +8481,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.000,-2.875) {$y_{5}$};
 \node[obs] at (6.250,-2.875) {$y_{6}$};
 \node[lat] at (3.125,-1.400) {$F$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3; y1 -- y2 + y3; y2 -- y3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3; y1 -{}- y2 + y3; y2 -{}- y3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=15$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -7671,7 +8548,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (0.250,-2.875) {$y_{2}$};
 \node[obs] at (1.875,-2.875) {$y_{3}$};
 \node[obs] at (3.500,-2.875) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2 + y3 + y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2 + y3 + y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=8$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -7785,7 +8662,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.905,-0.905) {$y_{6}$};
 \node[obs] at (5.905,-2.190) {$y_{7}$};
 \node[obs] at (4.381,-2.190) {$y_{8}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6 y7 y8; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4; y5 -- y6 + y7 + y8; y6 -- y7 + y8; y7 -- y8}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6 y7 y8; y1 -{}- y2 + y3 + y4; y2 -{}- y3 + y4; y3 -{}- y4; y5 -{}- y6 + y7 + y8; y6 -{}- y7 + y8; y7 -{}- y8}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nest B$, $B \nnest A$: \textbf{A is nested in B} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nest B$. Orthogonal factors give a block-diagonal $\Sigma$, hence (Lemma~I) a block-diagonal $\Sigma^{-1}$: no edges between the clusters, which is $B$.\par\smallskip
@@ -7835,7 +8712,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[lat] at (0.625,-1.400) {$F_{1}$};
 \node[lat] at (3.125,-1.400) {$F_{2}$};
 \node[lat] at (5.625,-1.400) {$F_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -- F2; F2 -- F3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; network F1 F2 F3; F1 -{}- F2; F2 -{}- F3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=15$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -7931,7 +8808,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.000,-2.875) {$y_{5}$};
 \node[obs] at (6.250,-2.875) {$y_{6}$};
 \node[lat] at (3.125,-1.400) {$F$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3 y4; y1 -- y2; y3 -- y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3 y4; y1 -{}- y2; y3 -{}- y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=15$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -8139,7 +9016,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.000,-2.875) {$y_{5}$};
 \node[obs] at (6.250,-2.875) {$y_{6}$};
 \node[lat] at (3.125,-1.400) {$F$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3; y1 -- y2; y2 -- y3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3; y1 -{}- y2; y2 -{}- y3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=13$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -8375,7 +9252,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.000,-1.438) {$y_{4}$};
 \node[obs] at (4.063,-2.875) {$y_{5}$};
 \node[obs] at (5.938,-2.875) {$y_{6}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6; y1 -- y2 + y3 + y4; y4 -- y5 + y6}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6; y1 -{}- y2 + y3 + y4; y4 -{}- y5 + y6}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 13 at the rational point listed in Appendix~B, while model $B$ has only $q_B=11$ free parameters.\par\smallskip
@@ -8498,7 +9375,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[lat] at (0.824,-0.923) {$F_{1}$};
 \node[lat] at (3.297,-0.923) {$F_{2}$};
 \node[lat] at (5.770,-0.923) {$F_{3}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2 + y3; F2 =\char`\~{} y4 + y5 + y6; F3 =\char`\~{} y7 + y8 + y9; network F1 F2 F3; F1 -- F2 + F3; F2 -- F3}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2 + y3; F2 =\char`\~{} y4 + y5 + y6; F3 =\char`\~{} y7 + y8 + y9; network F1 F2 F3; F1 -{}- F2 + F3; F2 -{}- F3}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $B \nest A$, $A \nnest B$: \textbf{B is nested in A} (strictly).\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~D: the Jacobian of model $A$ has rank 27 at the rational point listed in Appendix~B, while model $B$ has only $q_B=21$ free parameters.\par\smallskip
@@ -8542,7 +9419,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (2.500,-2.875) {$y_{3}$};
 \node[obs] at (3.750,-2.875) {$y_{4}$};
 \node[lat] at (1.875,-1.400) {$F$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4; network y1 y2 y3 y4; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4; network y1 y2 y3 y4; y1 -{}- y2 + y3 + y4; y2 -{}- y3 + y4; y3 -{}- y4}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=9$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -8601,7 +9478,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (2.000,0.000) {$y_{2}$};
 \node[obs] at (2.000,-2.000) {$y_{3}$};
 \node[obs] at (0.000,-2.000) {$y_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4; y4 -- y1}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4; y1 -{}- y2; y2 -{}- y3; y3 -{}- y4; y4 -{}- y1}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=8$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -8677,7 +9554,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.000,-2.875) {$y_{5}$};
 \node[obs] at (6.250,-2.875) {$y_{6}$};
 \node[lat] at (3.125,-1.400) {$F$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3; y1 -- y2; y2 -- y3}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F =\char`\~{} y1 + y2 + y3 + y4 + y5 + y6; network y1 y2 y3; y1 -{}- y2; y2 -{}- y3}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=14$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.725cm, inner sep=0pt, fill=white, font=\fontsize{9.0}{10}\selectfont},
@@ -8802,7 +9679,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[obs] at (5.905,-0.905) {$y_{6}$};
 \node[obs] at (5.905,-2.190) {$y_{7}$};
 \node[obs] at (4.381,-2.190) {$y_{8}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6 y7 y8; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4; y5 -- y6 + y7 + y8; y6 -- y7 + y8; y7 -- y8}}\end{minipage}
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{network y1 y2 y3 y4 y5 y6 y7 y8; y1 -{}- y2 + y3 + y4; y2 -{}- y3 + y4; y3 -{}- y4; y5 -{}- y6 + y7 + y8; y6 -{}- y7 + y8; y7 -{}- y8}}\end{minipage}
 \par\bigskip
 \noindent\textbf{Claim.} $A \nnest B$ and $B \nnest A$: \textbf{neither} is nested in the other.\par\smallskip
 \noindent\textbf{Proof.} (i) $A\nnest B$ by Lemma~S with $f(\Sigma)=\sigma_{15}$. In $B$ there are no edges between the clusters, so $\Sigma$ is block-diagonal (Lemma~I). So $f\equiv0$ on $\mathcal M_B$, whereas in model $A$, $f=\lambda_1\lambda_5\psi_{12}\neq0$ for generic parameters; e.g.\ at the point of Appendix~B, $f=0.3000\neq0$.\par\smallskip
@@ -8990,7 +9867,7 @@ Each page shows the two path diagrams exactly as in the game (observed variables
 \node[lat] at (2.381,-1.067) {$F_{2}$};
 \node[lat] at (4.286,-1.067) {$F_{3}$};
 \node[lat] at (6.190,-1.067) {$F_{4}$};
-\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; F4 =\char`\~{} y7 + y8; network F1 F2 F3 F4; F1 -- F2; F2 -- F3; F3 -- F4; F4 -- F1}}\end{minipage}\hfill
+\end{tikzpicture}\\[1pt]{\scriptsize \texttt{F1 =\char`\~{} y1 + y2; F2 =\char`\~{} y3 + y4; F3 =\char`\~{} y5 + y6; F4 =\char`\~{} y7 + y8; network F1 F2 F3 F4; F1 -{}- F2; F2 -{}- F3; F3 -{}- F4; F4 -{}- F1}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=20$}\\[2pt]
 \begin{tikzpicture}[x=1cm, y=1cm,
     obs/.style={draw, rounded corners=0.6pt, minimum size=0.552cm, inner sep=0pt, fill=white, font=\fontsize{8.6}{10}\selectfont},
@@ -10119,6 +10996,8 @@ For every non-nesting argument: the model, the rational parameter values (in the
 \noindent\textbf{E24}, model B (for $B\nnest A$): $f=0.0482276$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{3},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{2}}=-\tfrac{2}{5}$.}\par\smallskip
 \noindent\textbf{E25}, model A (for $A\nnest B$): rank of the Jacobian $=7>q_B=4$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{4},y_{4}}=\tfrac{11}{5}$, $k_{y_{2},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{1}}=-\tfrac{2}{5}$, $k_{y_{4},y_{1}}=-\tfrac{3}{10}$.}\par\smallskip
 \noindent\textbf{E27}, model A (for $A\nnest B$): rank of the Jacobian $=15>q_B=14$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $F_{1}\to F_{3}=\tfrac{1}{2}$, $F_{2}\to F_{3}=\tfrac{3}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$, $\mathrm{Cov}(F_{2},F_{1})=\tfrac{3}{10}$.}\par\smallskip
+\noindent\textbf{E29}, model B (for $B\nnest A$): rank of the Jacobian $=10>q_A=8$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{4},y_{4}}=\tfrac{11}{5}$, $k_{y_{2},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{1}}=-\tfrac{2}{5}$, $k_{y_{4},y_{1}}=-\tfrac{3}{10}$, $k_{y_{3},y_{2}}=-\tfrac{1}{4}$, $k_{y_{4},y_{2}}=-\tfrac{7}{20}$, $k_{y_{4},y_{3}}=-\tfrac{9}{20}$.}\par\smallskip
+\noindent\textbf{E30}, model A (for $A\nnest B$): rank of the Jacobian $=6>q_B=5$. {\footnotesize $F\to y_{2}=1$, $F\to y_{3}=\tfrac{9}{10}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(F)=1$.}\par\smallskip
 \noindent\textbf{M06}, model B (for $B\nnest A$): rank of the Jacobian $=22>q_A=20$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $F_{4}\to y_{8}=\tfrac{4}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(y_{7})=\tfrac{13}{10}$, $\mathrm{Var}(y_{8})=\tfrac{3}{4}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$, $\mathrm{Var}(F_{4})=\tfrac{11}{10}$, $\mathrm{Cov}(F_{2},F_{1})=\tfrac{3}{10}$, $\mathrm{Cov}(F_{3},F_{1})=\tfrac{1}{5}$, $\mathrm{Cov}(F_{4},F_{1})=\tfrac{2}{5}$, $\mathrm{Cov}(F_{3},F_{2})=\tfrac{1}{4}$, $\mathrm{Cov}(F_{4},F_{2})=\tfrac{7}{20}$, $\mathrm{Cov}(F_{4},F_{3})=\tfrac{3}{20}$.}\par\smallskip
 \noindent\textbf{M07}, model B (for $B\nnest A$): rank of the Jacobian $=15>q_A=13$. {\footnotesize $F\to y_{2}=1$, $F\to y_{3}=\tfrac{9}{10}$, $F\to y_{4}=\tfrac{6}{5}$, $F\to y_{5}=\tfrac{4}{5}$, $F\to y_{6}=\tfrac{11}{10}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F)=1$, $\mathrm{Cov}(y_{5},y_{4})=\tfrac{3}{10}$, $\mathrm{Cov}(y_{6},y_{4})=\tfrac{1}{5}$, $\mathrm{Cov}(y_{6},y_{5})=\tfrac{2}{5}$.}\par\smallskip
 \noindent\textbf{M08}, model B (for $B\nnest A$): rank of the Jacobian $=15>q_A=13$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$, $\mathrm{Cov}(F_{2},F_{1})=\tfrac{3}{10}$, $\mathrm{Cov}(F_{3},F_{1})=\tfrac{1}{5}$, $\mathrm{Cov}(F_{3},F_{2})=\tfrac{2}{5}$.}\par\smallskip
@@ -10152,6 +11031,9 @@ For every non-nesting argument: the model, the rational parameter values (in the
 \noindent\textbf{M31}, model A (for $A\nnest B$): rank of the Jacobian $=8>q_B=7$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{4},y_{4}}=\tfrac{11}{5}$, $k_{y_{2},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{2}}=-\tfrac{2}{5}$, $k_{y_{4},y_{3}}=-\tfrac{3}{10}$, $k_{y_{4},y_{1}}=-\tfrac{1}{4}$.}\par\smallskip
 \noindent\textbf{M32}, model A (for $A\nnest B$): $f=0.0192911$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{3},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{2}}=-\tfrac{2}{5}$.}\par\smallskip
 \noindent\textbf{M32}, model B (for $B\nnest A$): $f=-0.360000$. {\footnotesize $y_{1}\to y_{3}=\tfrac{1}{2}$, $y_{2}\to y_{3}=\tfrac{3}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$.}\par\smallskip
+\noindent\textbf{M35}, model B (for $B\nnest A$): rank of the Jacobian $=15>q_A=14$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$, $\mathrm{Cov}(F_{2},F_{1})=\tfrac{3}{10}$, $\mathrm{Cov}(F_{3},F_{1})=\tfrac{1}{5}$, $\mathrm{Cov}(F_{3},F_{2})=\tfrac{2}{5}$.}\par\smallskip
+\noindent\textbf{M36}, model A (for $A\nnest B$): $f=0.0194081$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $k_{F_{1},F_{1}}=2$, $k_{F_{2},F_{2}}=\tfrac{9}{4}$, $k_{F_{3},F_{3}}=\tfrac{5}{2}$, $k_{F_{2},F_{1}}=-\tfrac{1}{2}$, $k_{F_{3},F_{2}}=-\tfrac{2}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$.}\par\smallskip
+\noindent\textbf{M36}, model B (for $B\nnest A$): $f=0.0540000$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$, $\mathrm{Cov}(F_{2},F_{1})=\tfrac{3}{10}$, $\mathrm{Cov}(F_{3},F_{2})=\tfrac{1}{5}$.}\par\smallskip
 \noindent\textbf{H06}, model B (for $B\nnest A$): rank of the Jacobian $=27>q_A=21$. {\footnotesize $S_{1}\to y_{2}=1$, $S_{1}\to y_{3}=\tfrac{9}{10}$, $S_{2}\to y_{5}=\tfrac{6}{5}$, $S_{2}\to y_{6}=\tfrac{4}{5}$, $S_{3}\to y_{8}=\tfrac{11}{10}$, $S_{3}\to y_{9}=\tfrac{7}{10}$, $G\to y_{2}=\tfrac{13}{10}$, $G\to y_{3}=\tfrac{3}{4}$, $G\to y_{4}=\tfrac{17}{20}$, $G\to y_{5}=\tfrac{21}{20}$, $G\to y_{6}=1$, $G\to y_{7}=\tfrac{9}{10}$, $G\to y_{8}=\tfrac{6}{5}$, $G\to y_{9}=\tfrac{4}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(y_{7})=\tfrac{13}{10}$, $\mathrm{Var}(y_{8})=\tfrac{3}{4}$, $\mathrm{Var}(y_{9})=\tfrac{19}{20}$, $\mathrm{Var}(S_{1})=1$, $\mathrm{Var}(S_{2})=\tfrac{6}{5}$, $\mathrm{Var}(S_{3})=\tfrac{4}{5}$, $\mathrm{Var}(G)=\tfrac{11}{10}$.}\par\smallskip
 \noindent\textbf{H07}, model B (for $B\nnest A$): rank of the Jacobian $=27>q_A=21$. {\footnotesize $S_{1}\to y_{2}=1$, $S_{1}\to y_{3}=\tfrac{9}{10}$, $S_{2}\to y_{5}=\tfrac{6}{5}$, $S_{2}\to y_{6}=\tfrac{4}{5}$, $S_{3}\to y_{8}=\tfrac{11}{10}$, $S_{3}\to y_{9}=\tfrac{7}{10}$, $G\to y_{2}=\tfrac{13}{10}$, $G\to y_{3}=\tfrac{3}{4}$, $G\to y_{4}=\tfrac{17}{20}$, $G\to y_{5}=\tfrac{21}{20}$, $G\to y_{6}=1$, $G\to y_{7}=\tfrac{9}{10}$, $G\to y_{8}=\tfrac{6}{5}$, $G\to y_{9}=\tfrac{4}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(y_{7})=\tfrac{13}{10}$, $\mathrm{Var}(y_{8})=\tfrac{3}{4}$, $\mathrm{Var}(y_{9})=\tfrac{19}{20}$, $\mathrm{Var}(S_{1})=1$, $\mathrm{Var}(S_{2})=\tfrac{6}{5}$, $\mathrm{Var}(S_{3})=\tfrac{4}{5}$, $\mathrm{Var}(G)=\tfrac{11}{10}$.}\par\smallskip
 \noindent\textbf{H08}, model B (for $B\nnest A$): rank of the Jacobian $=15>q_A=14$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $F_{1}\to F_{2}=\tfrac{1}{2}$, $F_{1}\to F_{3}=\tfrac{3}{5}$, $F_{2}\to F_{3}=\tfrac{2}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$.}\par\smallskip
@@ -10180,6 +11062,10 @@ For every non-nesting argument: the model, the rational parameter values (in the
 \noindent\textbf{H28}, model A (for $A\nnest B$): rank of the Jacobian $=27>q_B=21$. {\footnotesize $S_{1}\to y_{2}=1$, $S_{1}\to y_{3}=\tfrac{9}{10}$, $S_{2}\to y_{5}=\tfrac{6}{5}$, $S_{2}\to y_{6}=\tfrac{4}{5}$, $S_{3}\to y_{8}=\tfrac{11}{10}$, $S_{3}\to y_{9}=\tfrac{7}{10}$, $G\to y_{2}=\tfrac{13}{10}$, $G\to y_{3}=\tfrac{3}{4}$, $G\to y_{4}=\tfrac{17}{20}$, $G\to y_{5}=\tfrac{21}{20}$, $G\to y_{6}=1$, $G\to y_{7}=\tfrac{9}{10}$, $G\to y_{8}=\tfrac{6}{5}$, $G\to y_{9}=\tfrac{4}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(y_{7})=\tfrac{13}{10}$, $\mathrm{Var}(y_{8})=\tfrac{3}{4}$, $\mathrm{Var}(y_{9})=\tfrac{19}{20}$, $\mathrm{Var}(S_{1})=1$, $\mathrm{Var}(S_{2})=\tfrac{6}{5}$, $\mathrm{Var}(S_{3})=\tfrac{4}{5}$, $\mathrm{Var}(G)=\tfrac{11}{10}$.}\par\smallskip
 \noindent\textbf{H29}, model A (for $A\nnest B$): $f=1.42560$. {\footnotesize $S_{1}\to y_{2}=1$, $S_{1}\to y_{3}=\tfrac{9}{10}$, $S_{2}\to y_{5}=\tfrac{6}{5}$, $S_{2}\to y_{6}=\tfrac{4}{5}$, $S_{3}\to y_{8}=\tfrac{11}{10}$, $S_{3}\to y_{9}=\tfrac{7}{10}$, $G\to y_{2}=\tfrac{13}{10}$, $G\to y_{3}=\tfrac{3}{4}$, $G\to y_{4}=\tfrac{17}{20}$, $G\to y_{5}=\tfrac{21}{20}$, $G\to y_{6}=1$, $G\to y_{7}=\tfrac{9}{10}$, $G\to y_{8}=\tfrac{6}{5}$, $G\to y_{9}=\tfrac{4}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(y_{7})=\tfrac{13}{10}$, $\mathrm{Var}(y_{8})=\tfrac{3}{4}$, $\mathrm{Var}(y_{9})=\tfrac{19}{20}$, $\mathrm{Var}(S_{1})=1$, $\mathrm{Var}(S_{2})=\tfrac{6}{5}$, $\mathrm{Var}(S_{3})=\tfrac{4}{5}$, $\mathrm{Var}(G)=\tfrac{11}{10}$.}\par\smallskip
 \noindent\textbf{H29}, model B (for $B\nnest A$): $f=0.0576000$. {\footnotesize $S_{1}\to y_{2}=1$, $S_{1}\to y_{3}=\tfrac{9}{10}$, $S_{1}\to y_{4}=\tfrac{6}{5}$, $S_{2}\to y_{6}=\tfrac{4}{5}$, $S_{2}\to y_{7}=\tfrac{11}{10}$, $S_{2}\to y_{8}=\tfrac{7}{10}$, $S_{2}\to y_{9}=\tfrac{13}{10}$, $G\to y_{2}=\tfrac{3}{4}$, $G\to y_{3}=\tfrac{17}{20}$, $G\to y_{4}=\tfrac{21}{20}$, $G\to y_{5}=1$, $G\to y_{6}=\tfrac{9}{10}$, $G\to y_{7}=\tfrac{6}{5}$, $G\to y_{8}=\tfrac{4}{5}$, $G\to y_{9}=\tfrac{11}{10}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(y_{7})=\tfrac{13}{10}$, $\mathrm{Var}(y_{8})=\tfrac{3}{4}$, $\mathrm{Var}(y_{9})=\tfrac{19}{20}$, $\mathrm{Var}(S_{1})=1$, $\mathrm{Var}(S_{2})=\tfrac{6}{5}$, $\mathrm{Var}(G)=\tfrac{4}{5}$.}\par\smallskip
+\noindent\textbf{H31}, model A (for $A\nnest B$): $f=0.00547522$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{4},y_{4}}=\tfrac{11}{5}$, $k_{y_{2},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{2}}=-\tfrac{2}{5}$, $k_{y_{4},y_{3}}=-\tfrac{3}{10}$, $k_{y_{4},y_{1}}=-\tfrac{1}{4}$.}\par\smallskip
+\noindent\textbf{H31}, model B (for $B\nnest A$): $f=0.268800$. {\footnotesize $y_{1}\to y_{2}=\tfrac{1}{2}$, $y_{1}\to y_{4}=\tfrac{3}{5}$, $y_{2}\to y_{3}=\tfrac{2}{5}$, $y_{4}\to y_{3}=\tfrac{7}{10}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$.}\par\smallskip
+\noindent\textbf{H32}, model B (for $B\nnest A$): $f=0.0197411$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{4},y_{4}}=\tfrac{11}{5}$, $k_{y_{2},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{2}}=-\tfrac{2}{5}$, $k_{y_{4},y_{3}}=-\tfrac{3}{10}$.}\par\smallskip
+\noindent\textbf{H34}, model A (for $A\nnest B$): rank of the Jacobian $=14>q_B=13$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $k_{F_{1},F_{1}}=2$, $k_{F_{2},F_{2}}=\tfrac{9}{4}$, $k_{F_{3},F_{3}}=\tfrac{5}{2}$, $k_{F_{2},F_{1}}=-\tfrac{1}{2}$, $k_{F_{3},F_{2}}=-\tfrac{2}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$.}\par\smallskip
 \noindent\textbf{P06}, model B (for $B\nnest A$): rank of the Jacobian $=8>q_A=7$. {\footnotesize $F\to y_{2}=1$, $F\to y_{3}=\tfrac{9}{10}$, $F\to y_{4}=\tfrac{6}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(F)=1$.}\par\smallskip
 \noindent\textbf{P07}, model B (for $B\nnest A$): rank of the Jacobian $=20>q_A=16$. {\footnotesize $k_{y_{1},y_{1}}=2$, $k_{y_{2},y_{2}}=\tfrac{9}{4}$, $k_{y_{3},y_{3}}=\tfrac{5}{2}$, $k_{y_{4},y_{4}}=\tfrac{11}{5}$, $k_{y_{5},y_{5}}=\tfrac{12}{5}$, $k_{y_{6},y_{6}}=\tfrac{21}{10}$, $k_{y_{7},y_{7}}=2$, $k_{y_{8},y_{8}}=\tfrac{9}{4}$, $k_{y_{2},y_{1}}=-\tfrac{1}{2}$, $k_{y_{3},y_{1}}=-\tfrac{2}{5}$, $k_{y_{4},y_{1}}=-\tfrac{3}{10}$, $k_{y_{3},y_{2}}=-\tfrac{1}{4}$, $k_{y_{4},y_{2}}=-\tfrac{7}{20}$, $k_{y_{4},y_{3}}=-\tfrac{9}{20}$, $k_{y_{6},y_{5}}=-\tfrac{1}{2}$, $k_{y_{7},y_{5}}=-\tfrac{2}{5}$, $k_{y_{8},y_{5}}=-\tfrac{3}{10}$, $k_{y_{7},y_{6}}=-\tfrac{1}{4}$, $k_{y_{8},y_{6}}=-\tfrac{7}{20}$, $k_{y_{8},y_{7}}=-\tfrac{9}{20}$.}\par\smallskip
 \noindent\textbf{P08}, model B (for $B\nnest A$): rank of the Jacobian $=15>q_A=14$. {\footnotesize $F_{1}\to y_{2}=1$, $F_{2}\to y_{4}=\tfrac{9}{10}$, $F_{3}\to y_{6}=\tfrac{6}{5}$, $G\to F_{2}=\tfrac{1}{2}$, $G\to F_{3}=\tfrac{3}{5}$, $\mathrm{Var}(y_{1})=1$, $\mathrm{Var}(y_{2})=\tfrac{6}{5}$, $\mathrm{Var}(y_{3})=\tfrac{9}{10}$, $\mathrm{Var}(y_{4})=\tfrac{4}{5}$, $\mathrm{Var}(y_{5})=\tfrac{11}{10}$, $\mathrm{Var}(y_{6})=\tfrac{7}{10}$, $\mathrm{Var}(F_{1})=1$, $\mathrm{Var}(F_{2})=\tfrac{6}{5}$, $\mathrm{Var}(F_{3})=\tfrac{4}{5}$, $\mathrm{Var}(G)=\tfrac{11}{10}$.}\par\smallskip

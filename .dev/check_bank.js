@@ -7,7 +7,8 @@
 //    the clicks of the level screen and checks that each has at least
 //    MIN_POOL pairs, and that every closed set of types with at least
 //    MIN_POOL pairs can be reached;
-//  * shows the smallest reachable configurations and their relations.
+//  * shows the smallest reachable configurations and their relations;
+//  * checks the default selection (networks off below Psychometrika).
 //   node .dev/check_bank.js
 'use strict';
 const { load } = require('./load.js');
@@ -23,6 +24,12 @@ for (const L of Object.keys(B.LEVELS).map(Number)) {
   for (const it of its) (byNeed[key(B.needs(it))] = byNeed[key(B.needs(it))] || []).push(it.id);
   for (const k of Object.keys(byNeed)) console.log(`  needs ${k.padEnd(26)} ${String(byNeed[k].length).padStart(2)}  ${byNeed[k].join(' ')}`);
   if (B.pool(L, P).length !== its.length) { bad++; console.log('  FAIL: not every item is in the game with all types on'); }
+  // the default selection (B.DEFAULT_OFF) must be a reachable configuration
+  let def = P;
+  for (const t of B.DEFAULT_OFF[L] || []) if (def.includes(t)) def = B.switchOff(def, t);
+  const nDef = B.pool(L, def).length;
+  console.log(`  default: ${key(def)} (${nDef} pairs; ${its.length - nDef} more with everything on)`);
+  if (nDef < B.MIN_POOL) { bad++; console.log('  FAIL: the default selection has too few pairs'); }
   // reachable configurations: clicks from "all on"
   const seen = new Map([[key(P), P]]), queue = [P];
   while (queue.length) {

@@ -142,21 +142,29 @@
   const B = SN.bank;
   const FULL = Object.fromEntries(B.FAMILIES.map(f => [f.id, f.full]));
   const list = (ids) => { const n = ids.map(x => FULL[x]); return n.length > 1 ? n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1] : n[0]; };
-  // per level, the types switched off there (types built on them are off too)
-  const savedOff = store('famsOff');
+  // per level, the types switched off there (types built on them are off too);
+  // levels the player has not changed keep B.DEFAULT_OFF (networks off below
+  // Psychometrika) and are not stored
+  const savedOff = store('famsOff2') || {};
   const lv = { level: +(store('level') || 1), off: {} };
   if (!B.LEVELS[lv.level]) lv.level = 1;
-  for (const L of Object.keys(B.LEVELS)) lv.off[L] = Array.isArray(savedOff && savedOff[L]) ? savedOff[L] : [];
+  for (const L of Object.keys(B.LEVELS)) if (Array.isArray(savedOff[L])) lv.off[L] = savedOff[L];
   // the switched-on types at a level
   function onAt(L) {
+    const off = lv.off[L] || B.DEFAULT_OFF[L] || [];
     let on = B.present(L);
-    for (const t of lv.off[L]) if (on.includes(t)) on = B.switchOff(on, t);
-    if (B.pool(L, on).length < B.MIN_POOL) { lv.off[L] = []; on = B.present(L); }
+    for (const t of off) if (on.includes(t)) on = B.switchOff(on, t);
+    if (B.pool(L, on).length < B.MIN_POOL) { delete lv.off[L]; on = B.present(L); }
+    return on;
+  }
+  function defaultOn(L) {
+    let on = B.present(L);
+    for (const t of B.DEFAULT_OFF[L] || []) if (on.includes(t)) on = B.switchOff(on, t);
     return on;
   }
   function setOn(on) {
     lv.off[lv.level] = B.present(lv.level).filter(x => !on.includes(x));
-    store('famsOff', lv.off);
+    store('famsOff2', lv.off);
   }
   function replay(el, cls) { el.classList.remove(cls); void el.offsetWidth; el.classList.add(cls); }
   const TICK = '<svg class="ok" viewBox="0 0 12 12"><path d="M2.2 6.4 L5 9 L9.8 3.2"/></svg>' +
@@ -217,6 +225,7 @@
     const note = $('fam-note');
     note.classList.toggle('warn', !!warn);
     note.textContent = msg || ('Switching a type off also switches off the types built on it.' +
+      (P.includes('ggm') && !on.includes('ggm') ? ' Network models are off by default below Psychometrika.' : '') +
       (anyLock ? ` Locked types stay on: without them fewer than ${B.MIN_POOL} pairs are left.` : ''));
     $('fam-all').style.visibility = on.length < P.length ? 'visible' : 'hidden';
   }
@@ -453,7 +462,7 @@
     $('dip-line2').textContent = passed ? 'sorted five pairs of structural equation models at the level' : 'who needs 60 points for a certificate at the level';
     $('dip-level').textContent = SN.bank.LEVELS[g.level];
     // a subset of the model types is mentioned on the certificate
-    const famText = g.fams.length < B.present(g.level).length ? 'Model types: ' + g.fams.map(id => FULL[id]).join(', ') : '';
+    const famText = g.fams.join() !== defaultOn(g.level).join() ? 'Model types: ' + g.fams.map(id => FULL[id]).join(', ') : '';
     $('dip-fams').textContent = famText;
     $('dip-medal').innerHTML = eggSVG(medal);
     $('final-score').textContent = String(s);

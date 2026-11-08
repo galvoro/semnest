@@ -98,6 +98,19 @@ module.exports = {
     ba: { text: R`Fix $\psi_{12}=\mathrm{Cov}(F_1,F_2)=0$ in $A$ (Lemma~R).` },
     ab: { dim: true } },
 
+  E28: { title: 'One factor equals one cluster',
+    ab: { text: R`Both models are saturated: $A$ by Lemma~B(a) (one factor with three indicators), $B$ because every element of $K$ is free, so $\Sigma=K^{-1}$ is any positive definite matrix (as in E26).` },
+    ba: { text: R`See above: $\overline{\mathcal M_A}=\overline{\mathcal M_B}$.` } },
+  E29: { title: 'One factor inside a complete cluster',
+    ab: { text: R`$B$ is saturated: every element of $K$ is free, so $\Sigma=K^{-1}$ is any positive definite matrix.` },
+    ba: { dim: true } },
+  E30: { title: 'A network inside a saturated factor',
+    ba: { text: R`$A$ is saturated (Lemma~B(a): one factor with three indicators), so every model for $y_1,y_2,y_3$ is nested in it.` },
+    ab: { dim: true } },
+  E31: { title: 'A star network equals a fork',
+    ab: { text: R`Lemma~C: the fork $y_1\to y_2,y_3,y_4$ has a tree (the star) as skeleton and no collider, so it equals the GGM on the star, which is $A$.` },
+    ba: { text: R`See above.` } },
+
   // ======================= MEDIUM =======================
   M01: { title: 'Residual covariance versus a second factor',
     ab: { text: R`Lemma~P with the pair $(y_3,y_4)$: $A\equiv F\{y_1,y_2\}\to G\{y_3,y_4\}$. The latent block $(F,G)$ is saturated in both that model and $B$ (Lemma~B(b), as in E03), so $A\equiv B$. Both equal $\{\Sigma\succ0:\sigma_{13}\sigma_{24}=\sigma_{14}\sigma_{23}\}$.` },
@@ -201,6 +214,19 @@ module.exports = {
     ab: { f: 's(y1,y2)', why: R`In $B$, $y_1$ and $y_2$ are exogenous and unconnected.` },
     ba: { f: 's(y1,y2)*s(y3,y3) - s(y1,y3)*s(y2,y3)', why: R`In $A$, $k_{12}=0$ (Lemma~I).`, val: R`-\sigma_{13}\sigma_{23}` } },
 
+  M33: { title: 'A complete latent network is correlated factors',
+    ab: { text: R`Same measurement part. In $A$ the latent covariance matrix is $\Psi=K^{-1}$ with every element of $K$ free (all edges), so $\Psi$ ranges over all invertible symmetric matrices; in $B$, $\Psi$ is free. Lemma~B(b).` },
+    ba: { text: R`See above.` } },
+  M34: { title: 'One residual edge is one residual covariance',
+    ab: { text: R`Same factor part. In $A$ the residuals of $y_1,y_2$ have covariance matrix $K^{-1}$ with $K$ a free $2\times2$ matrix, so a free $2\times2$ block (Lemma~I), and they are uncorrelated with the residuals of $y_3,y_4$; that is $\Theta$ of $B$ (free $\theta_{12}$).` },
+    ba: { text: R`See above.` } },
+  M35: { title: 'A latent network chain inside correlated factors',
+    ab: { text: R`Same measurement part; $B$ leaves $\Psi$ free and $A$ produces particular $\Psi$ (those with $k_{13}=0$). Lemma~B(b).` },
+    ba: { dim: true } },
+  M36: { title: 'Latent partial correlation or latent covariance',
+    ab: { f: 's(y1,y5)', why: R`In $B$, $\psi_{13}=0$, so $\sigma_{15}=\lambda_1\lambda_5\psi_{13}=0$.`, val: R`\lambda_1\lambda_5\psi_{13}` },
+    ba: { f: 's(y1,y3)*s(y4,y5) - s(y1,y5)*s(y3,y4)', why: R`With $\sigma_{13}=\lambda_1\lambda_3\psi_{12}$, $\sigma_{45}=\lambda_4\lambda_5\psi_{23}$, $\sigma_{15}=\lambda_1\lambda_5\psi_{13}$ and $\sigma_{34}=\lambda_3\lambda_4\psi_{22}$, $f=\lambda_1\lambda_3\lambda_4\lambda_5(\psi_{12}\psi_{23}-\psi_{13}\psi_{22})$; in $A$, $k_{13}=0$ means $\psi_{13}\psi_{22}=\psi_{12}\psi_{23}$ (Lemma~I).`, val: R`\lambda_1\lambda_3\lambda_4\lambda_5\psi_{12}\psi_{23}` } },
+
   // ======================= HARD =======================
   H01: { title: 'Equivalent residual covariances',
     ab: { text: R`By Lemma~P, $A\equiv F\{y_3,y_4\}\to G\{y_1,y_2\}$ and $B\equiv F\{y_1,y_2\}\to G\{y_3,y_4\}$; by Lemma~B(b) both are the two-factor model $\{y_1,y_2\}|\{y_3,y_4\}$ with correlated factors. Hence $A\equiv B$; both equal $\{\Sigma\succ0:\sigma_{13}\sigma_{24}=\sigma_{14}\sigma_{23}\}$.` },
@@ -293,6 +319,22 @@ module.exports = {
   H29: { title: 'Two bifactor groupings',
     ab: { f: 's(y4,y5)*s(y1,y7) - s(y4,y7)*s(y1,y5)', why: R`In $B$ the pairs $(y_4,y_5)$, $(y_1,y_7)$, $(y_4,y_7)$, $(y_1,y_5)$ are in different groups, so their covariances are $g_ig_j\psi_G$ and the tetrad vanishes.`, val: R`s_4s_5\psi_{S_2}\,g_1g_7\psi_G` },
     ba: { f: 's(y3,y4)*s(y1,y7) - s(y3,y7)*s(y1,y4)', why: R`In $A$ the pairs $(y_3,y_4)$, $(y_1,y_7)$, $(y_3,y_7)$, $(y_1,y_4)$ are in different groups.` } },
+
+  H30: { title: 'A shielded collider',
+    ab: { text: R`In $A$, $\Sigma^{-1}=(I-B)^\top D^{-1}(I-B)$ is nonzero off the diagonal only for pairs joined by an arrow or with a common child; the only common child is $y_3$, of $y_1$ and $y_2$, which are joined anyway. So $(\Sigma^{-1})_{14}=(\Sigma^{-1})_{24}=0$ and $\mathcal M_A\subseteq\mathcal M_B$. Conversely, if $(\Sigma^{-1})_{14}=(\Sigma^{-1})_{24}=0$, the conditional distribution of $y_4$ given the other variables depends on $y_3$ only. So $\Sigma$ is a covariance matrix of $(y_1,y_2,y_3)$ (any positive definite matrix, reproduced by the complete recursive part of $A$, Lemma~B(a)) followed by the regression $y_4=\beta y_3+e_4$, which is model $A$.` },
+    ba: { text: R`See above: $\mathcal M_A=\mathcal M_B$.` } },
+  H31: { title: 'A 4-cycle network versus a DAG with a collider',
+    ab: { f: 's(y1,y1)*s(y2,y4) - s(y1,y2)*s(y1,y4)', why: R`In $B$, $y_4$ has the single parent $y_1$ and $y_2$ is not a descendant of $y_4$, so $y_2\perp y_4\mid y_1$: the partial covariance $\sigma_{24}-\sigma_{12}\sigma_{14}/\sigma_{11}$ is zero.` },
+    ba: { f: 'det([[s(y1,y1), s(y1,y2), s(y1,y3)], [s(y3,y1), s(y3,y2), s(y3,y3)], [s(y4,y1), s(y4,y2), s(y4,y3)]])', why: R`The minor without row 2 and column 4; by Lemma~I it vanishes iff $(\Sigma^{-1})_{24}=0$, which holds in $A$ (no edge $y_2-y_4$).` } },
+  H32: { title: 'Two pairs inside a path network',
+    ab: { text: R`In $A$ the factors are uncorrelated, so $\Sigma$ is block-diagonal with blocks $\{y_1,y_2\}$ and $\{y_3,y_4\}$, and so is $\Sigma^{-1}$ (Lemma~I): $k_{13}=k_{14}=k_{23}=k_{24}=0$. Such a $\Sigma$ is a covariance matrix of $B$ (with $k_{23}=0$), so $\mathcal M_A\subseteq\mathcal M_B$, although $A$ has more parameters (it is not identified).` },
+    ba: { f: 's(y1,y3)', why: R`In $A$, $y_1$ and $y_3$ load on uncorrelated factors.` } },
+  H33: { title: 'Residual edges or two correlated factors',
+    ab: { text: R`By Lemma~I the residual network with the separate edges $y_1-y_2$ and $y_3-y_4$ gives a residual covariance matrix with free $\theta_{12},\theta_{34}$ and no other residual covariances. In both models the covariances between the pairs form a rank-one block ($\sigma_{ij}=\lambda_i\lambda_j\psi$ in $A$, $\lambda_i\lambda_j\psi_{12}$ in $B$, for $i\in\{1,2\}$, $j\in\{3,4\}$), so both lie in $\{\Sigma:\sigma_{13}\sigma_{24}=\sigma_{14}\sigma_{23}\}$. Conversely, for a generic $\Sigma$ in this set: in $B$ take $\lambda_1=\lambda_3=1$, $\psi_{12}=\sigma_{13}$, $\lambda_2=\sigma_{23}/\sigma_{13}$, $\lambda_4=\sigma_{14}/\sigma_{13}$, $\psi_{11}=\sigma_{12}/\lambda_2$, $\psi_{22}=\sigma_{34}/\lambda_4$; in $A$ take $\lambda_1=\lambda_3=1$, $\psi=\sigma_{13}$, $\lambda_2=\sigma_{23}/\sigma_{13}$, $\lambda_4=\sigma_{14}/\sigma_{13}$, $\theta_{12}=\sigma_{12}-\lambda_2\psi$, $\theta_{34}=\sigma_{34}-\lambda_4\psi$; in both, each residual variance is $\sigma_{ii}$ minus $\lambda_i^2$ times the variance of its factor. Both reproduce $\Sigma$ ($\sigma_{24}=\lambda_2\lambda_4\sigma_{13}=\sigma_{14}\sigma_{23}/\sigma_{13}$ by the constraint), so by Lemma~G both have the same closure. $A$ has one parameter more and is not identified.` },
+    ba: { text: R`See above.` } },
+  H34: { title: 'A latent pair inside a latent network chain',
+    ba: { text: R`In $B$, $\Psi$ is block-diagonal with blocks $\{F_1,F_2\}$ and $\{F_3\}$, so $K=\Psi^{-1}$ is too (Lemma~I): $k_{13}=k_{23}=0$. That is $A$ with the edge $F_2-F_3$ fixed to 0 (Lemma~R; same measurement part).` },
+    ab: { dim: true } },
 
   // ======================= PSYCHOMETRIKA =======================
   P02: { title: 'Orthogonal factors and network cliques',

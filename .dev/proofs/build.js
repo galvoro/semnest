@@ -1,4 +1,4 @@
-// Builds the proofs document for all 80 SEMNEST items and checks every
+// Builds the proofs document for all SEMNEST items and checks every
 // non-nesting argument in exact rational arithmetic.
 //   node .dev/proofs/build.js            -> check + semnest_proofs.tex (+ pdf if pdflatex is found)
 'use strict';
@@ -85,7 +85,7 @@ function tikzPair(it) {
 
 // ------------------------------------------------------------------ document
 const esc = (t) => t.replace(/[&%#_]/g, (c) => '\\' + c);
-function syntaxTex(s) { return '\\texttt{' + esc(s).replace(/;\s*/g, '; ').replace(/~/g, '\\char`\\~{}').replace(/\^/g, '\\^{}') + '}'; }
+function syntaxTex(s) { return '\\texttt{' + esc(s).replace(/;\s*/g, '; ').replace(/~/g, '\\char`\\~{}').replace(/\^/g, '\\^{}').replace(/--/g, '-{}-') + '}'; }
 
 const pages = [];
 for (const it of SN.bank.items) {
