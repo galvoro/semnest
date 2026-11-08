@@ -308,6 +308,7 @@
     g.k = k; g.answered = false;
     const it = g.items[k];
     g.cur = it;
+    $('dbg-id').textContent = it.id;   // DEBUG-ID: item id while testing; remove later
     // diagrams: one scale for both sides
     const { LA, LB } = SN.diagram.layoutItem(it);
     const bounds = SN.diagram.unionBounds([LA, LB]);
