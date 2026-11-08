@@ -7,8 +7,9 @@ Where the files go
                     (makes assets/title-wide.webp and assets/title-mobile.webp;
                     the game then shows them instead of the placeholder).
                     .dev/media/ is not committed.
-  Music          -> save as assets/bgm.mp3; then BGM_FILE (and, if the track
-                    has an intro or fade-out, BGM_LOOP) in audio.js need setting.
+  Music          -> save Suno's MP3 as .dev/media/bgm.mp3; it then goes to
+                    assets/bgm.mp3 with loop points that skip the intro and
+                    the fade-out (BGM_FILE and BGM_LOOP in audio.js).
 
 Palette of the game (for reference)
   sandstone paper #EFEADB, basalt ink #25261F, lagoon teal #247C8C (model A),
@@ -17,38 +18,43 @@ Palette of the game (for reference)
 
 
 =====================================================================
-1. BACKGROUND MUSIC (Gemini)
+1. BACKGROUND MUSIC (Suno)
 =====================================================================
-A calm, curious instrumental loop for an educational puzzle game called
-"SEMNEST", set in a hidden valley where dinosaurs nest. The player is a quiet
-explorer studying the nests at first light: a sense of discovery and wonder,
-but relaxed and focused, music to think to.
+In Suno: Create > Custom.
+  - Instrumental: on.
+  - Model: the newest one.
+  - Title: SEMNEST
+  - Styles: paste block A.
+  - Exclude styles (under More options): paste block B.
+  - If offered: Weirdness about 30 %, Style influence about 70 %.
+  - Lyrics box: leave empty, or paste block C (tags only, no words) to steer
+    the form. If Instrumental hides the lyrics box, skip C.
+Every run gives two versions; make a few runs and pick the one with the most
+even groove and the shortest intro and ending. Suno usually adds a short
+intro and a fade-out and makes tracks of 2 to 4 minutes; that is fine. Save
+the MP3 as .dev/media/bgm.mp3 and tell me: I set the loop points in
+audio.js (skipping the intro and the fade-out, with a crossfade at the
+seam), copy it to assets/bgm.mp3 and switch the music on.
 
-Style: light adventure / exploration underscore with an organic, earthy
-sound. A warm marimba and kalimba ostinato carries the pulse; soft hand
-percussion (frame drum, shaker, a low log drum on the downbeats); warm low
-strings holding long chords; a wooden flute or alto flute playing a simple,
-singable melody in short phrases; now and then a soft French horn swell that
-hints at a big landscape. NO epic orchestral hits, NO choir, NO heavy drums,
-NO synthesizer leads, NO electric guitars, NO bird sounds, NO roars or other
-animal sounds, NO vocals.
+--- A. Styles -------------------------------------------------------
 
-Mood: curious and warm, a little mysterious, never tense or scary.
-Key: D dorian (minor with a bright sixth), staying close to home.
+calm instrumental exploration underscore for a puzzle game, light adventure, curious and warm, a little mysterious, 96 BPM, steady 4/4, D dorian, warm marimba and kalimba ostinato, soft frame drum and shaker, low log drum on the downbeats, warm low strings holding long chords, wooden alto flute melody in short singable phrases, occasional soft French horn swell, organic earthy acoustic sound, light uncluttered mix, soft dynamics, constant energy, loopable
 
-Tempo: 96 BPM, steady 4/4, the same groove from start to end.
+--- B. Exclude styles -----------------------------------------------
 
-Texture: light and uncluttered; the melody leaves space; mixed quietly with
-soft dynamics, so it sits under clicks and sound effects.
+vocals, choir, lyrics, spoken word, epic orchestral hits, trailer music, heavy drums, synthesizer, electric guitar, EDM, drop, build-up, animal sounds, bird sounds
 
-Form: an 8-bar phrase, a slightly more open middle where the horn and strings
-widen, then back to the first phrase. Constant energy throughout: no intro,
-no build-up, no drop, no final hit, no ritardando, no fade-out, so the end
-loops smoothly back to the start.
+--- C. Lyrics box (optional; structure tags only) -------------------
 
-Length: 2:00 to 2:30.
+[Instrumental]
+[Main Theme: marimba and kalimba groove, flute melody]
+[Main Theme]
+[Bridge: French horn and low strings widen, same groove]
+[Main Theme]
+[Main Theme]
 
-Instrumental only: no lyrics, no vocal samples.
+If a version still has vocals or a big build-up, throw it away and run
+again rather than editing it.
 
 
 =====================================================================
