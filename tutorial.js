@@ -14,7 +14,7 @@
   const CARDS = [
     { title: 'TWO MODELS, ONE NEST', c: 'var(--a)',
       body: 'Each round shows two models, <b>A</b> and <b>B</b>, for the same observed variables (squares). Circles are latent variables, ' +
-        'arrows effects, curved arrows covariances, plain lines network edges (partial correlations; no line = independent given all others). Variances are free and not drawn.' },
+        'arrows effects, curved arrows covariances, plain lines network edges (partial correlations; no line = independent given all others). Variances are free and not drawn. On a phone, tap a model to enlarge it.' },
     { title: 'HOW DO THEY RELATE?', c: 'var(--b)',
       body: 'Think of a model as the set of covariance matrices it can produce. ' +
         '<div class="vrow"><span>' + V.equiv + 'equivalent</span><span>' + V.AinB + 'A nested in B</span><span>' + V.BinA + 'B nested in A</span><span>' + V.neither + 'neither</span></div>' },

@@ -277,7 +277,7 @@
 
   function startGame(level) {
     G.game = { level, fams: activeFams(), items: pickItems(level), k: 0, score: 0, results: [], answered: false, over: false };
-    hideScreens(); setMode('play'); hudHeight();
+    hideScreens(); setMode('play');
     $('hud-level').textContent = SN.bank.LEVELS[level];
     $('hud-score').textContent = '0';
     const eggs = $('hud-eggs'); eggs.innerHTML = '';
@@ -331,36 +331,110 @@
       const m = b.querySelector('.mark'); if (m) m.remove();
     }
     $('feedback').classList.add('hidden');
-    setTab('A'); pairEl.classList.remove('answered');
+    playEl.classList.remove('answered'); sheet(null); closeZoom();
     // HUD eggs
     const eggs = $('hud-eggs').children;
     for (let j = 0; j < eggs.length; j++) eggs[j].classList.toggle('now', j === k);
     $('play').scrollTop = 0;
   }
 
-  // phones: the A/B tabs stick below the HUD
-  function hudHeight() { document.documentElement.style.setProperty('--hud-h', $('hud').offsetHeight + 'px'); }
-  global.addEventListener('resize', hudHeight); hudHeight();
-  // phones: one model at a time (tabs and swipes)
-  const pairEl = document.querySelector('#play .pair');
-  function setTab(t) {
-    pairEl.dataset.tab = t;
-    for (const b of pairEl.querySelectorAll('.ab-tab')) {
-      const on = b.dataset.tab === t;
-      b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on));
+  // ------------------------------------------------------------------
+  // Phones: both models on one screen (A above B); DECIDE opens a sheet with
+  // the answers, the feedback follows in a sheet; tap a model to enlarge it
+  // ------------------------------------------------------------------
+  const playEl = $('play');
+  const PHONE = global.matchMedia('(max-width: 860px), (max-aspect-ratio: 4/5)');
+  function sheet(name) {           // 'decide' | 'fb' | null
+    playEl.classList.toggle('sheet-decide', name === 'decide');
+    playEl.classList.toggle('sheet-fb', name === 'fb');
+  }
+  function sheetOpen() { return playEl.classList.contains('sheet-decide') || playEl.classList.contains('sheet-fb'); }
+  $('btn-decide').addEventListener('click', () => { SFX('click'); sheet('decide'); });
+  $('pb-why').addEventListener('click', () => { SFX('click'); sheet('fb'); });
+  $('pb-next').addEventListener('click', () => next());
+  $('sheet-bg').addEventListener('click', () => sheet(null));
+  for (const x of playEl.querySelectorAll('.sheet-x')) x.addEventListener('click', () => { SFX('click'); sheet(null); });
+
+  // the enlarged model: a copy of the diagram whose viewBox follows pinch,
+  // drag, double-tap and the mouse wheel
+  const zoomEl = $('zoom'), zoomBody = $('zoom-body');
+  let zv = null;                   // { base: [x, y, w, h], s, cx, cy }
+  const clampS = (v) => Math.min(5, Math.max(1, v));
+  function zoomApply() {
+    const svg = zoomBody.querySelector('svg');
+    if (!svg || !zv) return;
+    const [x, y, w, h] = zv.base, vw = w / zv.s, vh = h / zv.s;
+    zv.cx = Math.min(Math.max(zv.cx, x + vw / 2), x + w - vw / 2);
+    zv.cy = Math.min(Math.max(zv.cy, y + vh / 2), y + h - vh / 2);
+    svg.setAttribute('viewBox', [zv.cx - vw / 2, zv.cy - vh / 2, vw, vh].map(v => v.toFixed(3)).join(' '));
+  }
+  // user units per screen pixel ("meet": the larger ratio)
+  function upp() { const r = zoomBody.getBoundingClientRect(); return Math.max(zv.base[2] / zv.s / r.width, zv.base[3] / zv.s / r.height); }
+  function zoomAt(px, py, s1) {     // zoom keeping the point under (px, py) in place
+    const r = zoomBody.getBoundingClientRect(), ox = px - (r.left + r.width / 2), oy = py - (r.top + r.height / 2);
+    const u0 = upp(), ux = zv.cx + ox * u0, uy = zv.cy + oy * u0;
+    zv.s = clampS(s1);
+    const u1 = upp();
+    zv.cx = ux - ox * u1; zv.cy = uy - oy * u1;
+    zoomApply();
+  }
+  function openZoom(side) {
+    const src = $(side === 'A' ? 'svg-a' : 'svg-b');
+    const svg = src.cloneNode(true);
+    svg.removeAttribute('id');
+    zoomBody.innerHTML = ''; zoomBody.appendChild(svg);
+    zoomBody.className = 'zoom-body paper ' + side.toLowerCase();
+    const vb = src.getAttribute('viewBox').trim().split(/\s+/).map(Number);
+    zv = { base: vb, s: 1, cx: vb[0] + vb[2] / 2, cy: vb[1] + vb[3] / 2 };
+    zoomApply();
+    $('zoom-title').textContent = 'Model ' + side;
+    $('zoom-meta').textContent = $(side === 'A' ? 'meta-a' : 'meta-b').textContent;
+    for (const b of zoomEl.querySelectorAll('.zoom-side')) b.classList.toggle('on', b.dataset.side === side);
+    zoomEl.classList.remove('hidden');
+    // a wide diagram on an upright screen: suggest turning the phone
+    const r = zoomBody.getBoundingClientRect();
+    zoomEl.querySelector('.zoom-turn').style.display = vb[2] / vb[3] > 1.3 * r.width / r.height ? 'inline' : 'none';
+  }
+  function closeZoom() { zoomEl.classList.add('hidden'); zoomBody.innerHTML = ''; zv = null; }
+  for (const id of ['card-a', 'card-b']) $(id).addEventListener('click', () => {
+    if (!PHONE.matches || G.mode !== 'play') return;
+    SFX('click'); openZoom($(id).dataset.side);
+  });
+  for (const b of zoomEl.querySelectorAll('.zoom-side')) b.addEventListener('click', () => { if (!b.classList.contains('on')) { SFX('click'); openZoom(b.dataset.side); } });
+  $('zoom-close').addEventListener('click', () => { SFX('click'); closeZoom(); });
+  zoomEl.addEventListener('click', (e) => { if (e.target === zoomEl) closeZoom(); });
+  const touches = new Map();
+  let pinch = null, moved = 0, lastTap = 0;
+  zoomBody.addEventListener('pointerdown', (e) => {
+    if (!zv) return;
+    try { zoomBody.setPointerCapture(e.pointerId); } catch (err) { /* synthetic events */ }
+    touches.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (touches.size === 1) moved = 0;
+    if (touches.size === 2) { const [p, q] = [...touches.values()]; pinch = { d: Math.hypot(p.x - q.x, p.y - q.y) || 1, s: zv.s }; }
+  });
+  zoomBody.addEventListener('pointermove', (e) => {
+    const t = touches.get(e.pointerId);
+    if (!zv || !t) return;
+    const dx = e.clientX - t.x, dy = e.clientY - t.y;
+    t.x = e.clientX; t.y = e.clientY; moved += Math.abs(dx) + Math.abs(dy);
+    if (touches.size === 1) { const u = upp(); zv.cx -= dx * u; zv.cy -= dy * u; zoomApply(); }
+    else if (touches.size === 2 && pinch) {
+      const [p, q] = [...touches.values()];
+      zoomAt((p.x + q.x) / 2, (p.y + q.y) / 2, pinch.s * Math.hypot(p.x - q.x, p.y - q.y) / pinch.d);
+    }
+  });
+  function touchEnd(e) {
+    if (!touches.has(e.pointerId)) return;
+    touches.delete(e.pointerId);
+    if (touches.size < 2) pinch = null;
+    if (e.type === 'pointerup' && !touches.size && moved < 10 && zv) {
+      const now = Date.now();
+      if (now - lastTap < 320) { zoomAt(e.clientX, e.clientY, zv.s > 1.4 ? 1 : 2.5); lastTap = 0; } else lastTap = now;
     }
   }
-  for (const b of pairEl.querySelectorAll('.ab-tab')) b.addEventListener('click', () => { if (pairEl.dataset.tab !== b.dataset.tab) SFX('click'); setTab(b.dataset.tab); });
-  let swipe = null;
-  pairEl.addEventListener('touchstart', (e) => {
-    swipe = e.touches.length === 1 && e.target.closest('.model-card') ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
-  }, { passive: true });
-  pairEl.addEventListener('touchend', (e) => {
-    if (!swipe) return;
-    const t = e.changedTouches[0], dx = t.clientX - swipe.x, dy = t.clientY - swipe.y;
-    swipe = null;
-    if (Math.abs(dx) > 50 && Math.abs(dy) < 45) { const nt = dx < 0 ? 'B' : 'A'; if (nt !== pairEl.dataset.tab) { SFX('click'); setTab(nt); } }
-  }, { passive: true });
+  zoomBody.addEventListener('pointerup', touchEnd);
+  zoomBody.addEventListener('pointercancel', touchEnd);
+  zoomBody.addEventListener('wheel', (e) => { if (!zv) return; e.preventDefault(); zoomAt(e.clientX, e.clientY, zv.s * Math.exp(-e.deltaY * 0.0025)); }, { passive: false });
 
   function points(truth, ans) {
     if (truth === ans) return CONFIG.POINTS;
@@ -390,7 +464,7 @@
       if (a === ans) { b.classList.add('picked'); if (a !== it.rel) { b.classList.add(cls === 'half' ? 'half' : 'wrong'); b.insertAdjacentHTML('beforeend', '<span class="mark">' + (cls === 'half' ? '&frac12;' : '&#10007;') + '</span>'); } }
     }
     $('svg-a').classList.add('show-diff'); $('svg-b').classList.add('show-diff');
-    pairEl.classList.add('answered');
+    playEl.classList.add('answered');
     // facts
     const rng = SN.la.rng(1234);
     const ia = modelInfo(it, 'A', rng), ib = modelInfo(it, 'B', rng);
@@ -407,14 +481,19 @@
     $('fb-rel').innerHTML = rel;
     $('fb-why').textContent = it.why;
     $('fb-facts').innerHTML = `<span><b>A</b> ${fact(ia)}</span><span><b>B</b> ${fact(ib)}</span><span>${ia.mom} variances and covariances</span>`;
-    $('btn-next').textContent = g.k + 1 < CONFIG.ROUNDS ? 'NEXT PAIR' : 'SEE RESULT';
+    $('btn-next').textContent = $('pb-next').textContent = g.k + 1 < CONFIG.ROUNDS ? 'NEXT PAIR' : 'SEE RESULT';
+    $('fb-you').textContent = cls === 'good' ? '' : 'Your answer: ' + SHORT[ans];
+    const pv = $('pb-verdict');
+    pv.className = 'pb-verdict ' + cls; pv.textContent = v.textContent + ' +' + pts;
     document.querySelector('.fb-hint').style.visibility = g.showDiff ? 'visible' : 'hidden';
     $('feedback').classList.remove('hidden');
     // HUD
     $('hud-score').textContent = String(g.score);
     const egg = $('hud-eggs').children[g.k];
     egg.classList.add(cls); egg.classList.remove('now');
-    setTimeout(() => { const f = $('feedback'); if (f.scrollIntoView && window.innerWidth <= 860) f.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }, 60);
+    // phones: let the marked answers show for a moment, then the feedback sheet
+    const k = g.k;
+    setTimeout(() => { if (G.game === g && g.k === k && g.answered) sheet('fb'); }, playEl.classList.contains('sheet-decide') ? 700 : 0);
   }
   function pick(arr) { return arr[Math.floor(rand() * arr.length)]; }
 
@@ -430,6 +509,7 @@
   document.addEventListener('keydown', (e) => {
     if (G.mode !== 'play' || G.screen || !G.game || SN.tutorial.isOpen()) return;
     if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key === 'Escape') { if (!zoomEl.classList.contains('hidden')) closeZoom(); else if (sheetOpen()) sheet(null); return; }
     const map = { 1: 'equiv', 2: 'AinB', 3: 'BinA', 4: 'neither' };
     if (map[e.key] && !G.game.answered) { e.preventDefault(); answer(map[e.key]); }
     else if ((e.key === 'Enter' || e.key === ' ') && G.game.answered) { e.preventDefault(); next(); }
@@ -508,5 +588,5 @@
 
   // ------------------------------------------------------------------
   SN.app = { toast, SFX, store, showScreen, hideScreens, setMode, openModal, closeModal, G, CONFIG, REL };
-  SN.game = { G, startGame, startRound, answer, next, showFinal, points, modelInfo, pickItems, setTab, lv, updateLevel };
+  SN.game = { G, startGame, startRound, answer, next, showFinal, points, modelInfo, pickItems, sheet, openZoom, closeZoom, lv, updateLevel };
 })(window);

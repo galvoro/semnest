@@ -46,17 +46,15 @@
   <!-- ==================== PLAY ==================== -->
   <main id="play" class="mode-main">
     <section class="pair" data-tab="A">
-      <div class="ab-tabs" role="tablist" aria-label="Model">
-        <button class="ab-tab a on" data-tab="A" role="tab" aria-selected="true"><span class="badge a">A</span>Model A</button>
-        <button class="ab-tab b" data-tab="B" role="tab" aria-selected="false"><span class="badge b">B</span>Model B</button>
-      </div>
       <figure class="model-card" id="card-a" data-side="A">
         <figcaption><span class="badge a">A</span><span class="mc-title">Model A</span><span class="mc-meta" id="meta-a"></span></figcaption>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6 L17 17 M6 8.5 H11 M8.5 6 V11"/></svg></span>
         <div class="paper"><svg class="diagram" id="svg-a" role="img" aria-label="Path diagram of model A"></svg></div>
       </figure>
 
       <div class="answers" id="answers" role="group" aria-label="Your answer">
         <div class="ans-q">How are <b class="ta">A</b> and <b class="tb">B</b> related?</div>
+        <button class="sheet-x" aria-label="Close">&#10005;</button>
         <button class="ans" data-ans="equiv"><svg class="venn" viewBox="0 0 64 40"><ellipse class="v-b" cx="32" cy="20" rx="17" ry="15.5"/><ellipse class="v-a dash" cx="32" cy="20" rx="17" ry="15.5"/></svg>
           <span class="ans-t"><b>Equivalent</b><small>A&nbsp;&equiv;&nbsp;B: same fit on every dataset</small></span><kbd>1</kbd></button>
         <button class="ans" data-ans="AinB"><svg class="venn" viewBox="0 0 64 40"><ellipse class="v-b" cx="32" cy="20" rx="25" ry="17.5"/><ellipse class="v-a" cx="27" cy="21" rx="12" ry="10"/></svg>
@@ -69,6 +67,7 @@
 
       <figure class="model-card" id="card-b" data-side="B">
         <figcaption><span class="badge b">B</span><span class="mc-title">Model B</span><span class="mc-meta" id="meta-b"></span></figcaption>
+        <span class="zoom-hint" aria-hidden="true"><svg viewBox="0 0 20 20"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M12.6 12.6 L17 17 M6 8.5 H11 M8.5 6 V11"/></svg></span>
         <div class="paper"><svg class="diagram" id="svg-b" role="img" aria-label="Path diagram of model B"></svg></div>
       </figure>
     </section>
@@ -78,10 +77,12 @@
       <div class="fb-head">
         <span class="fb-verdict" id="fb-verdict">Correct!</span>
         <span class="fb-points" id="fb-points">+20</span>
+        <button class="sheet-x" aria-label="Close">&#10005;</button>
       </div>
       <div class="fb-body">
         <svg class="venn big" id="fb-venn" viewBox="0 0 64 40"></svg>
         <div class="fb-text">
+          <div class="fb-you" id="fb-you"></div>
           <div class="fb-rel" id="fb-rel"></div>
           <p class="fb-why" id="fb-why"></p>
           <div class="fb-facts" id="fb-facts"></div>
@@ -92,6 +93,17 @@
         <button class="pill-btn" id="btn-next">NEXT</button>
       </div>
     </section>
+
+    <!-- phones: the decide button (later the verdict) and the sheets' backdrop -->
+    <div class="play-bar" id="play-bar">
+      <button class="big-btn pb-decide" id="btn-decide">DECIDE</button>
+      <div class="pb-done">
+        <span class="pb-verdict" id="pb-verdict"></span>
+        <button class="pill-btn ghost" id="pb-why">Why?</button>
+        <button class="pill-btn" id="pb-next">NEXT PAIR</button>
+      </div>
+    </div>
+    <div class="sheet-bg" id="sheet-bg"></div>
   </main>
 
   <!-- ==================== LEARN ==================== -->
@@ -243,6 +255,20 @@
 </section>
 
 <!-- ==================== MODALS ==================== -->
+<!-- phones: one model, larger (pinch, double-tap, drag) -->
+<div id="zoom" class="zoom hidden" role="dialog" aria-modal="true" aria-label="Model, enlarged">
+  <div class="zoom-box">
+    <div class="zoom-head">
+      <button class="zoom-side a" data-side="A" aria-label="Model A"><span class="badge a">A</span></button>
+      <button class="zoom-side b" data-side="B" aria-label="Model B"><span class="badge b">B</span></button>
+      <span class="zoom-title" id="zoom-title">Model A</span>
+      <button class="icon-btn" id="zoom-close" aria-label="Close">&#10005;</button>
+    </div>
+    <div class="zoom-body paper" id="zoom-body"></div>
+    <div class="zoom-foot"><span id="zoom-meta"></span><span class="zoom-tip">pinch or double-tap to zoom, drag to move<span class="zoom-turn"> · turn your phone for more room</span></span></div>
+  </div>
+</div>
+
 <div id="modal-quit" class="modal hidden" role="dialog" aria-modal="true">
   <div class="modal-box">
     <h3>Leave this game?</h3>

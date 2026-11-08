@@ -11,8 +11,11 @@ eggs as level medals, a map neatline and ferns on the certificate.
 
 Four levels (Easy, Medium, Hard, Psychometrika), five rounds per game. Each round
 shows two path diagrams, model **A** and model **B**, for the same observed
-variables (side by side on desktop; on phones one at a time, with A / B tabs
-and the answers underneath). The player answers:
+variables (side by side on desktop). On phones both models share one screen
+(A above B, side by side when the phone is turned); DECIDE opens a sheet with
+the answers, the feedback follows in a sheet, and tapping a model enlarges it
+(pinch, double-tap or drag to zoom; switch between A and B in the popup). The
+player answers:
 
 | answer | meaning |
 |---|---|

@@ -34,9 +34,14 @@ const W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900), MOB = proce
     for (let k = 0; k < 5; k++) {
       const truth = await b.eval('SN.game.G.game.cur.rel');
       const pickAns = k === 1 ? (truth === 'equiv' ? 'AinB' : truth === 'neither' ? 'equiv' : 'equiv') : k === 3 ? 'neither' : truth;
-      await b.clickSel(`.ans[data-ans="${pickAns}"]`); await sleep(500);
+      if (MOB) {   // phones: DECIDE opens the answer sheet; tap a model to enlarge it
+        if (k === 0) { await b.clickSel('#card-b'); await sleep(350); await b.shot(path.join(OUT, tag + '04_zoomB.png')); await b.clickSel('#zoom-close'); await sleep(200); }
+        await b.clickSel('#btn-decide'); await sleep(400);
+        if (k === 0) await b.shot(path.join(OUT, tag + '04_decide.png'));
+      }
+      await b.clickSel(`.ans[data-ans="${pickAns}"]`); await sleep(MOB ? 1100 : 500);
       if (k === 0 || k === 1) await b.shot(path.join(OUT, tag + '05_feedback' + k + '.png'));
-      if (MOB && k === 0) { await b.clickSel('.ab-tab[data-tab="B"]'); await sleep(250); await b.shot(path.join(OUT, tag + '05_feedback0_tabB.png')); }
+      if (MOB && k === 0) { await b.clickSel('#feedback .sheet-x'); await sleep(400); await b.shot(path.join(OUT, tag + '05_feedback0_closed.png')); await b.clickSel('#pb-why'); await sleep(400); }
       console.log('round', k + 1, SN_id = await b.eval('SN.game.G.game.cur.id'), 'truth', truth, 'answered', pickAns, 'score', await b.eval('SN.game.G.game.score'));
       await b.clickSel('#btn-next'); await sleep(400);
     }
