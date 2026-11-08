@@ -471,7 +471,7 @@
     // feedback panel
     const v = $('fb-verdict');
     v.className = 'fb-verdict ' + cls;
-    v.textContent = cls === 'good' ? pick(['Correct!', 'Nicely nested!', 'Spot on!', 'Correct!']) : cls === 'half' ? 'Close!' : 'Not this time';
+    v.textContent = cls === 'good' ? pick(['Well done!', 'Correct!', 'Spot on!']) : cls === 'half' ? 'Close!' : 'Not this time';
     $('fb-points').textContent = '+' + pts;
     $('fb-venn').innerHTML = SN.VENN[it.rel].replace(/^<svg[^>]*>|<\/svg>$/g, '');
     let rel = REL[it.rel].html + ': ' + REL[it.rel].text + '.';
