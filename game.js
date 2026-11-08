@@ -128,8 +128,52 @@
   $('save-ok').addEventListener('click', () => closeModal('modal-save'));
 
   // ------------------------------------------------------------------
-  // Level screen
+  // Level screen: pick a level and the model types to practise
   // ------------------------------------------------------------------
+  const B = SN.bank;
+  const allFams = B.FAMILIES.map(f => f.id);
+  const lv = { level: +(store('level') || 1), fams: Array.isArray(store('fams')) ? store('fams').filter(f => allFams.includes(f)) : allFams.slice() };
+  if (!B.LEVELS[lv.level]) lv.level = 1;
+  const TICK = '<svg viewBox="0 0 12 12"><path d="M2.2 6.4 L5 9 L9.8 3.2"/></svg>';
+  (function buildChips() {
+    const box = $('fam-chips');
+    for (const f of B.FAMILIES) {
+      const b = document.createElement('button');
+      b.className = 'fam-chip'; b.dataset.fam = f.id;
+      b.innerHTML = `<span class="tick">${TICK}</span><span>${f.name}<small>${f.sub}</small></span>`;
+      b.addEventListener('click', () => {
+        if (b.disabled) return;
+        SFX('click');
+        lv.fams = lv.fams.includes(f.id) ? lv.fams.filter(x => x !== f.id) : lv.fams.concat(f.id);
+        store('fams', lv.fams); updateLevel();
+      });
+      box.appendChild(b);
+    }
+  })();
+  // the enabled families that are offered at the current level
+  function activeFams() { const on = B.offered(lv.level).on; return lv.fams.filter(f => on.includes(f)); }
+  function updateLevel() {
+    for (const card of document.querySelectorAll('.level-card')) {
+      const sel = +card.dataset.level === lv.level;
+      card.classList.toggle('sel', sel); card.setAttribute('aria-checked', String(sel));
+    }
+    const on = B.offered(lv.level).on;
+    for (const b of document.querySelectorAll('.fam-chip')) {
+      const f = b.dataset.fam, offered = on.includes(f);
+      b.disabled = !offered;
+      b.setAttribute('aria-pressed', String(offered && lv.fams.includes(f)));
+      b.title = offered ? '' : 'Not part of the level ' + B.LEVELS[lv.level];
+    }
+    const act = activeFams(), n = act.length ? B.pool(lv.level, act).length : 0;
+    $('btn-start').disabled = n < CONFIG.ROUNDS;
+    $('fam-pool').textContent = n ? n + ' pairs of models' : '';
+    const note = $('fam-note');
+    note.classList.toggle('warn', !act.length);
+    note.textContent = !act.length ? 'Switch on at least one model type.' :
+      'Greyed out: not part of this level. Items about SEM, higher-order, bifactor or network models may compare with a plain factor or path model.';
+    $('fam-all').style.visibility = on.every(f => lv.fams.includes(f)) ? 'hidden' : 'visible';
+  }
+  $('fam-all').addEventListener('click', () => { SFX('click'); lv.fams = Array.from(new Set(lv.fams.concat(B.offered(lv.level).on))); store('fams', lv.fams); updateLevel(); });
   function showLevels() {
     const best = store('best') || {};
     for (const card of document.querySelectorAll('.level-card')) {
@@ -139,33 +183,44 @@
       b.textContent = best[l] ? CONFIG.MEDALS[l].name + ' egg · best ' + best[l] : CONFIG.MEDALS[l].name + ' egg';
       b.classList.toggle('won', !!best[l]);
     }
+    updateLevel();
     showScreen('screen-level');
   }
   for (const card of document.querySelectorAll('.level-card')) {
-    card.addEventListener('click', () => { SFX('pop'); startGame(+card.dataset.level); });
+    card.addEventListener('click', () => {
+      SFX('pop'); lv.level = +card.dataset.level; store('level', lv.level); updateLevel();
+    });
+    card.addEventListener('dblclick', () => { if (!$('btn-start').disabled) startGame(lv.level); });
   }
+  $('btn-start').addEventListener('click', () => { SFX('click'); startGame(lv.level); });
 
   // ------------------------------------------------------------------
   // The game
   // ------------------------------------------------------------------
-  function pickItems(level) {
-    const pool = SN.bank.items.filter(i => i.level === level);
-    for (let attempt = 0; attempt < 200; attempt++) {
-      const sh = pool.slice();
-      for (let i = sh.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [sh[i], sh[j]] = [sh[j], sh[i]]; }
-      const pick = [], count = {};
-      for (const it of sh) {
-        if (pick.length === CONFIG.ROUNDS) break;
-        if ((count[it.rel] || 0) >= 2) continue;
-        pick.push(it); count[it.rel] = (count[it.rel] || 0) + 1;
+  // five items from the pool of the chosen model types, with a mix of
+  // relations (at most two of a kind and at least three kinds when the pool
+  // allows it)
+  function pickItems(level, fams) {
+    const pool = B.pool(level, fams || activeFams());
+    const tries = [[2, 3], [2, 2], [3, 2], [5, 1]];
+    for (const [maxPer, minKinds] of tries) {
+      for (let attempt = 0; attempt < 120; attempt++) {
+        const sh = pool.slice();
+        for (let i = sh.length - 1; i > 0; i--) { const j = Math.floor(rand() * (i + 1)); [sh[i], sh[j]] = [sh[j], sh[i]]; }
+        const pick = [], count = {};
+        for (const it of sh) {
+          if (pick.length === CONFIG.ROUNDS) break;
+          if ((count[it.rel] || 0) >= maxPer) continue;
+          pick.push(it); count[it.rel] = (count[it.rel] || 0) + 1;
+        }
+        if (pick.length === CONFIG.ROUNDS && Object.keys(count).length >= minKinds) return pick;
       }
-      if (pick.length === CONFIG.ROUNDS && Object.keys(count).length >= 3) return pick;
     }
     return pool.slice(0, CONFIG.ROUNDS);
   }
 
   function startGame(level) {
-    G.game = { level, items: pickItems(level), k: 0, score: 0, results: [], answered: false, over: false };
+    G.game = { level, fams: activeFams(), items: pickItems(level), k: 0, score: 0, results: [], answered: false, over: false };
     hideScreens(); setMode('play');
     $('hud-level').textContent = SN.bank.LEVELS[level];
     $('hud-score').textContent = '0';
@@ -198,9 +253,7 @@
     const it = g.items[k];
     g.cur = it;
     // diagrams: one scale for both sides
-    const sa = SN.sem.parse(it.A, it.obs), sb = SN.sem.parse(it.B, it.obs);
-    const LA = SN.diagram.layout(sa, Object.assign({}, it.pos, it.posA), it.res);
-    const LB = SN.diagram.layout(sb, Object.assign({}, it.pos, it.posB), it.res);
+    const { LA, LB } = SN.diagram.layoutItem(it);
     const bounds = SN.diagram.unionBounds([LA, LB]);
     let diff = SN.diagram.differences(LA, LB);
     // highlight differences only when they are a minority of the paths
@@ -222,11 +275,33 @@
       const m = b.querySelector('.mark'); if (m) m.remove();
     }
     $('feedback').classList.add('hidden');
+    setTab('A'); pairEl.classList.remove('answered');
     // HUD eggs
     const eggs = $('hud-eggs').children;
     for (let j = 0; j < eggs.length; j++) eggs[j].classList.toggle('now', j === k);
     $('play').scrollTop = 0;
   }
+
+  // phones: one model at a time (tabs and swipes)
+  const pairEl = document.querySelector('#play .pair');
+  function setTab(t) {
+    pairEl.dataset.tab = t;
+    for (const b of pairEl.querySelectorAll('.ab-tab')) {
+      const on = b.dataset.tab === t;
+      b.classList.toggle('on', on); b.setAttribute('aria-selected', String(on));
+    }
+  }
+  for (const b of pairEl.querySelectorAll('.ab-tab')) b.addEventListener('click', () => { if (pairEl.dataset.tab !== b.dataset.tab) SFX('click'); setTab(b.dataset.tab); });
+  let swipe = null;
+  pairEl.addEventListener('touchstart', (e) => {
+    swipe = e.touches.length === 1 && e.target.closest('.model-card') ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+  }, { passive: true });
+  pairEl.addEventListener('touchend', (e) => {
+    if (!swipe) return;
+    const t = e.changedTouches[0], dx = t.clientX - swipe.x, dy = t.clientY - swipe.y;
+    swipe = null;
+    if (Math.abs(dx) > 50 && Math.abs(dy) < 45) { const nt = dx < 0 ? 'B' : 'A'; if (nt !== pairEl.dataset.tab) { SFX('click'); setTab(nt); } }
+  }, { passive: true });
 
   function points(truth, ans) {
     if (truth === ans) return CONFIG.POINTS;
@@ -256,6 +331,7 @@
       if (a === ans) { b.classList.add('picked'); if (a !== it.rel) { b.classList.add(cls === 'half' ? 'half' : 'wrong'); b.insertAdjacentHTML('beforeend', '<span class="mark">' + (cls === 'half' ? '&frac12;' : '&#10007;') + '</span>'); } }
     }
     $('svg-a').classList.add('show-diff'); $('svg-b').classList.add('show-diff');
+    pairEl.classList.add('answered');
     // facts
     const rng = SN.la.rng(1234);
     const ia = modelInfo(it, 'A', rng), ib = modelInfo(it, 'B', rng);
@@ -326,6 +402,9 @@
     $('dip-line1').textContent = passed ? 'This certifies that' : 'A good try by';
     $('dip-line2').textContent = passed ? 'sorted five pairs of structural equation models at the level' : 'who needs 60 points for a certificate at the level';
     $('dip-level').textContent = SN.bank.LEVELS[g.level];
+    // a subset of the model types is mentioned on the certificate
+    const famText = g.fams.length < B.offered(g.level).on.length ? 'Model types: ' + g.fams.map(id => B.FAMILIES.find(f => f.id === id).name).join(', ') : '';
+    $('dip-fams').textContent = famText;
     $('dip-medal').innerHTML = eggSVG(medal);
     $('final-score').textContent = String(s);
     $('dip-stars').innerHTML = [0, 1, 2].map(k => `<span class="${k < stars ? '' : 'off'}">&#9733;</span>`).join('');
@@ -337,7 +416,7 @@
     $('btn-save-img').classList.toggle('hidden', !passed);
     $('btn-print').classList.toggle('hidden', !passed || embedded);
     G.final = {
-      level: SN.bank.LEVELS[g.level], medal, score: s, max: CONFIG.ROUNDS * CONFIG.POINTS, stars, rank: rankOf(s), passed,
+      level: SN.bank.LEVELS[g.level], fams: famText, medal, score: s, max: CONFIG.ROUNDS * CONFIG.POINTS, stars, rank: rankOf(s), passed,
       rounds: g.results.map((r, k) => ({ k: k + 1, title: r.item.id, answer: SHORT[r.ans], truth: SHORT[r.item.rel], pts: '+' + r.pts, cls: r.cls === 'good' ? 'ok' : r.cls === 'half' ? 'hf' : 'no' })),
       date: $('dip-date').textContent,
     };
@@ -370,5 +449,5 @@
 
   // ------------------------------------------------------------------
   SN.app = { toast, SFX, store, showScreen, hideScreens, setMode, openModal, closeModal, G, CONFIG, REL };
-  SN.game = { G, startGame, startRound, answer, next, showFinal, points, modelInfo, pickItems };
+  SN.game = { G, startGame, startRound, answer, next, showFinal, points, modelInfo, pickItems, setTab, lv, updateLevel };
 })(window);

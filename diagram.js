@@ -41,10 +41,11 @@
     const childrenLat = (l) => paths.filter(e => e.from === l && !isObs(e.to) && lat.includes(e.to) && !paths.some(f => f.from === e.to && f.to === l)).map(e => e.to);
     const indicators = {};
     lat.forEach(l => { indicators[l] = childrenObs(l); });
-    // general factor of a bifactor model: loads on items that other factors also load on, and on the most items
-    const shared = (l) => indicators[l].filter(v => lat.some(m => m !== l && indicators[m].includes(v))).length;
-    const general = lat.filter(l => indicators[l].length >= 4 && shared(l) === indicators[l].length &&
-      lat.filter(m => m !== l && indicators[m].length).length >= 2 &&
+    // general factor of a bifactor model: loads on the most items, including
+    // all items of at least two other factors (drawn below the items)
+    const contains = (l, m) => indicators[m].length > 0 && indicators[m].every(v => indicators[l].includes(v));
+    const general = lat.filter(l => indicators[l].length >= 4 &&
+      lat.filter(m => m !== l && contains(l, m)).length >= 2 &&
       indicators[l].length > Math.max(...lat.filter(m => m !== l).map(m => indicators[m].length)));
     const meanX = (vs) => vs.reduce((s, v) => s + nodes[v].x, 0) / vs.length;
     // first-order factors (with observed indicators)
@@ -121,6 +122,8 @@
       const both = n.kind === 'obs' && inc.some(d => d < -0.3) && inc.some(d => d > 0.3);
       let resR = G.resR, stub = G.stub;
       if (both) { best = { a: 0 }; resR = 0.075; stub = 0.09; }
+      // loaded only from below (reference items of a bifactor-(S-1) model): residual on top
+      if (!both && n.kind === 'obs' && inc.length && inc.every(d => d > 0.3) && gap(-Math.PI / 2) >= 0.6) best = { a: -Math.PI / 2 };
       if (resDir && resDir[n.id] !== undefined) best = { a: resDir[n.id] * Math.PI / 180 };
       if (!best) for (const [a] of cands) if (gap(a) >= 0.95) { best = { a }; break; }
       if (!best) for (const [a, bonus] of cands) { const sc = gap(a) + bonus; if (!best || sc > best.sc) best = { a, sc }; }
@@ -141,7 +144,7 @@
     // obstacles for routing
     const obstacles = [];
     for (const n of all) {
-      obstacles.push({ id: n.id, x: n.x, y: n.y, r: (n.kind === 'obs' ? G.obsHalf * 1.15 : G.latR) + 0.06 });
+      obstacles.push({ id: n.id, x: n.x, y: n.y, r: (n.kind === 'obs' ? G.obsHalf * 1.15 : G.latR) + 0.09 });
       if (n.res) {
         obstacles.push({ id: n.id + '#res', x: n.res.x, y: n.res.y, r: n.res.r + 0.06 });
         const mid = n.res.from + n.res.stub / 2;
@@ -177,39 +180,42 @@
       const mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
       const dx = B.x - A.x, dy = B.y - A.y, L = Math.hypot(dx, dy) || 1;
       const nx = -dy / L, ny = dx / L;                              // left normal
-      // side: residual covariances bulge on the residuals' side; other
-      // covariances away from the centre of the diagram (upwards in a row);
-      // other edges take the side with more clearance
+      // side: residual covariances bulge on the residuals' side; every other
+      // curved edge bulges away from the centre of the diagram (upwards for
+      // edges between latent variables above their indicators). The preferred
+      // side is searched first at all heights; the other side only if the
+      // preferred one cannot be cleared.
       const ctrl = (s, h) => ({ x: mx + nx * s * h, y: my + ny * s * h });
-      let side = 0;
-      if (e.kind === 'cov' || e.kind === 'net') {
-        const ra = nodes[e.from].res, rb = nodes[e.to].res;
-        if (ra && rb && A.res) {
-          const vx = (ra.ux + rb.ux), vy = (ra.uy + rb.uy);
-          side = (vx * nx + vy * ny) >= 0 ? 1 : -1;
-        } else if (e.kind === 'cov') {
-          const dot = (mx - cx) * nx + (my - cy) * ny;
-          side = Math.abs(dot) > 0.15 ? (dot > 0 ? 1 : -1) : (ny < 0 ? 1 : -1);
-        }
+      const ra = nodes[e.from].res, rb = nodes[e.to].res;
+      let side;
+      if (e.kind !== 'path' && ra && rb && A.res) {
+        const vx = (ra.ux + rb.ux), vy = (ra.uy + rb.uy);
+        side = (vx * nx + vy * ny) >= 0 ? 1 : -1;
+      } else {
+        const dot = (mx - cx) * nx + (my - cy) * ny;
+        side = Math.abs(dot) > 0.15 ? (dot > 0 ? 1 : -1) : (ny < 0 ? 1 : -1);
       }
+      // a feedback loop (X -> Y and Y -> X): both arrows curve, on opposite sides
+      const loop = e.kind === 'path' && edges.some(o => o !== e && o.kind === 'path' && o.from === e.to && o.to === e.from);
+      if (loop) side = 1;
       let chosen = null;
-      if (e.kind !== 'cov' && hits({ x: mx, y: my }) === 0) chosen = { x: mx, y: my };
+      if (e.kind !== 'cov' && !loop && hits({ x: mx, y: my }) === 0) chosen = { x: mx, y: my };
       if (!chosen) {
-        const start = e.kind === 'cov' ? Math.max(0.5, 0.5 * L) : 0.3;
+        // longer edges start higher, so that arcs over neighbours are nested
+        // instead of bunched together
+        const obsPair = !A.res && !B.res && nodes[e.from].kind === 'obs' && nodes[e.to].kind === 'obs';
+        const start = loop ? 0.22 : e.kind === 'cov' ? (obsPair ? Math.max(0.8, 0.6 * L) : Math.max(0.5, 0.5 * L)) : e.kind === 'net' ? Math.max(0.3, 0.3 * L) : 0.3;
         let bestTry = null;
-        for (let h = start; h <= 3.6 && !chosen; h += 0.12) {
-          const opts2 = side ? [side, -side] : [1, -1];
-          let pick = null;
-          for (const s2 of opts2) {
+        const along = (s2, hmax) => {
+          for (let h = start; h <= hmax; h += 0.12) {
             const c = ctrl(s2, h);
             const k = hits(c);
-            if (k === 0 && (!pick || (!side && clear > pick.clear))) pick = { c, clear };
-            if (side && k === 0) break;
+            if (k === 0) return c;
             if (!bestTry || k < bestTry.k) bestTry = { c, k };
           }
-          if (pick) chosen = pick.c;
-        }
-        if (!chosen) chosen = bestTry.c;
+          return null;
+        };
+        chosen = along(side, 3.6) || (loop ? null : along(-side, 3.6)) || bestTry.c;
       }
       // trim to the boundaries
       const a = boundaryPoint(A, chosen), b = boundaryPoint(B, chosen);
@@ -420,5 +426,12 @@
     return out.join('\n');
   }
 
-  SN.diagram = { G, layout, render, tikz, unionBounds, differences };
+  // both sides of a bank item (pos/posA/posB and res/resA/resB overrides)
+  function layoutItem(it) {
+    const side = (k) => layout(SN.sem.parse(it[k], it.obs), Object.assign({}, it.pos, it['pos' + k]),
+      (it.res || it['res' + k]) ? Object.assign({}, it.res, it['res' + k]) : undefined);
+    return { LA: side('A'), LB: side('B') };
+  }
+
+  SN.diagram = { G, layout, layoutItem, render, tikz, unionBounds, differences };
 })(typeof window !== 'undefined' ? window : globalThis);

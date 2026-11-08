@@ -89,6 +89,7 @@
     ctx.fillText('sorted five pairs of structural equation models at the level', cx, 432);
     ctx.font = `800 52px ${HEAD}`; ctx.fillStyle = '#1F6680';
     ctx.fillText(info.level, cx, 498);
+    if (info.fams) { ctx.font = `700 22px ${SANS}`; ctx.fillStyle = '#8E8478'; ctx.fillText(info.fams, cx, 532); }
 
     drawEgg(ctx, info.medal, 600, 640, 2.7, !info.passed);
     ctx.font = `700 21px ${SANS}`; ctx.fillStyle = '#7B5537'; spaced(ctx, 5);

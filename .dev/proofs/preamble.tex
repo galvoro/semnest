@@ -13,6 +13,8 @@
 \DeclareUnicodeCharacter{2013}{--}
 \DeclareUnicodeCharacter{2019}{'}
 \DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}
+\DeclareUnicodeCharacter{21C4}{\ensuremath{\rightleftarrows}}
 
 \usepackage{lmodern}
 \usepackage{xcolor}
@@ -31,7 +33,7 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{3pt}
 
-\title{SEMNEST: proofs of the nesting and equivalence relations\\[4pt]\large all 80 items of the capsule}
+\title{SEMNEST: proofs of the nesting and equivalence relations\\[4pt]\large all %%COUNT%% items of the capsule}
 \author{Generated with the capsule's item bank (\texttt{bank.js}) and checked in exact arithmetic\\ (\texttt{.dev/proofs/build.js}); see also \texttt{.dev/verify\_bank.js} and \texttt{.dev/verify\_bank.R}}
 \date{}
 
@@ -68,6 +70,8 @@ If there are a dense subset $D\subseteq\Theta_X$ and a map $\varphi:D\to\Theta_Y
 \end{lemma}
 \emph{Proof.} $\Sigma_X$ is continuous, so $\mathcal M_X=\Sigma_X(\Theta_X)\subseteq\overline{\Sigma_X(D)}\subseteq\overline{\mathcal M_Y}$. In the items $D$ is $\Theta_X$ minus the zero set of a polynomial that is not identically zero (``generic'' parameter values), which is dense. \qed
 
+\emph{Markers.} Fixing the marker loading of a latent variable to 1 only removes a scale indeterminacy: a parameter value in which that loading is $c\neq0$ can be rescaled ($F\to cF$: loadings divided by $c$, variances and covariances of $F$ multiplied by $c^2$ and $c$) without changing $\Sigma$. So the maps in the proofs may treat loadings and factor variances as free; the values with a zero marker loading form a set of measure zero, covered by Lemma~G.
+
 \begin{lemma}[S, separating constraint]
 If a polynomial $f$ in the entries of $\Sigma$ vanishes on $\mathcal M_Y$ and $f(\Sigma_X(\theta^*))\neq0$ for some $\theta^*\in\Theta_X$, then $X\nnest Y$.
 \end{lemma}
@@ -100,9 +104,9 @@ Let $F$ be a latent variable of model $X$ and $y_i,y_j$ two observed variables w
 Note that if $F$ is exogenous and $G$ has no other paths, $F\to G$ and $F\leftrightarrow G$ give the same (saturated) $2\times2$ latent block, so by Lemma~B(b) $G$ may also simply be a factor correlated with $F$.
 
 \begin{lemma}[I, inverses]
-For a positive definite $\Sigma$, $(\Sigma^{-1})_{ij}=0$ iff the partial covariance of $i$ and $j$ given all other variables is $0$. $\Sigma$ is block-diagonal iff $\Sigma^{-1}$ is block-diagonal (with the same blocks). For three variables, $(\Sigma^{-1})_{13}=0$ iff $\sigma_{12}\sigma_{23}-\sigma_{13}\sigma_{22}=0$.
+For a positive definite $\Sigma$, $(\Sigma^{-1})_{ij}=0$ iff the partial covariance of $i$ and $j$ given all other variables is $0$, iff the minor of $\Sigma$ obtained by deleting row $i$ and column $j$ vanishes. $\Sigma$ is block-diagonal iff $\Sigma^{-1}$ is block-diagonal (with the same blocks). For three variables $\{i,j,k\}$, $(\Sigma^{-1})_{ij}=0$ iff $\sigma_{ij}\sigma_{kk}-\sigma_{ik}\sigma_{jk}=0$.
 \end{lemma}
-\emph{Proof.} Standard: $(\Sigma^{-1})_{ij}=C_{ji}/\det\Sigma$ with $C$ the cofactor matrix; the inverse of a block-diagonal matrix is block-diagonal; for $3\times3$, $C_{31}=\sigma_{12}\sigma_{23}-\sigma_{13}\sigma_{22}$. \qed
+\emph{Proof.} Standard: $(\Sigma^{-1})_{ij}=C_{ji}/\det\Sigma$ with $C$ the cofactor matrix (for symmetric $\Sigma$, $C_{ji}=\pm$ the minor without row $i$ and column $j$); the inverse of a block-diagonal matrix is block-diagonal; for $3\times3$, $C_{ji}=\pm(\sigma_{ij}\sigma_{kk}-\sigma_{ik}\sigma_{jk})$. \qed
 
 \begin{lemma}[C, trees]
 Let a path model be a DAG whose skeleton is a tree and in which no variable has two parents (no colliders: chains and forks). Then its set of covariance matrices equals the GGM on the skeleton, $\{\Sigma\succ0:(\Sigma^{-1})_{ij}=0\text{ for every non-adjacent pair}\}$.
@@ -120,7 +124,7 @@ A higher-order model (first-order factors $F_k$ with disjoint indicator sets, $F
 \emph{Proof.} For an indicator $y_i$ of $F_k$: $y_i=\lambda_i\gamma_kG+\lambda_i\zeta_k+e_i$. The general factor $G$ and the disturbances $\zeta_k$ are mutually uncorrelated, so this is a bifactor model with general loadings $\lambda_i\gamma_k$, group factor $S_k=\zeta_k$ with loadings $\lambda_i$ and variance $\mathrm{Var}(\zeta_k)$ (possibly negative). Rescale $G$ to its marker loading (generic: $\lambda_{1}\gamma_1\neq0$). \qed
 
 \section*{3\quad How to read an item page}
-Each page shows the two path diagrams exactly as in the game (observed variables as squares, latent variables as circles, residuals as small circles, covariances as curved double-headed arrows, network edges as green lines; variances are free and not drawn), the model syntax ($\sim\sim$ is a covariance, \texttt{--} a network edge, \texttt{network} lists a network block, \texttt{a*} an equality label), the claim and its proof. (i) concerns $A\nest B$, (ii) concerns $B\nest A$. $\sigma_{ij}$ is the covariance of $y_i$ and $y_j$.
+Each page shows the two path diagrams exactly as in the game (observed variables as squares, latent variables as circles, residuals as small circles, covariances as curved double-headed arrows, network edges as undirected lines; variances are free and not drawn), the model syntax ($\sim\sim$ is a covariance, \texttt{--} a network edge, \texttt{network} lists a network block, \texttt{a*} an equality label), the claim and its proof. (i) concerns $A\nest B$, (ii) concerns $B\nest A$. $\sigma_{ij}$ is the covariance of $y_i$ and $y_j$.
 
 \tableofcontents
 

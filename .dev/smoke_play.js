@@ -14,7 +14,17 @@ const W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900), MOB = proce
     await b.shot(path.join(OUT, tag + '01_title.png'));
     await b.clickSel('#btn-play'); await sleep(300);
     await b.shot(path.join(OUT, tag + '02_levels.png'));
-    await b.clickSel('.level-card[data-level="' + (process.env.LEVEL || 2) + '"]'); await sleep(400);
+    await b.clickSel('.level-card[data-level="' + (process.env.LEVEL || 2) + '"]'); await sleep(300);
+    if (process.env.FAMS) {   // e.g. FAMS=ggm: switch off every other offered family
+      const want = process.env.FAMS.split(',');
+      for (const f of await b.eval('SN.bank.offered(SN.game.lv.level).on')) {
+        const on = await b.eval(`document.querySelector('.fam-chip[data-fam="${f}"]').getAttribute('aria-pressed') === 'true'`);
+        if (on !== want.includes(f)) await b.clickSel(`.fam-chip[data-fam="${f}"]`);
+      }
+    }
+    await b.shot(path.join(OUT, tag + '02_levels_sel.png'));
+    console.log('pool:', await b.eval('document.getElementById("fam-pool").textContent'), '| note:', await b.eval('document.getElementById("fam-note").textContent'));
+    await b.clickSel('#btn-start'); await sleep(400);
     await b.shot(path.join(OUT, tag + '03_tutorial.png'));
     await b.clickSel('#tut-continue'); await sleep(500);
     await b.shot(path.join(OUT, tag + '04_round1.png'));
@@ -23,6 +33,7 @@ const W = +(process.argv[3] || 1440), H = +(process.argv[4] || 900), MOB = proce
       const pickAns = k === 1 ? (truth === 'equiv' ? 'AinB' : truth === 'neither' ? 'equiv' : 'equiv') : k === 3 ? 'neither' : truth;
       await b.clickSel(`.ans[data-ans="${pickAns}"]`); await sleep(500);
       if (k === 0 || k === 1) await b.shot(path.join(OUT, tag + '05_feedback' + k + '.png'));
+      if (MOB && k === 0) { await b.clickSel('.ab-tab[data-tab="B"]'); await sleep(250); await b.shot(path.join(OUT, tag + '05_feedback0_tabB.png')); }
       console.log('round', k + 1, SN_id = await b.eval('SN.game.G.game.cur.id'), 'truth', truth, 'answered', pickAns, 'score', await b.eval('SN.game.G.game.score'));
       await b.clickSel('#btn-next'); await sleep(400);
     }

@@ -43,7 +43,11 @@
 
   <!-- ==================== PLAY ==================== -->
   <main id="play" class="mode-main">
-    <section class="pair">
+    <section class="pair" data-tab="A">
+      <div class="ab-tabs" role="tablist" aria-label="Model">
+        <button class="ab-tab a on" data-tab="A" role="tab" aria-selected="true"><span class="badge a">A</span>Model A</button>
+        <button class="ab-tab b" data-tab="B" role="tab" aria-selected="false"><span class="badge b">B</span>Model B</button>
+      </div>
       <figure class="model-card" id="card-a" data-side="A">
         <figcaption><span class="badge a">A</span><span class="mc-title">Model A</span><span class="mc-meta" id="meta-a"></span></figcaption>
         <div class="paper"><svg class="diagram" id="svg-a" role="img" aria-label="Path diagram of model A"></svg></div>
@@ -160,7 +164,6 @@
     </picture>
   </div>
   <div class="title-ui">
-    <p class="title-tag">Nested, equivalent, or neither? Learn to see how structural equation models relate.</p>
     <div class="title-btns">
       <button class="big-btn" id="btn-play">PLAY</button>
       <button class="big-btn ghost" id="btn-learn">LEARN</button>
@@ -174,13 +177,22 @@
   <div class="level-box">
     <h2>Choose a level</h2>
     <p class="level-sub">Five pairs of models per game. Score 60 of 100 for a certificate.</p>
-    <div class="level-grid">
-      <button class="level-card" data-level="1"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Easy</b><small>Small path models and factor models</small><span class="lc-best" data-best="1"></span></button>
-      <button class="level-card" data-level="2"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Medium</b><small>Larger models and a few surprises</small><span class="lc-best" data-best="2"></span></button>
-      <button class="level-card" data-level="3"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Hard</b><small>Hidden equivalences and counting traps</small><span class="lc-best" data-best="3"></span></button>
-      <button class="level-card" data-level="4"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Psychometrika</b><small>Networks, latent networks and worse</small><span class="lc-best" data-best="4"></span></button>
+    <div class="level-grid" role="radiogroup" aria-label="Level">
+      <button class="level-card" data-level="1" role="radio" aria-checked="false"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Easy</b><small>Small path, factor and network models</small><span class="lc-best" data-best="1"></span></button>
+      <button class="level-card" data-level="2" role="radio" aria-checked="false"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Medium</b><small>Larger models and a few surprises</small><span class="lc-best" data-best="2"></span></button>
+      <button class="level-card" data-level="3" role="radio" aria-checked="false"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Hard</b><small>Hidden equivalences and counting traps</small><span class="lc-best" data-best="3"></span></button>
+      <button class="level-card" data-level="4" role="radio" aria-checked="false"><svg class="egg-medal" viewBox="0 0 60 72"><use href="#egg"/></svg><b>Psychometrika</b><small>Bifactor, loops, networks and worse</small><span class="lc-best" data-best="4"></span></button>
     </div>
-    <button class="link-btn" id="level-back">&#8592; back</button>
+    <div class="fam-box">
+      <div class="fam-head"><span class="fam-title">Model types</span><button class="link-btn" id="fam-all">all</button></div>
+      <div class="fam-chips" id="fam-chips" role="group" aria-label="Model types"></div>
+      <p class="fam-note" id="fam-note"></p>
+    </div>
+    <div class="level-go">
+      <button class="link-btn" id="level-back">&#8592; back</button>
+      <button class="big-btn" id="btn-start">START</button>
+      <span class="fam-pool" id="fam-pool"></span>
+    </div>
   </div>
 </section>
 
@@ -205,6 +217,7 @@
       <input class="dip-name" id="dip-name" placeholder="your name" maxlength="40" aria-label="Your name">
       <p class="dip-line" id="dip-line2">sorted five pairs of structural equation models at the level</p>
       <div class="dip-level" id="dip-level">Easy</div>
+      <div class="dip-fams" id="dip-fams"></div>
       <div class="dip-mid">
         <svg class="egg-medal big" id="dip-medal" viewBox="0 0 60 72"><use href="#egg"/></svg>
         <div class="dip-score"><span id="final-score">0</span><small>/ 100</small><div class="dip-stars" id="dip-stars"></div><div class="dip-rank" id="final-rank"></div></div>

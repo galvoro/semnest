@@ -40,7 +40,7 @@ async function launch({ width = 1440, height = 900, port = 9333, mobile = false 
     async tap(x, y) { await send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] }); await sleep(40); await send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(120); },
     async tapSel(sel) { const c = await api.center(sel); if (!c) throw new Error('no element ' + sel); await api.tap(c[0], c[1]); },
     async key(key, code, mods = 0) { await send('Input.dispatchKeyEvent', { type: 'keyDown', key, code, modifiers: mods }); await send('Input.dispatchKeyEvent', { type: 'keyUp', key, code, modifiers: mods }); await sleep(50); },
-    async center(sel) { return api.eval(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e) return null; const r = e.getBoundingClientRect(); return [r.left + r.width/2, r.top + r.height/2]; })()`); },
+    async center(sel) { return api.eval(`(() => { const e = document.querySelector(${JSON.stringify(sel)}); if (!e) return null; e.scrollIntoView({ block: 'nearest' }); const r = e.getBoundingClientRect(); return [r.left + r.width/2, r.top + r.height/2]; })()`); },
     async clickSel(sel) { const c = await api.center(sel); if (!c) throw new Error('no element ' + sel); await api.click(c[0], c[1]); },
     async close() { try { ws.close(); } catch (e) {} proc.kill(); },
     sleep,

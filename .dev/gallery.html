@@ -10,7 +10,7 @@
   .dg-node.lat .dg-shape { fill: #e9f4f7; }
   .dg-label { font: 0.26px system-ui; fill: #2b2622; } .dg-sub { font-size: 0.17px; }
   .dg-line { fill: none; stroke: #2b2622; stroke-width: 0.03; }
-  .dg-edge.net .dg-line { stroke: #4f8a3c; stroke-width: 0.05; stroke-linecap: round; }
+  .dg-edge.net .dg-line { stroke-linecap: round; }
   .dg-head { fill: #2b2622; } .dg-head.res { fill: #9a9187; } .dg-head.diff { fill: #c56a12; }
   .dg-res-circle { fill: #fff; stroke: #9a9187; stroke-width: 0.025; }
   .dg-res-arrow { stroke: #9a9187; stroke-width: 0.025; }
@@ -29,8 +29,7 @@
   const filt = q.get('f') || '';
   const out = document.getElementById('out');
   for (const it of SN.bank.items.filter(i => i.id.startsWith(filt))) {
-    const sa = SN.sem.parse(it.A, it.obs), sb = SN.sem.parse(it.B, it.obs);
-    const LA = SN.diagram.layout(sa, Object.assign({}, it.pos, it.posA), it.res), LB = SN.diagram.layout(sb, Object.assign({}, it.pos, it.posB), it.res);
+    const { LA, LB } = SN.diagram.layoutItem(it);
     const bounds = SN.diagram.unionBounds([LA, LB]);
     const diff = SN.diagram.differences(LA, LB);
     const row = document.createElement('div'); row.className = 'item';

@@ -1,6 +1,8 @@
-// SEMNEST — the item bank: 80 pairs of models (20 per level; at every level
-// five are equivalent, five have the left model (A) nested in the right one
-// (B), five the other way round and five are neither).
+// SEMNEST — the item bank: pairs of models at four levels, each pair
+// equivalent, A nested in B, B nested in A, or neither. Every item belongs to
+// one or more model families (FAMILIES below); players can switch families
+// off on the level screen. Every family offered at a level has at least five
+// items of its own there (checked by .dev/check_bank.js).
 //
 // Every relation is proven in .dev/proofs (one page per item) and checked
 // numerically by .dev/verify_bank.js (this engine) and .dev/verify_bank.R
@@ -16,6 +18,7 @@
 //          factors above their indicators, higher-order factors above those
 //   res    optional residual directions in degrees (0 = right, 90 = down)
 //   why    the short explanation shown after answering
+//   tags   optional override of the families (normally derived from A and B)
 (function (global) {
   'use strict';
   const SN = global.SN = global.SN || {};
@@ -39,6 +42,12 @@
   const tri2 = { y1: [1, 1.15], y2: [0.25, 2.3], y3: [1.75, 2.3], y4: [4, 1.15], y5: [3.25, 2.3], y6: [4.75, 2.3] };
   const sq2 = { y1: [0.4, 0.95], y2: [2.0, 0.95], y3: [2.0, 2.3], y4: [0.4, 2.3], y5: [4.6, 0.95], y6: [6.2, 0.95], y7: [6.2, 2.3], y8: [4.6, 2.3] };
   const star = { y1: [1.5, 1.15], y2: [0.2, 2.3], y3: [1.5, 2.3], y4: [2.8, 2.3] };
+  const triY = { y1: [0, 1.25], y2: [1.1, 0], y3: [2.2, 1.25] };
+  const row3 = { A: [0, 0], B: [1.4, 0], C: [2.8, 0] };
+  const xf2 = { X: [0, 1], y1: [1, 2], y2: [2, 2], y3: [3, 2], y4: [4, 2], F1: [1.5, 1], F2: [3.5, 1] };
+  const ho2 = 'H1 =~ F1 + F2; H2 =~ F3 + F4';
+  const sMinus1 = 'G =~ ' + sum(1, 9) + '; S2 =~ y4 + y5 + y6; S3 =~ y7 + y8 + y9; S2 ~~ S3';
+  const pairs4 = '; y1 ~~ y2; y3 ~~ y4; y5 ~~ y6; y7 ~~ y8';
 
   const items = [
     // ================================================================
@@ -108,6 +117,28 @@
       A: cfa3x2 + '; F2 ~ F1; F3 ~ F2', B: cfa3x2 + '; F3 ~ F1 + F2',
       why: 'A chain (F1 and F3 independent given F2) against a collider (F1 and F2 independent). Each model has a restriction the other violates.' },
 
+    { id: 'E21', level: 1, rel: 'equiv', obs: ['A', 'B', 'C'], pos: row3,
+      A: 'network A B C; A -- B; B -- C', B: 'B ~ A; C ~ B',
+      why: 'The network has no edge A — C: A and C are independent once you know B (a zero partial correlation). The chain A → B → C makes exactly the same claim, and no other.' },
+    { id: 'E22', level: 1, rel: 'AinB', obs: ys(3), pos: triY,
+      A: 'network y1 y2 y3; y1 -- y2; y2 -- y3', B: 'network y1 y2 y3; y1 -- y2; y2 -- y3; y1 -- y3',
+      why: 'B adds the edge y1 — y3 (a complete network, saturated). Fix that partial correlation to zero and you get A.' },
+    { id: 'E23', level: 1, rel: 'BinA', obs: ys(4),
+      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4', B: 'network y1 y2 y3 y4; y1 -- y2; y3 -- y4',
+      why: 'B drops the edge y2 — y3, which splits the network into two separate pairs. That is A with one partial correlation fixed to zero.' },
+    { id: 'E24', level: 1, rel: 'neither', obs: ys(3), pos: triY,
+      A: 'network y1 y2 y3; y1 -- y2; y2 -- y3', B: 'network y1 y2 y3; y1 -- y3; y3 -- y2',
+      why: 'A says y1 and y3 are independent given y2; B says y1 and y2 are independent given y3. Each network has an edge the other one lacks.' },
+    { id: 'E25', level: 1, rel: 'BinA', obs: ys(4), pos: star,
+      A: 'network y1 y2 y3 y4; y1 -- y2 + y3 + y4', B: 'network y1 y2 y3 y4',
+      why: 'A network without edges says that all variables are independent. Fix all partial correlations of A to zero and you get B.' },
+    { id: 'E26', level: 1, rel: 'equiv', obs: ys(3), pos: triY,
+      A: 'network y1 y2 y3; y1 -- y2 + y3; y2 -- y3', B: 'y1 ~~ y2 + y3; y2 ~~ y3',
+      why: 'Both models are saturated: the complete network has a free partial correlation for every pair, B a free covariance for every pair. Both reproduce every covariance matrix.' },
+    { id: 'E27', level: 1, rel: 'BinA', obs: ys(6),
+      A: cfa3x2 + '; F3 ~ F1 + F2; F1 ~~ F2', B: cfa3x2 + '; F3 ~ F1 + F2',
+      why: 'B is A with the covariance between the two predicting factors (F1 and F2) fixed to zero.' },
+
     // ================================================================
     // MEDIUM
     // ================================================================
@@ -174,6 +205,43 @@
     { id: 'M20', level: 2, rel: 'neither', obs: ys(4),
       A: 'F =~ ' + sum(1, 4) + '; y1 ~~ y2', B: 'F =~ ' + sum(1, 4) + '; y1 ~~ y3',
       why: 'Each model keeps a different tetrad: A implies σ13·σ24 = σ14·σ23, B implies σ12·σ34 = σ14·σ23. Neither model satisfies the other\'s restriction.' },
+
+    { id: 'M21', level: 2, rel: 'equiv', obs: ['A', 'B', 'C', 'D', 'E'], pos: { A: [0, 0], B: [1.4, 0], C: [2.8, 1.3], D: [4.2, 0], E: [5.6, 0] },
+      A: 'B ~ A; C ~ B + D; E ~ D', B: 'A ~ B; C ~ B + D; D ~ E',
+      why: 'Same skeleton, same collider (B → C ← D). Turning A — B or D — E around changes no independence claim: A depends on the rest only through B, E only through D. Equivalent (the rule of Verma & Pearl).' },
+    { id: 'M22', level: 2, rel: 'neither', obs: ['X', 'y1', 'y2', 'y3', 'y4'], pos: xf2,
+      A: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X; F2 ~ F1', B: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X; F2 ~ X',
+      why: 'A: X affects F2 only through F1 (X and F2 independent given F1). B: X is a common cause of F1 and F2 (F1 and F2 independent given X). Different claims, so neither is nested.' },
+    { id: 'M23', level: 2, rel: 'AinB', obs: ['X', 'y1', 'y2', 'y3', 'y4'], pos: xf2,
+      A: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X; F2 ~ X', B: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X; F2 ~ X; F1 ~~ F2',
+      why: 'B adds a covariance between the disturbances of F1 and F2 (something they share besides X). Fix it to zero and you get A.' },
+    { id: 'M24', level: 2, rel: 'equiv', obs: ys(6),
+      A: cfa3x2 + '; F2 ~ F1; F3 ~ F2', B: cfa3x2 + '; F1 ~ F2; F3 ~ F2',
+      why: 'A latent chain F1 → F2 → F3 and a fork F1 ← F2 → F3 both say only that F1 and F3 are independent given F2. Same claim, so the models are equivalent (the chain-or-fork rule, one level up).' },
+    { id: 'M25', level: 2, rel: 'BinA', obs: ys(8),
+      A: cfa4x2 + '; ' + ho2 + '; H1 ~~ H2', B: cfa4x2 + '; G =~ F1 + F2 + F3 + F4',
+      why: 'Two second-order factors that correlate perfectly act as one: merge H1 and H2 and you get B. So one second-order factor is nested in two correlated ones.' },
+    { id: 'M26', level: 2, rel: 'neither', obs: ys(8),
+      A: cfa4x2 + '; ' + ho2 + '; H1 ~~ H2', B: cfa4x2 + '; H1 =~ F1 + F3; H2 =~ F2 + F4; H1 ~~ H2',
+      why: 'Same number of parameters, different grouping of the first-order factors. Each grouping implies its own tetrad among the factor covariances, which the other model violates.' },
+    { id: 'M27', level: 2, rel: 'AinB', obs: ys(8), resB: { F1: -105, F2: -120 },
+      A: cfa4x2 + '; G =~ F1 + F2 + F3 + F4', B: cfa4x2 + '; G =~ F1 + F2 + F3 + F4; F1 ~~ F2',
+      why: 'B also frees the covariance between the disturbances of F1 and F2. Fix it to zero and you are back at A.' },
+    { id: 'M28', level: 2, rel: 'neither', obs: ys(4), pos: sq,
+      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4', B: 'network y1 y2 y3 y4; y2 -- y1 + y3 + y4',
+      why: 'Both networks have three edges. A has no edge y2 — y4 (independent given y1 and y3), B has no edge y3 — y4. Each sets a partial correlation to zero that the other leaves free.' },
+    { id: 'M29', level: 2, rel: 'equiv', obs: ys(4),
+      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4', B: 'y2 ~ y1; y3 ~ y2; y4 ~ y3',
+      why: 'A Gaussian graphical model (GGM) whose graph is a path has the same conditional independencies as the directed chain: both are exactly the covariance matrices with a tridiagonal inverse.' },
+    { id: 'M30', level: 2, rel: 'AinB', obs: ['A', 'B', 'C', 'D'], pos: { A: [0, 0], B: [0, 1.7], C: [1.6, 0.85], D: [3.2, 0.85] },
+      A: 'C ~ A + B; D ~ C', B: 'network A B C D; A -- B + C; B -- C; C -- D',
+      why: 'B is the moral graph of the DAG in A (marry the parents of C). Every conditional independence in the GGM also holds in the DAG, but the DAG adds one: A and B are marginally independent.' },
+    { id: 'M31', level: 2, rel: 'BinA', obs: ys(4), pos: sq,
+      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4; y4 -- y1', B: 'y2 ~ y1; y3 ~ y2; y4 ~ y3',
+      why: 'The directed chain equals the GGM with the path y1 — y2 — y3 — y4. The cycle network adds the edge y4 — y1, so it contains the chain.' },
+    { id: 'M32', level: 2, rel: 'neither', obs: ys(3), pos: { y1: [0, 1.3], y3: [1.2, 0], y2: [2.4, 1.3] },
+      A: 'network y1 y2 y3; y1 -- y3; y3 -- y2', B: 'y3 ~ y1 + y2',
+      why: 'The network says y1 and y2 are independent given y3; the collider says they are independent without conditioning (and dependent given y3).' },
 
     // ================================================================
     // HARD
@@ -242,12 +310,40 @@
       A: cfa4x2 + '; G =~ F1 + F2 + F3 + F4', B: cfa4x2 + '; F2 ~ F1; F3 ~ F2; F4 ~ F3',
       why: 'Two ways to explain the correlations among four factors: one common cause (tetrad restrictions) or a chain (conditional independencies). Neither set of restrictions implies the other.' },
 
+    { id: 'H21', level: 3, rel: 'equiv', obs: ['X1', 'X2', 'X3', 'X4', 'X5'], pos: macPos, res: macRes,
+      A: macA, B: 'X3 ~ X1 + X2; X4 ~ X1 + X2; X5 ~ X4 + X2; X1 ~~ X2; X3 ~~ X4',
+      why: 'The replacing rule (Lee & Hershberger): X3 → X4 may become the residual covariance X3 ↔ X4, because the other predictors of X4 (X1, X2) include all predictors of X3.' },
+    { id: 'H22', level: 3, rel: 'equiv', obs: ['A', 'B', 'C'], pos: { A: [0, 0], B: [0, 1.7], C: [1.6, 0.85] },
+      A: 'C ~ A + B', B: 'A ~~ C; B ~~ C',
+      why: 'Both models say only one thing: A and B are uncorrelated. In the collider C may depend on both, in B it may covary with both. Five parameters each and the same single restriction.' },
+    { id: 'H23', level: 3, rel: 'AinB', obs: ['X', 'M', 'Y'], pos: { X: [0, 1], M: [1.6, 0], Y: [3.2, 1] },
+      A: 'M ~ X; Y ~ M', B: 'M ~ X; Y ~ X; M ~~ Y',
+      why: 'B has no arrow M → Y and still contains A: its six parameters are identified (σXM and σXY give the two effects, the disturbance covariance takes the rest), so B is saturated.' },
+    { id: 'H24', level: 3, rel: 'equiv', obs: ['X', 'y1', 'y2', 'y3'], pos: { X: [0, 2], y1: [1, 2], y2: [2, 2], y3: [3, 2], F: [1.5, 1] },
+      A: 'F =~ y1 + y2 + y3; F ~ X; y1 ~ X', B: 'F =~ X + y1 + y2 + y3; X ~~ y1',
+      why: 'Covariate or indicator, one step further: a direct effect X → y1 on top of X → F does the same as a residual covariance X ↔ y1 on top of X as an indicator. Both models imply one tetrad, σ(y1,y2)·σ(X,y3) = σ(y1,y3)·σ(X,y2), and nothing else.' },
+    { id: 'H25', level: 3, rel: 'AinB', obs: ys(9),
+      A: cfa3x3 + '; G =~ F1 + F2 + F3', B: 'F1 =~ y1 + y2 + y3 + y4; F2 =~ y4 + y5 + y6; F3 =~ y7 + y8 + y9; ' + corr3,
+      why: 'A second-order factor on three factors is just-identified: A is the same as three correlated factors. And those are B with its cross-loading fixed to zero.' },
+    { id: 'H26', level: 3, rel: 'BinA', obs: ys(9),
+      A: cfa3x3 + '; G =~ F1 + F2 + F3', B: 'F =~ ' + sum(1, 9),
+      why: 'Fix the disturbance variances of F1, F2 and F3 to zero: every first-order factor becomes a multiple of G, so all items follow one factor. The one-factor model is nested in the higher-order model.' },
+    { id: 'H27', level: 3, rel: 'neither', obs: ys(8),
+      A: cfa4x2 + '; G =~ F1 + F2 + F3 + F4', B: cfa4x2 + '; F1 ~~ F3 + F4; F2 ~~ F3 + F4; F3 ~~ F4',
+      why: 'B has more parameters but fixes the covariance of F1 and F2 to zero, which a general factor never does. And B\'s five free covariances need not follow A\'s tetrads. Neither is nested.' },
+    { id: 'H28', level: 3, rel: 'BinA', obs: ys(9),
+      A: bif3x3, B: 'F =~ ' + sum(1, 9) + '; y1 ~~ y2 + y3; y2 ~~ y3',
+      why: 'A group factor with three indicators can produce any covariances within its group, so A is one factor plus three free residual blocks. B keeps only the first block: nested in A.' },
+    { id: 'H29', level: 3, rel: 'neither', obs: ys(9),
+      A: bif3x3, B: 'S1 =~ y1 + y2 + y3 + y4; S2 =~ y5 + y6 + y7 + y8 + y9; G =~ ' + sum(1, 9),
+      why: 'Both bifactor models have 27 parameters but group the items differently: y4 shares a group factor with y5 and y6 in A, with y1 to y3 in B. Each allows covariance that the other routes through G alone.' },
+
     // ================================================================
     // PSYCHOMETRIKA
     // ================================================================
-    { id: 'P01', level: 4, rel: 'equiv', obs: ys(4),
-      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4', B: 'y2 ~ y1; y3 ~ y2; y4 ~ y3',
-      why: 'A Gaussian graphical model (GGM) whose graph is a path has the same conditional independencies as the directed chain: both are exactly the covariance matrices with a tridiagonal inverse.' },
+    { id: 'P01', level: 4, rel: 'equiv', obs: ys(8),
+      A: cfa4x2 + '; ' + ho2 + '; T =~ H1 + H2', B: cfa4x2 + '; ' + ho2 + '; H1 ~~ H2',
+      why: 'A third-order factor on only two second-order factors adds parameters but no restriction: like a factor with two indicators, it just produces one covariance between H1 and H2. A has one parameter more than B but is not identified.' },
     { id: 'P02', level: 4, rel: 'equiv', obs: ys(6), posB: tri2,
       A: cfa2, B: 'network ' + ys(6).join(' ') + '; y1 -- y2 + y3; y2 -- y3; y4 -- y5 + y6; y5 -- y6',
       why: 'Orthogonal factors make the covariance matrix block-diagonal, and so is its inverse (two separate cliques in the GGM). With three indicators each factor is saturated within its block.' },
@@ -273,16 +369,16 @@
     { id: 'P09', level: 4, rel: 'AinB', obs: ys(6),
       A: 'F =~ ' + sum(1, 6) + '; network y1 y2 y3 y4; y1 -- y2; y3 -- y4', B: cfa3x2 + '; ' + corr3,
       why: 'Isolated residual edges in an RNM are just residual covariances. And a residual covariance within a pair acts like a two-indicator factor, so A is the three-factor model with one pair not separated.' },
-    { id: 'P10', level: 4, rel: 'AinB', obs: ['A', 'B', 'C', 'D'], pos: { A: [0, 0], B: [0, 1.7], C: [1.6, 0.85], D: [3.2, 0.85] },
-      A: 'C ~ A + B; D ~ C', B: 'network A B C D; A -- B + C; B -- C; C -- D',
-      why: 'B is the moral graph of the DAG in A (marry the parents of C). Every conditional independence in the GGM also holds in the DAG, but the DAG adds one: A and B are marginally independent.' },
+    { id: 'P10', level: 4, rel: 'AinB', obs: ys(8),
+      A: bif4x2, B: cfa4x2 + '; ' + corr4,
+      why: 'With two-indicator groups the bifactor model is equivalent to the higher-order model, and the higher-order model is nested in four freely correlated factors.' },
 
     { id: 'P11', level: 4, rel: 'BinA', obs: ys(6),
       A: 'F =~ ' + sum(1, 6) + '; network y1 y2 y3; y1 -- y2; y2 -- y3', B: 'F =~ ' + sum(1, 6) + '; y1 ~~ y2',
       why: 'One residual covariance is one residual edge. A residual network with edges y1 — y2 — y3 contains the network with only y1 — y2, so B is nested in A.' },
-    { id: 'P12', level: 4, rel: 'BinA', obs: ys(4), pos: sq,
-      A: 'network y1 y2 y3 y4; y1 -- y2; y2 -- y3; y3 -- y4; y4 -- y1', B: 'y2 ~ y1; y3 ~ y2; y4 ~ y3',
-      why: 'The directed chain equals the GGM with the path y1 — y2 — y3 — y4. The cycle network adds the edge y4 — y1, so it contains the chain.' },
+    { id: 'P12', level: 4, rel: 'BinA', obs: ys(9),
+      A: bif3x3, B: 'S1 =~ y1 + y2 + y3; S2 =~ y4 + y5 + y6; S3 =~ y7 + y8; G =~ ' + sum(1, 9),
+      why: 'A group factor with three indicators frees all covariances within its group; one with two indicators only frees one (here y7 ↔ y8). So B is A with the covariances of y9 with y7 and y8 fixed to zero.' },
     { id: 'P13', level: 4, rel: 'BinA', obs: ys(6), posB: tri2,
       A: cfa2 + '; F1 ~~ F2', B: 'network ' + ys(6).join(' ') + '; y1 -- y2 + y3 + y4; y4 -- y5 + y6',
       why: 'Give y1 and y4 zero residual variance and they become F1 and F2 themselves. The two-factor model then becomes this tree-shaped network, so B is nested in A.' },
@@ -302,14 +398,119 @@
     { id: 'P18', level: 4, rel: 'neither', obs: ys(8), posB: sq2,
       A: 'F1 =~ y1 + y2 + y3 + y4; F2 =~ y5 + y6 + y7 + y8; F1 ~~ F2', B: 'network ' + ys(8).join(' ') + '; y1 -- y2 + y3 + y4; y2 -- y3 + y4; y3 -- y4; y5 -- y6 + y7 + y8; y6 -- y7 + y8; y7 -- y8',
       why: 'Correlated factors connect the clusters (the GGM cannot); the GGM leaves each cluster saturated (the factors impose tetrads). Neither is nested.' },
-    { id: 'P19', level: 4, rel: 'neither', obs: ys(3), pos: { y1: [0, 1.3], y3: [1.2, 0], y2: [2.4, 1.3] },
-      A: 'network y1 y2 y3; y1 -- y3; y3 -- y2', B: 'y3 ~ y1 + y2',
-      why: 'The network says y1 and y2 are independent given y3; the collider says they are independent without conditioning (and dependent given y3).' },
+    { id: 'P19', level: 4, rel: 'neither', obs: ys(9),
+      A: sMinus1, B: bif3x3,
+      why: 'The bifactor-(S−1) model (A) has no group factor for the reference items y1–y3 and lets the other group factors correlate. That frees covariance between groups 2 and 3 (only through G in B), but restricts group 1 (free in B). Neither contains the other.' },
     { id: 'P20', level: 4, rel: 'neither', obs: ys(8),
       A: cfa4x2 + '; network F1 F2 F3 F4; F1 -- F2; F2 -- F3; F3 -- F4; F4 -- F1', B: cfa4x2 + '; G =~ F1 + F2 + F3 + F4',
       why: 'Both explain the latent correlations with 8 parameters, but the cycle network zeroes two latent partial correlations while the general factor imposes two tetrads. Different restrictions, so neither is nested.' },
+
+    { id: 'P21', level: 4, rel: 'equiv', obs: ys(8),
+      A: cfa4x2 + '; G =~ F1 + F2 + F3 + F4; F1 ~~ F2; F3 ~~ F4', B: cfa4x2 + '; ' + ho2 + '; H1 ~~ H2',
+      why: 'A disturbance covariance between two first-order factors acts like an extra second-order factor for that pair (just like a residual covariance acts like a factor, one level up). So A is G above two pair factors, and that is two correlated second-order factors. Counting trap: A has one parameter more and is not identified.' },
+    { id: 'P22', level: 4, rel: 'equiv', obs: ['X1', 'X2', 'y1', 'y2', 'y3', 'y4'], pos: { X1: [0, 0.2], X2: [5.8, 0.2], y1: [1.2, 2.5], y2: [2.2, 2.5], y3: [3.6, 2.5], y4: [4.6, 2.5], F1: [1.7, 1.3], F2: [4.1, 1.3] },
+      A: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X1 + F2; F2 ~ X2 + F1; X1 ~~ X2; F1 ~~ F2', B: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X1 + X2; F2 ~ X1 + X2 + F1; X1 ~~ X2',
+      why: 'The feedback loop F1 ⇄ F2 is identified because each factor has its own instrument (X1, X2). With correlated disturbances the structural part has 10 parameters for the 10 (co)variances of X1, X2, F1 and F2: saturated, like the recursive model B.' },
+    { id: 'P23', level: 4, rel: 'equiv', obs: ys(6),
+      A: cfa2 + '; F1 ~ F2; F2 ~ F1', B: cfa2 + '; F1 ~~ F2',
+      why: 'A feedback loop without instruments: two effects for one covariance between the factors. A is not identified and produces exactly the same factor covariance matrices as a single correlation.' },
+    { id: 'P24', level: 4, rel: 'AinB', obs: ys(8),
+      A: cfa4x2 + '; G =~ F1 + F2 + F3 + F4', B: 'F =~ ' + sum(1, 8) + pairs4 + '; y1 ~~ y3',
+      why: 'The higher-order model over four two-indicator factors is equivalent to one factor plus a residual covariance within each pair. B has those four and one more (y1 ↔ y3).' },
+    { id: 'P25', level: 4, rel: 'AinB', obs: ys(9),
+      A: cfa3x3 + '; ' + corr3, B: sMinus1,
+      why: 'The bifactor-(S−1) model (Eid et al.): G is the factor of the reference items y1–y3, S2 and S3 are what remains of the other factors after regressing them on G. Three correlated factors are the special case with proportional G and S loadings within each group.' },
+    { id: 'P26', level: 4, rel: 'AinB', obs: ['X', 'y1', 'y2', 'y3', 'y4'], pos: xf2,
+      A: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X; F2 ~ F1', B: 'F1 =~ y1 + y2 + X; F2 =~ y3 + y4 + X; F1 ~~ F2',
+      why: 'A covariate that predicts F1 is the same as one more indicator of F1, and between two factors a regression is a covariance. So A is the two-factor model with X loading on F1 only; B lets X load on F2 as well.' },
+    { id: 'P27', level: 4, rel: 'BinA', obs: ys(8),
+      A: cfa4x2 + '; ' + ho2 + '; H1 ~~ H2', B: 'F =~ ' + sum(1, 8) + pairs4,
+      why: 'A residual covariance within a pair acts like a factor for that pair, so B is one second-order factor over four pair factors. And one second-order factor is two perfectly correlated ones.' },
+    { id: 'P28', level: 4, rel: 'BinA', obs: ['X', 'y1', 'y2', 'y3', 'y4'], pos: xf2,
+      A: 'F1 =~ y1 + y2; F2 =~ y3 + y4; F1 ~ X; F2 ~ X; F1 ~~ F2', B: 'F1 =~ y1 + y2 + X; F2 =~ y3 + y4; F1 ~~ F2',
+      why: 'Making X an indicator of F1 is the same as X predicting F1, with F2 related to X only through F1. A leaves all covariances among X, F1 and F2 free, so it contains B.' },
+    { id: 'P29', level: 4, rel: 'neither', obs: ys(8),
+      A: cfa4x2 + '; G =~ F1 + F2 + F3 + F4', B: 'F =~ ' + sum(1, 8) + '; y1 ~~ y3; y2 ~~ y4; y5 ~~ y7; y6 ~~ y8',
+      why: 'A is the same as one factor with residual covariances within the pairs (y1, y2), (y3, y4), ... B pairs the items differently. Same number of parameters, different restrictions.' },
+    { id: 'P30', level: 4, rel: 'neither', obs: ['X', 'Y', 'y1', 'y2', 'y3'], pos: { X: [0.3, 1.12], Y: [2, 0], y1: [1, 2.3], y2: [2, 2.3], y3: [3, 2.3], F: [2, 1.12] },
+      A: 'F =~ y1 + y2 + y3; F ~ X; Y ~ F', B: 'F =~ y1 + y2 + y3 + X; Y ~ X',
+      why: 'Is X a cause of F, or an indicator of F that affects Y? A says Y relates to X only through F; B says Y relates to F only through X. Different conditional independencies: neither is nested.' },
   ];
 
   const LEVELS = { 1: 'Easy', 2: 'Medium', 3: 'Hard', 4: 'Psychometrika' };
-  SN.bank = { items, LEVELS };
+
+  // ------------------------------------------------------------------
+  // Model families. A model gets every family whose feature it has; an
+  // item gets the families of both models, minus the families the others
+  // build on (an SEM item may compare with a plain CFA or path model, a
+  // bifactor item with a higher-order model, a network item with a DAG ...).
+  // ------------------------------------------------------------------
+  const FAMILIES = [
+    { id: 'cfa', name: 'CFA', sub: 'factor models' },
+    { id: 'path', name: 'Path analysis', sub: 'observed variables' },
+    { id: 'sem', name: 'SEM', sub: 'structural effects' },
+    { id: 'ho', name: 'Higher-order', sub: 'second-order factors' },
+    { id: 'bif', name: 'Bifactor', sub: 'hierarchical' },
+    { id: 'ggm', name: 'GGM', sub: 'networks' },
+    { id: 'net', name: 'Latent / residual', sub: 'networks' },
+  ];
+  const BUILDS_ON = { sem: ['cfa', 'path'], ho: ['cfa'], bif: ['cfa', 'ho'], ggm: ['path'], net: ['cfa', 'ggm'] };
+  const MIN_POOL = 5;
+
+  function modelFamilies(text, obs) {
+    const s = SN.sem.parse(text, obs);
+    const f = new Set(), lat = s.lat;
+    const isObs = (v) => obs.includes(v);
+    if (!lat.length) { f.add(s.blocks.length ? 'ggm' : 'path'); return f; }
+    f.add('cfa');
+    if (s.blocks.length) f.add('net');
+    const ind = (l) => s.paths.filter(e => e.from === l && isObs(e.to)).map(e => e.to);
+    // bifactor: a factor on four or more items that contains the items of at
+    // least two other factors
+    if (lat.some(l => { const I = ind(l); return I.length >= 4 && lat.filter(m => m !== l && ind(m).length && ind(m).every(v => I.includes(v))).length >= 2; })) f.add('bif');
+    // higher order: a factor without items that loads on factors
+    if (lat.some(l => !ind(l).length && s.paths.some(e => e.from === l && lat.includes(e.to)))) f.add('ho');
+    // structural effects: an observed predictor, or an effect between measured factors
+    if (s.paths.some(e => isObs(e.from) || (lat.includes(e.to) && lat.includes(e.from) && ind(e.from).length))) f.add('sem');
+    return f;
+  }
+  const tagCache = new Map();
+  function itemTags(it) {
+    if (it.tags) return it.tags;
+    if (tagCache.has(it)) return tagCache.get(it);
+    const f = new Set([...modelFamilies(it.A, it.obs), ...modelFamilies(it.B, it.obs)]);
+    for (const k of [...f]) for (const b of BUILDS_ON[k] || []) f.delete(b);
+    const t = FAMILIES.map(x => x.id).filter(x => f.has(x));
+    tagCache.set(it, t);
+    return t;
+  }
+  // Families offered at a level: every family with at least MIN_POOL items of
+  // its own. The others are background at that level (greyed out; they may
+  // still appear next to an offered family).
+  const offerCache = {};
+  function offered(level) {
+    if (offerCache[level]) return offerCache[level];
+    const its = items.filter(i => i.level === level);
+    const on = new Set(its.flatMap(itemTags));
+    let count;
+    for (;;) {
+      count = {};
+      for (const f of on) count[f] = its.filter(i => { const t = itemTags(i).filter(x => on.has(x)); return t.length && t.every(x => x === f); }).length;
+      const weak = [...on].filter(f => count[f] < MIN_POOL).sort((a, b) => count[a] - count[b]);
+      if (!weak.length) break;
+      on.delete(weak[0]);
+    }
+    return (offerCache[level] = { on: FAMILIES.map(x => x.id).filter(x => on.has(x)), count });
+  }
+  // the items of a level that only use enabled families
+  function pool(level, enabled) {
+    const on = offered(level).on;
+    return items.filter(i => {
+      if (i.level !== level) return false;
+      const t = itemTags(i).filter(x => on.includes(x));
+      return t.length > 0 && t.every(x => enabled.includes(x));
+    });
+  }
+
+  SN.bank = { items, LEVELS, FAMILIES, BUILDS_ON, MIN_POOL, modelFamilies, itemTags, offered, pool };
 })(typeof window !== 'undefined' ? window : globalThis);

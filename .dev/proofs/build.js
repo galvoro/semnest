@@ -66,9 +66,7 @@ function checkDirection(it, from, to, d) {
 
 // ------------------------------------------------------------------ TikZ
 function tikzPair(it) {
-  const sa = SN.sem.parse(it.A, it.obs), sb = SN.sem.parse(it.B, it.obs);
-  const LA = SN.diagram.layout(sa, Object.assign({}, it.pos, it.posA), it.res);
-  const LB = SN.diagram.layout(sb, Object.assign({}, it.pos, it.posB), it.res);
+  const { LA, LB } = SN.diagram.layoutItem(it);
   const b = SN.diagram.unionBounds([LA, LB]);
   const w = b.x1 - b.x0 + 0.4, h = b.y1 - b.y0 + 0.4;
   const s = Math.min(7.6 / w, 5.6 / h, 1.25);
@@ -79,7 +77,7 @@ function tikzPair(it) {
     resid/.style={draw=residc, line width=0.4pt}, residarrow/.style={draw=residc, -{Stealth[length=1.6pt]}, line width=0.4pt},
     path/.style={-{Stealth[length=${(3.4 * Math.min(1, s + 0.15)).toFixed(1)}pt]}, line width=0.55pt},
     cov/.style={{Stealth[length=${(3.4 * Math.min(1, s + 0.15)).toFixed(1)}pt]}-{Stealth[length=${(3.4 * Math.min(1, s + 0.15)).toFixed(1)}pt]}, line width=0.55pt},
-    net/.style={draw=netc, line width=1.1pt, line cap=round},
+    net/.style={draw, line width=0.55pt, line cap=round},
     elabel/.style={font=\scriptsize\itshape, fill=white, inner sep=0.6pt}]`;
   const one = (L) => SN.diagram.tikz(L, { scale: s, bounds: b }).replace('\\begin{tikzpicture}[x=1cm,y=1cm]', '\\begin{tikzpicture}' + styles);
   return { A: one(LA), B: one(LB) };
@@ -111,7 +109,7 @@ for (const it of SN.bank.items) {
   pages.push(String.raw`\clearpage
 \section*{${it.id} \quad ${esc(P.title)}}
 \addcontentsline{toc}{subsection}{${it.id}\quad ${esc(P.title)}}
-\noindent\textit{Level: ${LEVEL[it.level]}.} Observed variables: $${it.obs.map(v => { const m = v.match(/^([A-Za-z]+?)(\d+)$/); return m ? `${m[1]}_{${m[2]}}` : v; }).join(', ')}$ ($p=${p}$, ${p * (p + 1) / 2} moments).\par\medskip
+\noindent\textit{Level: ${LEVEL[it.level]}. Model families: ${SN.bank.itemTags(it).map(t => SN.bank.FAMILIES.find(f => f.id === t).name).join(', ')}.} Observed variables: $${it.obs.map(v => { const m = v.match(/^([A-Za-z]+?)(\d+)$/); return m ? `${m[1]}_{${m[2]}}` : v; }).join(', ')}$ ($p=${p}$, ${p * (p + 1) / 2} moments).\par\medskip
 \noindent\begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{acol}Model A} \;{\small $q_A=${MA.q}$}\\[2pt]
 ${tk.A}\\[1pt]{\scriptsize ${syntaxTex(it.A || '(no paths: variances only)')}}\end{minipage}\hfill
 \begin{minipage}[t]{0.49\textwidth}\centering\textbf{\color{bcol}Model B} \;{\small $q_B=${MB.q}$}\\[2pt]
@@ -135,7 +133,7 @@ const appTex = appendix.map(a => {
 }).join('\n');
 
 const pre = fs.readFileSync(path.join(DIR, 'preamble.tex'), 'utf8');
-const doc = pre.replace('%%ITEMS%%', () => pages.join('\n')).replace('%%APPENDIX%%', () => appTex);
+const doc = pre.replace('%%COUNT%%', String(SN.bank.items.length)).replace('%%ITEMS%%', () => pages.join('\n')).replace('%%APPENDIX%%', () => appTex);
 fs.writeFileSync(path.join(DIR, 'semnest_proofs.tex'), doc);
 console.log(failures ? failures + ' FAILURES' : 'all checks passed', '-', pages.length, 'items,', appendix.length, 'exact checks');
 if (process.argv.includes('--pdf') || true) {
