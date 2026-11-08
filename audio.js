@@ -16,13 +16,10 @@
   }
 
   // -------- BGM --------
-  // Loop points for assets/bgm.mp3 ("Quiet Calibration", 110.9 BPM, bar
-  // 2.164 s), from .dev/loop_points.js: the first pass plays the original
-  // intro; after 27 bars + 1 bar of crossfade (60.6 s, before the fade-out)
-  // the music blends back into bar 2 and loops a 27-bar cycle, on the beat.
-  // Set BGM_LOOP = null to loop the whole file instead.
-  const BAR = 4 * 0.5409;
-  const BGM_LOOP = { length: 27 * BAR, crossfade: BAR };
+  // Loop points for the track (set once it exists; see .dev/media_prompts.txt):
+  // { length: seconds of one loop cycle, crossfade: seconds blended back into
+  // the start }. null loops the whole file.
+  const BGM_LOOP = null;
   const BGM_FILE = null;     // e.g. 'assets/bgm.mp3' once a track is added
   let bgmTargetVolume = 0.18;
   let bgmWanted = false;
@@ -145,6 +142,12 @@
     src.start(t0); src.stop(t0 + dur);
   }
 
+  // a marimba-like note: the fundamental and a short fourth partial
+  function mallet(f, delay = 0, g = 0.08) {
+    tone({ freq: f, dur: 0.26, type: 'sine', gain: g, delay });
+    tone({ freq: f * 4, dur: 0.05, type: 'sine', gain: g * 0.35, delay });
+  }
+
   const SFX = {
     click:   () => tone({ freq: 440, dur: 0.03, gain: 0.05 }),
     error:   () => tone({ freq: 180, dur: 0.15, type: 'sawtooth', gain: 0.08 }),
@@ -159,18 +162,18 @@
                      tone({ freq: 930, dur: 0.06, type: 'triangle', gain: 0.06, delay: 0.04 }); },
     connect: () => tone({ freq: 760, dur: 0.05, type: 'triangle', gain: 0.07, slide: 240 }),
     erase:   () => tone({ freq: 360, dur: 0.07, type: 'triangle', gain: 0.07, slide: -160 }),
-    // a little bird: correct answer
-    chirp:   () => { tone({ freq: 1900, dur: 0.07, type: 'sine', gain: 0.07, slide: 900 });
-                     tone({ freq: 2300, dur: 0.08, type: 'sine', gain: 0.06, slide: 700, delay: 0.09 });
-                     tone({ freq: 2600, dur: 0.11, type: 'sine', gain: 0.05, slide: -500, delay: 0.19 }); },
-    half:    () => { tone({ freq: 1500, dur: 0.08, type: 'sine', gain: 0.06, slide: 500 });
-                     tone({ freq: 1300, dur: 0.12, type: 'sine', gain: 0.05, slide: -300, delay: 0.1 }); },
-    wrong:   () => tone({ freq: 260, dur: 0.3, type: 'triangle', gain: 0.07, slide: -110 }),
+    // wooden mallets and a log drum (a valley, not a garden)
+    good:    () => { noise({ dur: 0.035, gain: 0.05, filter: 1400 });
+                     mallet(440, 0, 0.08); mallet(659.3, 0.1, 0.075); mallet(880, 0.2, 0.06); },
+    half:    () => { mallet(440, 0, 0.07); mallet(392, 0.12, 0.06); },
+    wrong:   () => { tone({ freq: 98, dur: 0.3, type: 'sine', gain: 0.11, slide: -30 });
+                     tone({ freq: 196, dur: 0.26, type: 'triangle', gain: 0.06, slide: -70 }); },
     // relation changed in LEARN
     shift:   () => { tone({ freq: 880, dur: 0.05, type: 'sine', gain: 0.05 });
                      tone({ freq: 1320, dur: 0.07, type: 'sine', gain: 0.045, delay: 0.05 }); },
-    hatch:   () => [784, 988, 1175, 1568].forEach((f, i) =>
-                     tone({ freq: f, dur: 0.16, type: 'triangle', delay: i * 0.1, gain: 0.08 })),
+    // an egg cracks, then a rising run
+    hatch:   () => { [0, 0.09, 0.15].forEach(d => noise({ dur: 0.03, gain: 0.07, filter: 2600, delay: d }));
+                     [392, 493.9, 587.3, 784].forEach((f, i) => mallet(f, 0.3 + i * 0.1, 0.075)); },
   };
 
   global.GaltonAudio = {

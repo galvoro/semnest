@@ -3,6 +3,10 @@
 A Galvoro PLAY/LEARN capsule for PL5225 Structural Equation Modeling (NUS):
 **nested, equivalent, or neither?**
 
+Theme: dinosaur nests in a lost valley, kept quiet: sandstone paper with
+faint map contours, fern and basalt; model A is lagoon teal, model B amber;
+eggs as level medals, a map neatline and ferns on the certificate.
+
 ## PLAY
 
 Four levels (Easy, Medium, Hard, Psychometrika), five rounds per game. Each round
@@ -119,16 +123,19 @@ factors is equivalent to three correlated factors.
 | `game.js` | app shell and PLAY |
 | `learn.js`, `editor.js` | LEARN (editor adapted from Factor Lab) |
 | `tutorial.js`, `diploma.js`, `audio.js` | briefing cards, certificate image, sound |
-| `assets/`, `cover.png` | key art (vector, `.dev/make_art.js`), favicon |
+| `assets/` | favicon, map contours (`.dev/make_topo.js`), opening-screen placeholder (`.dev/make_placeholder.js`); the opening image goes in `title-wide.webp` / `title-mobile.webp` |
 
 `.dev/` holds the verification scripts (`verify_bank.js`, `verify_bank.R`,
-`check_bank.js` for the model-type filter), the proofs, the art generator,
-`media_prompts.txt` (prompts for generated music and images) and headless-Chrome
+`check_bank.js` for the model-type filter), the proofs, `media_prompts.txt`
+(prompts for the music and the opening image; `make_title.sh` converts the
+generated images) and headless-Chrome
 tests (`smoke_play.js`, `smoke_learn.js`, `gallery.html` for all 236 diagrams).
 Dot-folders are never uploaded with the capsule.
 
-No background music is included yet: add `assets/bgm.mp3` and set `BGM_FILE` in
-`audio.js`.
+Not included yet: the opening image (a placeholder is shown until
+`assets/title-wide.webp` and `assets/title-mobile.webp` exist), the square
+cover, and background music (add `assets/bgm.mp3` and set `BGM_FILE` in
+`audio.js`).
 
 ## Running locally
 

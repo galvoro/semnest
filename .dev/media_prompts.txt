@@ -1,53 +1,133 @@
-SEMNEST — prompts for generated media (the capsule ships with vector art made by
-.dev/make_art.js; replace assets/title-*.webp and cover.png if you prefer these).
+SEMNEST — prompts for the generated media (theme: a dinosaur nest in a lost
+valley; adventure, but quiet).
+
+Where the files go
+  Opening image  -> save the two PNGs as .dev/media/title-wide.png and
+                    .dev/media/title-mobile.png, then run  sh .dev/make_title.sh
+                    (makes assets/title-wide.webp and assets/title-mobile.webp;
+                    the game then shows them instead of the placeholder).
+                    .dev/media/ is not committed.
+  Music          -> save as assets/bgm.mp3; then BGM_FILE (and, if the track
+                    has an intro or fade-out, BGM_LOOP) in audio.js need setting.
+
+Palette of the game (for reference)
+  sandstone paper #EFEADB, basalt ink #25261F, lagoon teal #247C8C (model A),
+  amber #C47718 (model B), fern green #4A8236, earth brown #6E5638,
+  jungle greens #8DAA8E / #5F8462 / #3F6045, morning mist #BFD9D4 -> #F3E6C6.
+
 
 =====================================================================
-1. BACKGROUND MUSIC (Gemini / Lyria)
+1. BACKGROUND MUSIC (Gemini)
 =====================================================================
-Calm, warm instrumental loop for an educational puzzle game about bird nests and
-statistics. Acoustic, gentle and curious: fingerpicked nylon guitar and soft
-marimba carry a simple pentatonic melody, with light pizzicato strings, a soft
-upright bass and very subtle brushed percussion. Occasional faint bird-like
-flute or whistle ornaments, never busy. Major key, around 92 BPM, steady
-4/4, no build-ups, no drops, no vocals. Morning-in-the-garden mood, focused and
-friendly, suitable to think to for 10 minutes. Mixed quietly, warm and intimate,
-constant energy from start to end so it loops seamlessly (no intro, no fade-out).
-Length 60-90 seconds.
+A calm, curious instrumental loop for an educational puzzle game called
+"SEMNEST", set in a hidden valley where dinosaurs nest. The player is a quiet
+explorer studying the nests at first light: a sense of discovery and wonder,
+but relaxed and focused, music to think to.
+
+Style: light adventure / exploration underscore with an organic, earthy
+sound. A warm marimba and kalimba ostinato carries the pulse; soft hand
+percussion (frame drum, shaker, a low log drum on the downbeats); warm low
+strings holding long chords; a wooden flute or alto flute playing a simple,
+singable melody in short phrases; now and then a soft French horn swell that
+hints at a big landscape. NO epic orchestral hits, NO choir, NO heavy drums,
+NO synthesizer leads, NO electric guitars, NO bird sounds, NO roars or other
+animal sounds, NO vocals.
+
+Mood: curious and warm, a little mysterious, never tense or scary.
+Key: D dorian (minor with a bright sixth), staying close to home.
+
+Tempo: 96 BPM, steady 4/4, the same groove from start to end.
+
+Texture: light and uncluttered; the melody leaves space; mixed quietly with
+soft dynamics, so it sits under clicks and sound effects.
+
+Form: an 8-bar phrase, a slightly more open middle where the horn and strings
+widen, then back to the first phrase. Constant energy throughout: no intro,
+no build-up, no drop, no final hit, no ritardando, no fade-out, so the end
+loops smoothly back to the start.
+
+Length: 2:00 to 2:30.
+
+Instrumental only: no lyrics, no vocal samples.
+
 
 =====================================================================
-2. SQUARE TILE IMAGE (ChatGPT image) — cover.png, 1080 x 1080
+2. OPENING SCREEN IMAGE (ChatGPT image)
+   a. landscape 3:2 (1536 x 1024)  -> .dev/media/title-wide.png
+   b. portrait 2:3 (1024 x 1536)   -> .dev/media/title-mobile.png
 =====================================================================
-Square illustration for an educational game called "SEMNEST" about nested
-structural equation models. A cozy, slightly stylised editorial illustration:
-on a branch at dawn sits a large woven straw bird's nest; nested inside it is a
-smaller nest woven from robin-egg-blue twigs, holding a pale blue egg and a
-golden egg, while a cream speckled egg rests in the big nest. A plump blue-grey
-robin with a warm orange breast perches on the branch, looking at the eggs with
-curiosity. In the soft sky, a faint constellation drawn in thin white lines
-forms a small statistical path diagram (two circles connected by a curved double
-arrow, arrows pointing down to six small squares). Palette: warm paper beige,
-straw gold, twig brown, robin-egg blue, soft leaf green. Clean shapes, gentle
-grain, no photorealism. Large title text "SEMNEST" at the top in a bold, soft
-serif typeface (dark brown), with the small italic line "nested · equivalent ·
-neither" below it. Professional and friendly, suitable for university teaching.
+--- a. landscape ---------------------------------------------------
 
-=====================================================================
-3. OPENING SCREEN IMAGE (ChatGPT image) — assets/title-wide.webp, 16:9
-   (and a portrait 2:3 version for phones: assets/title-mobile.webp)
-=====================================================================
-Wide 16:9 key art for the start screen of an educational game "SEMNEST"
-(structural equation modeling: which model is nested in which). Same world as
-the tile: a long branch crosses the lower half from left to right; on the right
-third sits a large woven straw nest with a smaller robin-egg-blue nest nested
-inside it, with a pale blue egg, a golden egg and a cream speckled egg; a plump
-blue-grey robin with an orange breast perches on the branch next to it. The sky
-is a soft dawn gradient from pale blue to warm cream with a gentle sun glow on
-the right. In the upper middle of the sky, a faint constellation of thin white
-lines forms a tiny path diagram (two circles with a curved double-headed arrow,
-arrows to six small squares). Large title "SEMNEST" in a bold soft serif at the
-upper left, with the small italic subtitle "nested · equivalent · neither".
-Keep the bottom quarter calm (soft green hills) because buttons are placed
-there. Stylised editorial illustration, clean shapes, subtle grain, warm and
-professional, not childish, no extra text.
-Portrait version: same elements stacked vertically, title at the top centre,
-nest and robin in the lower middle, calm hills at the bottom.
+Landscape 3:2 key art for the opening screen of an educational game called
+"SEMNEST" (about structural equation models, and which model is nested in
+which).
+
+TITLE
+In the upper left third, over the sky, render the title "SEMNEST" in capital
+letters, clearly and legibly, in a bold, high-contrast vintage serif (like
+the cover of an old expedition book; similar to Fraunces Black). Colour
+#25261F. Spelling must be exact: S-E-M-N-E-S-T, one word, no hyphen, no extra
+letters. Directly below it, much smaller, in an italic serif of the same
+family: "nested · equivalent · neither".
+
+SUBJECT
+A hidden, lost-world valley at first light. In the middle ground, slightly
+right of centre, a large dinosaur ground nest on a sandy clearing: a wide,
+low ring-shaped mound of earth, lined with fern fronds and moss. Nested
+inside it is a second, smaller ring-shaped nest (the "nest within a nest").
+In the small inner nest lie two large, elongated, speckled eggs, one lagoon
+teal and one amber; a cream-coloured speckled egg lies in the outer nest.
+At the right edge, partly hidden behind tree ferns and partly cropped by the
+frame, a calm duck-billed dinosaur (a hadrosaur such as Maiasaura, the "good
+mother lizard") stands guard and looks down at the nest: gentle and
+dignified, mouth closed, not menacing. Far away in the haze, two small
+silhouettes of long-necked sauropods.
+On a flat rock in the lower left middle ground lies an explorer's open field
+notebook with a brass compass next to it; on the page is a simple pencil
+sketch of a path diagram: two circles joined by a curved double-headed
+arrow, with straight arrows from the circles down to six small squares. No
+writing on the page.
+
+SETTING
+Behind the valley rise misty, flat-topped sandstone cliffs (tepuis) with one
+thin waterfall. Tree ferns, cycads and dense jungle frame the scene. Soft,
+warm morning light from the upper right, light mist in the valley, a gentle
+sky from pale mist-teal to warm cream.
+
+COMPOSITION
+Keep the bottom fifth calm and fairly dark (ferns and ground in shadow, no
+important details), because the PLAY and LEARN buttons sit there. Keep the
+title, the nest and the notebook away from the top and bottom 8 % (the image
+is cropped a little on wide screens).
+
+STYLE
+Painterly editorial illustration with the feel of a vintage expedition book
+or museum poster: clean shapes, soft shadows, gentle haze, subtle paper
+grain. Adventurous but quiet; professional, suitable for university
+teaching. NOT photographic, NOT 3D-rendered, NOT cartoonish or childish, no
+gore, no bared teeth, no people, no birds.
+
+PALETTE
+Mist-teal sky #BFD9D4 to warm cream #F3E6C6; jungle greens #8DAA8E, #5F8462,
+#3F6045; sandstone #EFE9DA; earth brown #6E5638; egg accents lagoon teal
+#247C8C and amber #C47718; title #25261F.
+
+CONSTRAINTS
+The ONLY text in the image is the title and the line below it. No other
+words, captions, numbers, logos, signatures, watermarks or frames.
+
+OUTPUT
+Landscape, aspect ratio 3:2 (1536 x 1024).
+
+--- b. portrait (same chat, after a.) --------------------------------
+
+Now make a portrait 2:3 version (1024 x 1536) of the same image for phones:
+the same world, style, palette and egg colours, with the elements stacked
+vertically. The title "SEMNEST" (exact spelling) and the line "nested ·
+equivalent · neither" at the top, centred. The cliffs with the waterfall
+behind, the nest with the nested inner nest and the three eggs in the middle,
+the hadrosaur parent half behind ferns at one side, the field notebook with
+the sketched path diagram on a rock just below the nest. Keep the title and
+the nest within the middle 60 % of the width (phones crop the left and right
+edges) and keep the bottom quarter calm and dark for the buttons. The only
+text is the title and the line below it.

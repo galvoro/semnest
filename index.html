@@ -18,10 +18,12 @@
   <header id="hud">
     <div class="brand">
       <svg class="brand-mark" viewBox="0 0 40 32" aria-hidden="true">
-        <ellipse class="bm-egg a" cx="15" cy="13" rx="6.2" ry="7.6"/>
-        <ellipse class="bm-egg b" cx="25.5" cy="13.5" rx="5.6" ry="7"/>
-        <path class="bm-nest" d="M3 15 Q20 34 37 15 Q35 27 20 29 Q5 27 3 15 Z"/>
-        <path class="bm-twig" d="M5 18 Q20 26 35 18 M7 22 Q20 28 33 22"/>
+        <path class="bm-fern" d="M30 25 Q31.5 13 37 4.5 M31 19 l-3.6 -2 M31 19 l3.7 -1 M32.2 14 l-3.2 -2.4 M32.2 14 l3.5 -0.8 M34 9.8 l-2.5 -2.1 M34 9.8 l2.9 -0.5"/>
+        <ellipse class="bm-egg a" cx="13.4" cy="15" rx="4.4" ry="6.8" transform="rotate(-14 13.4 15)"/>
+        <ellipse class="bm-egg b" cx="25.2" cy="14.6" rx="4.4" ry="6.8" transform="rotate(12 25.2 14.6)"/>
+        <ellipse class="bm-egg c" cx="19.3" cy="17.2" rx="4.3" ry="6.4"/>
+        <path class="bm-nest" d="M1.5 21.5 Q4 18 8 20 Q12 18.5 15 20.5 Q20 19 25 20.5 Q28 18.5 32 20 Q36 18 38.5 21.5 Q37 29.5 20 30 Q3 29.5 1.5 21.5 Z"/>
+        <path class="bm-rim" d="M4 22.6 Q8 21.1 12 22.4 M16 22.7 Q20 21.5 24 22.7 M28 22.4 Q32 21.1 36 22.6"/>
       </svg>
       <span class="brand-name">SEMNEST</span>
     </div>
@@ -157,11 +159,16 @@
 <!-- ==================== TITLE ==================== -->
 <section id="screen-title" class="screen show">
   <h1 class="sr-only">SEMNEST</h1>
-  <div class="title-hero">
+  <div class="title-hero" id="title-hero">
     <picture>
       <source media="(orientation: portrait) and (max-width: 860px)" srcset="assets/title-mobile.webp">
-      <img src="assets/title-wide.webp" alt="SEMNEST: two birds and a nest woven from path diagrams">
+      <img id="title-img" src="assets/title-wide.webp" alt="SEMNEST: a dinosaur nest in a lost valley">
     </picture>
+    <div class="title-ph" aria-hidden="true">
+      <img class="ph-land" src="assets/title-placeholder.svg" alt="">
+      <div class="ph-text"><span class="ph-title">SEMNEST</span><span class="ph-sub">nested &middot; equivalent &middot; neither</span></div>
+      <span class="ph-tag">placeholder: opening image</span>
+    </div>
   </div>
   <div class="title-ui">
     <div class="title-btns">
@@ -269,9 +276,9 @@
       <stop offset="0" stop-color="var(--m-hi, #f6e7c8)"/><stop offset=".55" stop-color="var(--m-mid, #d9a65a)"/><stop offset="1" stop-color="var(--m-lo, #8a5a20)"/>
     </radialGradient>
     <symbol id="egg" viewBox="0 0 60 72">
-      <path d="M30 3 C48 3 57 30 57 44 C57 60 45 69 30 69 C15 69 3 60 3 44 C3 30 12 3 30 3 Z" fill="url(#egg-grad)" stroke="var(--m-lo, #8a5a20)" stroke-width="1.6"/>
-      <path d="M17 22 C20 14 25 10 30 9" stroke="#fff" stroke-opacity=".7" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-      <circle cx="21" cy="40" r="2.1" fill="var(--m-lo, #8a5a20)" opacity=".35"/><circle cx="38" cy="31" r="1.6" fill="var(--m-lo, #8a5a20)" opacity=".3"/><circle cx="41" cy="50" r="2.4" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="28" cy="56" r="1.4" fill="var(--m-lo, #8a5a20)" opacity=".3"/>
+      <path d="M30 3 C44 3 52 21 52 39 C52 57 43 69 30 69 C17 69 8 57 8 39 C8 21 16 3 30 3 Z" fill="url(#egg-grad)" stroke="var(--m-lo, #8a5a20)" stroke-width="1.6"/>
+      <path d="M18 25 C19 17 23 11 29 9" stroke="#fff" stroke-opacity=".7" stroke-width="3.2" fill="none" stroke-linecap="round"/>
+      <circle cx="20" cy="38" r="2.0" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="37" cy="27" r="1.5" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="41" cy="47" r="2.3" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="27" cy="55" r="1.4" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="33" cy="40" r="1.1" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="23" cy="24" r="1.2" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="45" cy="35" r="1.0" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="36" cy="60" r="1.6" fill="var(--m-lo, #8a5a20)" opacity=".28"/><circle cx="15" cy="50" r="1.3" fill="var(--m-lo, #8a5a20)" opacity=".28"/>
     </symbol>
   </defs>
 </svg>

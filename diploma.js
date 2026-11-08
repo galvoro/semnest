@@ -16,10 +16,10 @@
     const x = (u) => cx + (u - 30) * s, y = (v) => cy + (v - 36) * s;
     ctx.beginPath();
     ctx.moveTo(x(30), y(3));
-    ctx.bezierCurveTo(x(48), y(3), x(57), y(30), x(57), y(44));
-    ctx.bezierCurveTo(x(57), y(60), x(45), y(69), x(30), y(69));
-    ctx.bezierCurveTo(x(15), y(69), x(3), y(60), x(3), y(44));
-    ctx.bezierCurveTo(x(3), y(30), x(12), y(3), x(30), y(3));
+    ctx.bezierCurveTo(x(44), y(3), x(52), y(21), x(52), y(39));
+    ctx.bezierCurveTo(x(52), y(57), x(43), y(69), x(30), y(69));
+    ctx.bezierCurveTo(x(17), y(69), x(8), y(57), x(8), y(39));
+    ctx.bezierCurveTo(x(8), y(21), x(16), y(3), x(30), y(3));
     ctx.closePath();
   }
   function drawEgg(ctx, m, cx, cy, s, grey) {
@@ -31,9 +31,9 @@
     ctx.fillStyle = g; ctx.fill();
     ctx.lineWidth = 1.6 * s; ctx.strokeStyle = grey ? '#888' : m.lo; ctx.stroke();
     ctx.beginPath(); ctx.lineWidth = 3.2 * s; ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineCap = 'round';
-    ctx.moveTo(cx - 13 * s, cy - 14 * s); ctx.bezierCurveTo(cx - 10 * s, cy - 22 * s, cx - 5 * s, cy - 26 * s, cx, cy - 27 * s); ctx.stroke();
-    ctx.fillStyle = grey ? '#888' : m.lo; ctx.globalAlpha = (grey ? 0.45 : 1) * 0.32;
-    for (const [u, v, r] of [[21, 40, 2.1], [38, 31, 1.6], [41, 50, 2.4], [28, 56, 1.4]]) { ctx.beginPath(); ctx.arc(cx + (u - 30) * s, cy + (v - 36) * s, r * s, 0, 2 * Math.PI); ctx.fill(); }
+    ctx.moveTo(cx - 12 * s, cy - 11 * s); ctx.bezierCurveTo(cx - 11 * s, cy - 19 * s, cx - 7 * s, cy - 25 * s, cx - 1 * s, cy - 27 * s); ctx.stroke();
+    ctx.fillStyle = grey ? '#888' : m.lo; ctx.globalAlpha = (grey ? 0.45 : 1) * 0.28;
+    for (const [u, v, r] of [[20, 38, 2.0], [37, 27, 1.5], [41, 47, 2.3], [27, 55, 1.4], [33, 40, 1.1], [23, 24, 1.2], [45, 35, 1.0], [36, 60, 1.6], [15, 50, 1.3]]) { ctx.beginPath(); ctx.arc(cx + (u - 30) * s, cy + (v - 36) * s, r * s, 0, 2 * Math.PI); ctx.fill(); }
     ctx.restore();
   }
   function star(ctx, cx, cy, ro, ri) {
@@ -44,6 +44,32 @@
       if (k) ctx.lineTo(x, y); else ctx.moveTo(x, y);
     }
     ctx.closePath();
+  }
+  // a fern frond from (x, y), length len, direction ang; leaflets taper to the tip
+  function fern(ctx, x, y, len, ang, bend) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+    const P = (t) => [t * len, bend * len * 0.16 * Math.sin(t * Math.PI * 0.9)];
+    ctx.strokeStyle = '#6E8A55'; ctx.lineWidth = 2.4; ctx.lineCap = 'round';
+    ctx.beginPath(); for (let k = 0; k <= 30; k++) { const [px, py] = P(k / 30); k ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.stroke();
+    ctx.fillStyle = 'rgba(110, 138, 85, 0.82)';
+    for (let k = 1; k <= 14; k++) {
+      const t = k / 15.5, [px, py] = P(t), [qx, qy] = P(t + 0.01), dir = Math.atan2(qy - py, qx - px);
+      const sz = 6 + (1 - t) * len * 0.15;
+      for (const side of [-1, 1]) {
+        ctx.save(); ctx.translate(px, py); ctx.rotate(dir + side * 1.05);
+        ctx.beginPath(); ctx.ellipse(sz * 0.55, 0, sz * 0.55, Math.max(2.2, sz * 0.17), 0, 0, 2 * Math.PI); ctx.fill();
+        ctx.restore();
+      }
+    }
+    ctx.restore();
+  }
+  // the neatline of an old map: a band of alternating light and dark bars
+  function neatline(ctx, x0, y0, x1, y1, w, bar) {
+    ctx.lineWidth = 1.5; ctx.strokeStyle = '#8C7650';
+    ctx.strokeRect(x0, y0, x1 - x0, y1 - y0); ctx.strokeRect(x0 + w, y0 + w, x1 - x0 - 2 * w, y1 - y0 - 2 * w);
+    ctx.fillStyle = '#B9A47E';
+    for (let x = x0 + w, k = 0; x < x1 - w; x += bar, k++) if (k % 2) { const b = Math.min(bar, x1 - w - x); ctx.fillRect(x, y0, b, w); ctx.fillRect(x, y1 - w, b, w); }
+    for (let y = y0 + w, k = 0; y < y1 - w; y += bar, k++) if (k % 2) { const b = Math.min(bar, y1 - w - y); ctx.fillRect(x0, y, w, b); ctx.fillRect(x1 - w, y, w, b); }
   }
   function spaced(ctx, px) { if ('letterSpacing' in ctx) ctx.letterSpacing = px + 'px'; }
 
@@ -56,66 +82,58 @@
     const cv = document.createElement('canvas');
     cv.width = W; cv.height = H;
     const ctx = cv.getContext('2d');
-    ctx.fillStyle = '#FFFBF1'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#FCF7EA'; ctx.fillRect(0, 0, W, H);
     const glow = ctx.createRadialGradient(W / 2, H * 0.4, 0, W / 2, H * 0.4, W * 0.5);
     glow.addColorStop(0, 'rgba(248, 226, 180, 0.6)'); glow.addColorStop(1, 'rgba(255, 251, 241, 0)');
     ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-    ctx.lineWidth = 8; ctx.strokeStyle = '#7B5537'; ctx.strokeRect(4, 4, W - 8, H - 8);
-    ctx.lineWidth = 2.5; ctx.strokeStyle = '#C9A97E'; ctx.strokeRect(30, 30, W - 60, H - 60);
-    // woven twig border
-    ctx.strokeStyle = '#D9BE93'; ctx.lineWidth = 2;
-    for (let k = 0; k < 2; k++) {
-      ctx.beginPath();
-      for (let x = 50; x <= W - 50; x += 6) { const y = 46 + k * 4 + 3 * Math.sin((x + k * 17) / 23); x === 50 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
-      ctx.stroke();
-      ctx.beginPath();
-      for (let x = 50; x <= W - 50; x += 6) { const y = H - 50 - k * 4 + 3 * Math.sin((x + k * 17) / 23); x === 50 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
-      ctx.stroke();
-    }
+    ctx.lineWidth = 8; ctx.strokeStyle = '#6E5638'; ctx.strokeRect(4, 4, W - 8, H - 8);
+    neatline(ctx, 28, 28, W - 28, H - 28, 9, 46);
+    fern(ctx, 52, 54, 170, 0.62, 1); fern(ctx, 52, 54, 140, 1.22, -1);
+    fern(ctx, W - 52, 54, 170, Math.PI - 0.62, -1); fern(ctx, W - 52, 54, 140, Math.PI - 1.22, 1);
     const cx = W / 2;
     ctx.textAlign = 'center';
-    ctx.font = `700 22px ${SANS}`; ctx.fillStyle = '#9C5F12'; spaced(ctx, 9);
+    ctx.font = `700 22px ${SANS}`; ctx.fillStyle = '#93560F'; spaced(ctx, 9);
     ctx.fillText('SEMNEST · STRUCTURAL EQUATION MODELING', cx, 112);
     spaced(ctx, 0);
-    ctx.font = `800 92px ${HEAD}`; ctx.fillStyle = '#2B2622';
+    ctx.font = `800 92px ${HEAD}`; ctx.fillStyle = '#25261F';
     ctx.fillText(info.passed ? 'Certificate in Model Nesting' : 'Not hatched yet', cx, 214);
-    ctx.font = `italic 500 36px ${HEAD}`; ctx.fillStyle = '#5E554C';
+    ctx.font = `italic 500 36px ${HEAD}`; ctx.fillStyle = '#56554A';
     ctx.fillText(info.passed ? 'This certifies that' : 'A good try by', cx, 278);
     const name = (info.name || '').trim();
-    if (name) { ctx.font = `700 62px ${HEAD}`; ctx.fillStyle = '#2B2622'; ctx.fillText(name, cx, 356); }
-    ctx.lineWidth = 2; ctx.strokeStyle = '#D9BE93';
+    if (name) { ctx.font = `700 62px ${HEAD}`; ctx.fillStyle = '#25261F'; ctx.fillText(name, cx, 356); }
+    ctx.lineWidth = 2; ctx.strokeStyle = '#D3C196';
     ctx.beginPath(); ctx.moveTo(cx - 380, 378); ctx.lineTo(cx + 380, 378); ctx.stroke();
-    ctx.font = `italic 500 34px ${HEAD}`; ctx.fillStyle = '#5E554C';
+    ctx.font = `italic 500 34px ${HEAD}`; ctx.fillStyle = '#56554A';
     ctx.fillText('sorted five pairs of structural equation models at the level', cx, 432);
-    ctx.font = `800 52px ${HEAD}`; ctx.fillStyle = '#1F6680';
+    ctx.font = `800 52px ${HEAD}`; ctx.fillStyle = '#175E6A';
     ctx.fillText(info.level, cx, 498);
-    if (info.fams) { ctx.font = `700 22px ${SANS}`; ctx.fillStyle = '#8E8478'; ctx.fillText(info.fams, cx, 532); }
+    if (info.fams) { ctx.font = `700 22px ${SANS}`; ctx.fillStyle = '#868272'; ctx.fillText(info.fams, cx, 532); }
 
     drawEgg(ctx, info.medal, 600, 640, 2.7, !info.passed);
-    ctx.font = `700 21px ${SANS}`; ctx.fillStyle = '#7B5537'; spaced(ctx, 5);
+    ctx.font = `700 21px ${SANS}`; ctx.fillStyle = '#6E5638'; spaced(ctx, 5);
     ctx.fillText((info.medal.name + ' egg').toUpperCase(), 600, 760);
     spaced(ctx, 0);
     const sx = 980;
-    ctx.font = `600 120px ${MONO}`; ctx.fillStyle = '#2B2622'; ctx.textAlign = 'right';
+    ctx.font = `600 120px ${MONO}`; ctx.fillStyle = '#25261F'; ctx.textAlign = 'right';
     ctx.fillText(String(info.score), sx + 30, 650);
-    ctx.font = `600 40px ${MONO}`; ctx.fillStyle = '#8E8478'; ctx.textAlign = 'left';
+    ctx.font = `600 40px ${MONO}`; ctx.fillStyle = '#868272'; ctx.textAlign = 'left';
     ctx.fillText('/ ' + info.max, sx + 42, 650);
     for (let k = 0; k < 3; k++) {
       star(ctx, sx - 30 + 56 * k, 700, 23, 9.6);
       ctx.fillStyle = k < info.stars ? '#E0A526' : '#EEE4D2'; ctx.fill();
       ctx.lineWidth = 2; ctx.strokeStyle = k < info.stars ? '#9C6C12' : '#CDBFA6'; ctx.stroke();
     }
-    ctx.textAlign = 'center'; ctx.font = `italic 700 44px ${HEAD}`; ctx.fillStyle = '#9C5F12';
+    ctx.textAlign = 'center'; ctx.font = `italic 700 44px ${HEAD}`; ctx.fillStyle = '#93560F';
     ctx.fillText(info.rank, sx + 26, 778);
 
     // rounds
     const tx0 = 300, tx1 = W - 300;
     let y = 838;
-    ctx.font = `800 17px ${SANS}`; ctx.fillStyle = '#9C5F12'; spaced(ctx, 2);
+    ctx.font = `800 17px ${SANS}`; ctx.fillStyle = '#93560F'; spaced(ctx, 2);
     const cols = [[tx0 + 10, 'left', '#'], [tx0 + 52, 'left', 'ITEM'], [tx1 - 330, 'left', 'YOUR ANSWER'], [tx1 - 160, 'left', 'TRUTH'], [tx1 - 8, 'right', 'POINTS']];
     for (const [x, al, t] of cols) { ctx.textAlign = al; ctx.fillText(t, x, y); }
     spaced(ctx, 0);
-    ctx.strokeStyle = '#D9BE93'; ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#D3C196'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(tx0, y + 12); ctx.lineTo(tx1, y + 12); ctx.stroke();
     for (const r of info.rounds) {
       y += 34;
@@ -123,14 +141,14 @@
       cells.forEach((t, k) => {
         ctx.textAlign = cols[k][1];
         ctx.font = k === 4 ? `700 21px ${MONO}` : k === 0 ? `600 20px ${MONO}` : `600 21px ${SANS}`;
-        ctx.fillStyle = k === 4 ? (r.cls === 'ok' ? '#3F7A2E' : r.cls === 'hf' ? '#9C5F12' : '#B23A32') : '#3B342E';
+        ctx.fillStyle = k === 4 ? (r.cls === 'ok' ? '#3E7430' : r.cls === 'hf' ? '#93560F' : '#A83F2B') : '#3B342E';
         ctx.fillText(t, cols[k][0], y);
       });
       ctx.strokeStyle = '#EFE4D0'; ctx.lineWidth = 1; ctx.setLineDash([2, 4]);
       ctx.beginPath(); ctx.moveTo(tx0, y + 11); ctx.lineTo(tx1, y + 11); ctx.stroke();
       ctx.setLineDash([]);
     }
-    ctx.font = `italic 500 28px ${HEAD}`; ctx.fillStyle = '#7B5537';
+    ctx.font = `italic 500 28px ${HEAD}`; ctx.fillStyle = '#6E5638';
     ctx.textAlign = 'left'; ctx.fillText(info.date, 110, H - 76);
     ctx.textAlign = 'right'; ctx.fillText('a Galvoro capsule', W - 110, H - 76);
     return cv;

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMax slice">
+<defs>
+<linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#BFD9D4"/><stop offset=".55" stop-color="#E6E7D3"/><stop offset="1" stop-color="#F3E6C6"/></linearGradient>
+<radialGradient id="sun" cx="72%" cy="38%" r="40%"><stop offset="0" stop-color="#FFF4D6" stop-opacity=".95"/><stop offset="1" stop-color="#FFF4D6" stop-opacity="0"/></radialGradient>
+<linearGradient id="mist" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F4EEDC" stop-opacity="0"/><stop offset=".5" stop-color="#F4EEDC" stop-opacity=".85"/><stop offset="1" stop-color="#F4EEDC" stop-opacity="0"/></linearGradient>
+</defs>
+<rect width="1600" height="1000" fill="url(#sky)"/>
+<rect width="1600" height="1000" fill="url(#sun)"/>
+<g fill="#A9C2B6">
+<path d="M60 720 L90 488 Q96 470 120 470 L390 476 Q416 478 420 496 L450 720 Z"/>
+<path d="M1034 720 L1060 438 Q1066 420 1090 420 L1300 426 Q1326 428 1330 446 L1356 720 Z"/>
+<path d="M1370 720 L1390 538 Q1396 520 1420 520 L1610 526 Q1636 528 1640 546 L1660 720 Z"/>
+</g>
+<path d="M1196 428 L1199 640" stroke="#EEF3EC" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+<rect y="560" width="1600" height="140" fill="url(#mist)"/>
+<path d="M-40 645 Q-20 627 0 650 Q28 640 56 656 Q97 641 139 665 Q172 647 204 671 Q236 656 268 676 Q294 651 319 678 Q343 659 366 680 Q401 651 435 680 Q465 665 495 678 Q520 650 545 676 Q580 650 615 671 Q647 651 679 665 Q707 634 734 659 Q755 641 775 655 Q809 625 844 647 Q864 625 884 642 Q927 615 969 633 Q991 607 1014 629 Q1058 608 1102 623 Q1144 609 1187 620 Q1225 592 1263 620 Q1306 604 1350 623 Q1374 597 1398 626 Q1442 603 1486 634 Q1531 611 1576 643 Q1607 630 1637 650 Q1673 642 1708 658 L1640 1000 L-40 1000 Z" fill="#8DAA8E"/>
+<rect y="640" width="1600" height="90" fill="url(#mist)" opacity=".6"/>
+<path d="M-40 791 Q14 751 67 797 Q103 754 138 800 Q163 761 188 800 Q242 764 295 798 Q341 761 386 793 Q437 757 487 785 Q540 731 593 774 Q631 726 668 765 Q709 733 749 755 Q775 730 802 749 Q852 720 901 738 Q937 699 973 731 Q1009 695 1045 726 Q1073 694 1101 723 Q1132 686 1162 721 Q1203 675 1245 720 Q1273 673 1301 721 Q1356 682 1411 726 Q1452 699 1494 733 Q1545 700 1596 743 Q1636 719 1676 752 L1640 1000 L-40 1000 Z" fill="#5F8462"/>
+<path d="M-40 910 Q11 876 63 909 Q131 862 200 904 Q266 870 332 894 Q369 832 405 888 Q463 847 520 875 Q584 830 647 860 Q712 810 777 844 Q827 806 878 833 Q912 777 946 826 Q1011 788 1076 817 Q1136 778 1196 811 Q1261 771 1325 810 Q1355 786 1385 811 Q1416 769 1448 814 Q1490 763 1531 819 Q1574 775 1617 825 Q1686 790 1756 839 L1640 1000 L-40 1000 Z" fill="#3F6045"/>
+</svg>

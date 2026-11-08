@@ -43,12 +43,14 @@
   }
   function store(k, v) { try { if (v === undefined) return JSON.parse(localStorage.getItem('semnest-' + k)); localStorage.setItem('semnest-' + k, JSON.stringify(v)); } catch (e) { return null; } return null; }
   let uid = 0;
+  // a dinosaur egg: longer than a bird's egg, speckled
+  const EGG_SPOTS = [[20, 38, 2.0], [37, 27, 1.5], [41, 47, 2.3], [27, 55, 1.4], [33, 40, 1.1], [23, 24, 1.2], [45, 35, 1.0], [36, 60, 1.6], [15, 50, 1.3]];
   function eggSVG(m) {
     const id = 'eg' + (uid++);
     return `<defs><radialGradient id="${id}" cx="36%" cy="30%" r="78%"><stop offset="0" stop-color="${m.hi}"/><stop offset=".55" stop-color="${m.mid}"/><stop offset="1" stop-color="${m.lo}"/></radialGradient></defs>` +
-      `<path d="M30 3 C48 3 57 30 57 44 C57 60 45 69 30 69 C15 69 3 60 3 44 C3 30 12 3 30 3 Z" fill="url(#${id})" stroke="${m.lo}" stroke-width="1.6"/>` +
-      `<path d="M17 22 C20 14 25 10 30 9" stroke="#fff" stroke-opacity=".75" stroke-width="3.2" fill="none" stroke-linecap="round"/>` +
-      [[21, 40, 2.1], [38, 31, 1.6], [41, 50, 2.4], [28, 56, 1.4]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${m.lo}" opacity=".3"/>`).join('');
+      `<path d="M30 3 C44 3 52 21 52 39 C52 57 43 69 30 69 C17 69 8 57 8 39 C8 21 16 3 30 3 Z" fill="url(#${id})" stroke="${m.lo}" stroke-width="1.6"/>` +
+      `<path d="M18 25 C19 17 23 11 29 9" stroke="#fff" stroke-opacity=".75" stroke-width="3.2" fill="none" stroke-linecap="round"/>` +
+      EGG_SPOTS.map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="${m.lo}" opacity=".28"/>`).join('');
   }
   SN.eggSVG = eggSVG;
   const rand = (() => {
@@ -106,6 +108,13 @@
   function closeModal(id) { $(id).classList.add('hidden'); }
   function openModal(id) { $(id).classList.remove('hidden'); }
 
+  (function titleImage() {
+    const img = $('title-img'), hero = $('title-hero');
+    const ok = () => { if (img.naturalWidth) hero.classList.add('loaded'); };
+    img.addEventListener('load', ok);
+    img.addEventListener('error', () => hero.classList.remove('loaded'));
+    if (img.complete) ok();
+  })();
   $('btn-play').addEventListener('click', () => { SFX('click'); if (A) A.ensure(); showLevels(); });
   $('btn-learn').addEventListener('click', () => {
     SFX('click'); if (A) A.ensure();
@@ -361,7 +370,7 @@
     g.score += pts;
     const cls = pts === CONFIG.POINTS ? 'good' : pts > 0 ? 'half' : 'bad';
     g.results.push({ item: it, ans, pts, cls });
-    SFX(cls === 'good' ? 'chirp' : cls === 'half' ? 'half' : 'wrong');
+    SFX(cls === 'good' ? 'good' : cls === 'half' ? 'half' : 'wrong');
     // buttons
     const box = $('answers');
     box.classList.add('done');
@@ -421,10 +430,10 @@
   // Final certificate
   // ------------------------------------------------------------------
   function rankOf(s) {
-    if (s >= 90) return 'Master nester';
-    if (s >= 80) return 'Nest architect';
-    if (s >= 70) return 'Nest builder';
-    if (s >= 60) return 'Fledgling modeler';
+    if (s >= 90) return 'Apex modeler';
+    if (s >= 80) return 'Pack leader';
+    if (s >= 70) return 'Nest guardian';
+    if (s >= 60) return 'Hatchling modeler';
     return 'Still in the egg';
   }
   function showFinal() {
