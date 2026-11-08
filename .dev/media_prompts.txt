@@ -156,3 +156,209 @@ the sketched path diagram on a rock just below the nest. Keep the title and
 the nest within the middle 60 % of the width (phones crop the left and right
 edges) and keep the bottom quarter calm and dark for the buttons. The only
 text is the title and the line below it.
+
+
+=====================================================================
+3. MORE PLAYFUL OPENING IMAGES (ChatGPT image; alternatives to 2.)
+   Pick one of c1-c3, then send d. in the same chat for the phone
+   version. Save them under the same names as in 2.
+=====================================================================
+--- c1. Hatching day (a bit more playful; closest to 2a) ------------
+
+Landscape 3:2 key art for the opening screen of an educational game called
+"SEMNEST" (about structural equation models, and which model is nested in
+which).
+
+TITLE
+In the upper left third, over the sky, render the title "SEMNEST" in capital
+letters, clearly and legibly, in a bold, high-contrast vintage serif (like
+the cover of an old expedition book; similar to Fraunces Black). Colour
+#25261F. Spelling must be exact: S-E-M-N-E-S-T, one word, no hyphen, no extra
+letters. Directly below it, much smaller, in an italic serif of the same
+family: "nested · equivalent · neither".
+
+SUBJECT
+A hidden, lost-world valley on a bright, warm morning. In the middle ground,
+slightly right of centre, a large dinosaur ground nest on a sandy clearing:
+a wide, low ring-shaped mound of earth lined with fern fronds and moss, with
+a second, smaller ring-shaped nest nested inside it. Hatching day: in the
+inner nest the lagoon-teal egg has just cracked open and a tiny duck-billed
+hatchling pokes its head out, a piece of shell still on its head like a hat,
+blinking curiously at the light; the amber egg next to it wobbles, with a
+first small crack. A cream-coloured speckled egg lies in the outer nest. At
+the right edge, partly behind tree ferns, the parent, a calm duck-billed
+dinosaur (a hadrosaur such as Maiasaura, the "good mother lizard"), leans in
+over the nest with a gentle, proud look; mouth closed. A few dragonflies
+dance over the clearing. On a flat rock in the lower left middle ground lies
+an explorer's open field notebook with a brass compass and a pencil; on the
+page is a simple pencil sketch of a path diagram: two circles joined by a
+curved double-headed arrow, with straight arrows from the circles down to
+six small squares. No writing on the page.
+
+SETTING
+Behind the valley rise misty, flat-topped sandstone cliffs (tepuis) with one
+thin waterfall. Tree ferns, cycads and lush jungle frame the scene. Soft,
+warm morning light from the upper right, a little haze, a gentle sky from
+pale mist-teal to warm cream.
+
+COMPOSITION
+Keep the bottom fifth calm and fairly dark (ferns and ground in shadow, no
+important details), because the PLAY and LEARN buttons sit there. Keep the
+title, the nest, the hatchling and the notebook away from the top and bottom
+8 % (the image is cropped a little on wide screens).
+
+STYLE
+Painterly storybook illustration with the feel of a vintage expedition book
+or a natural history museum poster: clean shapes, soft shadows, warm light,
+gentle humour in the animals' poses. Charming and playful, but refined and
+professional, suitable for university teaching. NOT photographic, NOT
+3D-rendered, NOT a cartoon (no big googly eyes, no grinning), no gore, no
+teeth, no people, no birds.
+
+PALETTE
+Mist-teal sky #BFD9D4 to warm cream #F3E6C6; jungle greens #8DAA8E, #5F8462,
+#3F6045; sandstone #EFE9DA; earth brown #6E5638; egg accents lagoon teal
+#247C8C and amber #C47718; title #25261F.
+
+CONSTRAINTS
+The ONLY text in the image is the title and the line below it. No other
+words, captions, numbers, logos, signatures, watermarks or frames.
+
+OUTPUT
+Landscape, aspect ratio 3:2 (1536 x 1024).
+
+--- c2. The curious hatchling (playful) -----------------------------
+
+Landscape 3:2 key art for the opening screen of an educational game called
+"SEMNEST" (about structural equation models, and which model is nested in
+which).
+
+TITLE
+In the upper left third, over the sky, render the title "SEMNEST" in capital
+letters, clearly and legibly, in a bold, high-contrast vintage serif (like
+the cover of an old expedition book; similar to Fraunces Black). Colour
+#25261F. Spelling must be exact: S-E-M-N-E-S-T, one word, no hyphen, no extra
+letters. Directly below it, much smaller, in an italic serif of the same
+family: "nested · equivalent · neither".
+
+SUBJECT
+A hidden, lost-world valley in warm morning light. The hero is a small
+duck-billed dinosaur hatchling that has wandered out of its nest and now sits
+on an explorer's open field notebook lying on a flat rock in the middle
+ground, left of centre. It tilts its head and studies the pencil sketch on
+the page as if trying to read it: a simple path diagram of two circles joined
+by a curved double-headed arrow, with straight arrows from the circles down
+to six small squares. One small foot rests on the page; a pencil has rolled
+away; a brass compass lies open next to the notebook; a bit of lagoon-teal
+eggshell sticks to the hatchling's tail. No writing on the page.
+Behind it, slightly right of centre on a sandy clearing, the nest: a wide,
+low ring-shaped mound of earth lined with ferns and moss, with a second,
+smaller ring-shaped nest nested inside it. In the inner nest lie an amber
+egg and the empty, broken lagoon-teal shell; a cream speckled egg lies in
+the outer nest. Further back, half hidden behind tree ferns, the parent, a
+calm hadrosaur (Maiasaura), peeks around a fern at its wandering child with
+a patient, amused look; mouth closed.
+
+SETTING
+Misty, flat-topped sandstone cliffs (tepuis) with one thin waterfall behind
+the valley; tree ferns, cycads and lush jungle frame the scene; soft warm
+light from the upper right; a gentle sky from pale mist-teal to warm cream.
+
+COMPOSITION
+Keep the bottom fifth calm and fairly dark (ferns and ground in shadow, no
+important details), because the PLAY and LEARN buttons sit there. Keep the
+title, the hatchling, the notebook and the nest away from the top and bottom
+8 % (the image is cropped a little on wide screens).
+
+STYLE
+Painterly storybook illustration with the feel of a vintage expedition book
+or a natural history museum poster: clean shapes, soft shadows, warm light,
+gentle humour in the animals' poses. Charming and playful, but refined and
+professional, suitable for university teaching. NOT photographic, NOT
+3D-rendered, NOT a cartoon (no big googly eyes, no grinning), no gore, no
+teeth, no people, no birds.
+
+PALETTE
+Mist-teal sky #BFD9D4 to warm cream #F3E6C6; jungle greens #8DAA8E, #5F8462,
+#3F6045; sandstone #EFE9DA; earth brown #6E5638; egg accents lagoon teal
+#247C8C and amber #C47718; title #25261F.
+
+CONSTRAINTS
+The ONLY text in the image is the title and the line below it. No other
+words, captions, numbers, logos, signatures, watermarks or frames.
+
+OUTPUT
+Landscape, aspect ratio 3:2 (1536 x 1024).
+
+--- c3. Sunny parade (the brightest) --------------------------------
+
+Landscape 3:2 key art for the opening screen of an educational game called
+"SEMNEST" (about structural equation models, and which model is nested in
+which).
+
+TITLE
+In the upper left third, over the sky, render the title "SEMNEST" in capital
+letters, clearly and legibly, in a bold, high-contrast vintage serif (like
+the cover of an old expedition book; similar to Fraunces Black). Colour
+#25261F. Spelling must be exact: S-E-M-N-E-S-T, one word, no hyphen, no extra
+letters. Directly below it, much smaller, in an italic serif of the same
+family: "nested · equivalent · neither".
+
+SUBJECT
+A hidden, lost-world valley on a sunny, cheerful late morning. A calm
+duck-billed dinosaur parent (a hadrosaur such as Maiasaura) walks across a
+sandy clearing from right to left, followed by three small hatchlings in a
+neat row like ducklings, each a little different in colour: one with
+lagoon-teal speckles, one amber, one cream. The last one hurries to keep up.
+In the middle ground, right of centre, the family's nest: a wide, low
+ring-shaped mound of earth lined with ferns and moss, with a second, smaller
+ring-shaped nest nested inside it; broken eggshells (teal, amber, cream) lie
+in the nests. Far away, two small silhouettes of long-necked sauropods.
+On a flat rock in the lower left middle ground lies an explorer's open field
+notebook with a brass compass; on the page is a simple pencil sketch of a
+path diagram: two circles joined by a curved double-headed arrow, with
+straight arrows from the circles down to six small squares. No writing on
+the page.
+
+SETTING
+Flat-topped sandstone cliffs (tepuis) with one thin waterfall behind the
+valley, a light haze; tree ferns, cycads and lush jungle frame the scene;
+bright, warm light; a clear sky from pale mist-teal to warm cream.
+
+COMPOSITION
+Keep the bottom fifth calm and fairly dark (ferns and ground in shadow, no
+important details), because the PLAY and LEARN buttons sit there. Keep the
+title, the dinosaur family, the nest and the notebook away from the top and
+bottom 8 % (the image is cropped a little on wide screens).
+
+STYLE
+Painterly storybook illustration with the feel of a vintage expedition book
+or a natural history museum poster: clean shapes, soft shadows, warm light,
+gentle humour in the animals' poses. Charming and playful, but refined and
+professional, suitable for university teaching. NOT photographic, NOT
+3D-rendered, NOT a cartoon (no big googly eyes, no grinning), no gore, no
+teeth, no people, no birds.
+
+PALETTE
+Mist-teal sky #BFD9D4 to warm cream #F3E6C6; jungle greens #8DAA8E, #5F8462,
+#3F6045; sandstone #EFE9DA; earth brown #6E5638; accents lagoon teal #247C8C
+and amber #C47718; title #25261F.
+
+CONSTRAINTS
+The ONLY text in the image is the title and the line below it. No other
+words, captions, numbers, logos, signatures, watermarks or frames.
+
+OUTPUT
+Landscape, aspect ratio 3:2 (1536 x 1024).
+
+--- d. portrait for c1-c3 (same chat, after the landscape) ----------
+
+Now make a portrait 2:3 version (1024 x 1536) of the same image for phones:
+the same world, style, palette, characters and colours, with the elements
+stacked vertically. The title "SEMNEST" (exact spelling) and the line
+"nested · equivalent · neither" at the top, centred. Below it the cliffs
+with the waterfall, then the nest and the dinosaurs, with the field notebook
+on a rock just below. Keep the title, the nest and the hatchling(s) within
+the middle 60 % of the width (phones crop the left and right edges) and keep
+the bottom quarter calm and dark for the buttons. The only text is the title
+and the line below it.
