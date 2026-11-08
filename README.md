@@ -103,8 +103,12 @@ produce exactly the bank's models.
 **Values** gives the models numbers (std.lv metric). The nested model (or either
 model, when they are equivalent) can be edited with a slider; the other model
 is fitted to the covariance matrix it implies and shows the values that
-reproduce it exactly. With *neither*, values cannot be transferred; network
-models have no values (yet).
+reproduce it exactly. As in Factor Lab (semPlot / qgraph, theme "colorblind"),
+paths are then blue (positive) or red (negative), with colour strength and
+width following the standardized value (lavaan's std.all); the labels show the
+raw values, and the slider's bar runs from zero in the path's colour. Paths
+with the same equality label move together. With *neither*, values cannot be
+transferred; network models have no values (yet).
 
 On phones LEARN looks like PLAY: A above B, the relation and the two buttons
 below. Tapping a model opens it in a popup with the drawing tools; tapping the

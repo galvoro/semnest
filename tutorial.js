@@ -37,7 +37,8 @@
     { title: 'LIBRARY', c: 'var(--leaf)',
       body: '<b>LIBRARY</b> loads any pair from PLAY, with its proven relation. Change it and see what happens.' },
     { title: 'GIVE THEM NUMBERS', c: 'var(--twig)',
-      body: 'Press <b>Values</b> and move a slider: the other model finds values that give exactly the same covariance matrix.' },
+      body: 'Press <b>Values</b> and move a slider: the other model finds values that give exactly the same covariance matrix. ' +
+        'Paths are blue (+) or red (&minus;), thicker when stronger (standardized).' },
   ];
 
   let onDone = null;

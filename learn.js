@@ -364,15 +364,30 @@
       return ed ? ed.v : 0;
     });
   }
+  // standardized value of one parameter entry (lavaan std.all, as in FACTOR
+  // LAB): an effect b of w on u gives b sd(w) / sd(u); a covariance is turned
+  // into a correlation with the (residual) variances; a residual variance is
+  // the share of the variable's variance it leaves unexplained
+  function standardizer(M, theta) {
+    const mt = SN.sem.matrices(M, theta), F = mt && SN.sem.impliedFull(M, theta);
+    if (!F) return () => NaN;
+    return (e, v) => {
+      if (e.kind === 'A') return v * Math.sqrt(F[e.j][e.j]) / Math.sqrt(F[e.i][e.i]);
+      if (e.i === e.j) return v / F[e.i][e.i];
+      return v / Math.sqrt(Math.abs(mt.S[e.i][e.i] * mt.S[e.j][e.j]));
+    };
+  }
   function displayFrom(M, syn, theta, fitted) {
-    const d = { edge: {}, resid: {}, fitted };
+    const d = { edge: {}, estd: {}, resid: {}, rstd: {}, fitted };
+    const std = standardizer(M, theta);
     M.groups.forEach((g, k) => {
-      // every entry of a labelled (shared) parameter shows its value
+      // every entry of a labelled (shared) parameter shows its value; the
+      // standardized values can differ between the entries
       for (const e of g.entries) {
-        const u = M.vars[e.i], w = M.vars[e.j];
-        if (e.kind === 'A') { const ed = syn.edges.find(x => (x.kind === 'load' || x.kind === 'reg') && x.a === w && x.b === u); if (ed) d.edge[ed.id] = theta[k]; }
-        else if (e.kind === 'S' && e.i === e.j) { const r = syn.resid.find(x => x.name === u); if (r) d.resid[r.id] = theta[k]; }
-        else if (e.kind === 'S') { const ed = syn.edges.find(x => x.kind === 'cov' && ((x.a === u && x.b === w) || (x.a === w && x.b === u))); if (ed) d.edge[ed.id] = theta[k]; }
+        const u = M.vars[e.i], w = M.vars[e.j], z = std(e, theta[k]);
+        if (e.kind === 'A') { const ed = syn.edges.find(x => (x.kind === 'load' || x.kind === 'reg') && x.a === w && x.b === u); if (ed) { d.edge[ed.id] = theta[k]; d.estd[ed.id] = z; } }
+        else if (e.kind === 'S' && e.i === e.j) { const r = syn.resid.find(x => x.name === u); if (r) { d.resid[r.id] = theta[k]; d.rstd[r.id] = z; } }
+        else if (e.kind === 'S') { const ed = syn.edges.find(x => x.kind === 'cov' && ((x.a === u && x.b === w) || (x.a === w && x.b === u))); if (ed) { d.edge[ed.id] = theta[k]; d.estd[ed.id] = z; } }
       }
     });
     return d;
@@ -401,7 +416,13 @@
     const MS = SN.sem.compile(ss.text, ss.obs, { stdlv: true });
     const thS = thetaFrom(MS, ss);
     const Sig = SN.sem.implied(MS, thS);
-    L.eds[src].setDisplay(displayFrom(MS, ss, thS, false));
+    const dS = displayFrom(MS, ss, thS, false);
+    L.eds[src].setDisplay(dS);
+    if (L.param && L.param.side === src) {
+      const t = L.param.t;
+      L.param.std = t.type === 'edge' ? dS.estd[t.id] : dS.rstd[t.id];
+      paintSlider();
+    }
     if (!Sig || !isPD(Sig)) {
       L.eds[tgt].setDisplay(null);
       setNote('These values of model ' + src + ' imply an impossible covariance matrix (not positive definite). Lower a covariance or raise a residual variance.', true);
@@ -454,19 +475,49 @@
     wrap.appendChild(pop);
     pop.classList.remove('hidden');
     $('pr-title').textContent = TITLES[v.kind] || 'Value';
-    $('pr-sub').textContent = 'Model ' + side + (v.kind === 'rvar' ? ' · ' + v.a.replace('o', 'y').replace(/\d+/, (n) => String(+n + 1)) : '');
+    const syn = ed.toSyntax(), nm = (id) => syn.latName[id] || syn.obsName[id];
+    const what = v.kind === 'rvar' ? nm(v.a) : nm(v.a) + (v.kind === 'fcov' || v.kind === 'rcov' ? ' \u2194 ' : ' \u2192 ') + nm(v.b);
+    const lab = t.type === 'edge' && (ed.edges.find(x => x.id === t.id) || {}).label;
+    $('pr-sub').textContent = 'Model ' + side + ' \u00b7 ' + what + (lab ? '. Every path labelled ' + lab + ' has this value.' : '');
     const [lo, hi] = RANGES[v.kind] || [-1.5, 1.5];
     const rg = $('pr-range');
     rg.min = lo; rg.max = hi; rg.step = 0.01; rg.value = v.v;
     $('pr-num').value = (+v.v).toFixed(2);
-    // place near the click, inside the canvas
+    L.param.std = null; L.param.lo = lo; L.param.hi = hi;
+    $('pr-std').innerHTML = '';
+    // place near the click, inside the canvas (docked at the bottom on
+    // narrow canvases, as in FACTOR LAB, so it does not cover the diagram)
     const wr = wrap.getBoundingClientRect();
-    let x = (ev && ev.clientX ? ev.clientX - wr.left : wr.width / 2) + 14, y = (ev && ev.clientY ? ev.clientY - wr.top : 20) - 20;
-    const pw = 250, ph = pop.offsetHeight || 130;
-    if (x + pw > wr.width - 6) x = Math.max(6, x - pw - 28);
-    y = Math.max(6, Math.min(wr.height - ph - 6, y));
-    pop.style.left = x + 'px'; pop.style.top = y + 'px';
+    const pw = pop.offsetWidth || 260, ph = pop.offsetHeight || 150;
+    let x, y;
+    if (wr.width < 520 || !ev || !isFinite(ev.clientX)) { x = (wr.width - pw) / 2; y = wr.height - ph - 10; }
+    else {
+      x = ev.clientX - wr.left + 14; y = ev.clientY - wr.top - 20;
+      if (x + pw > wr.width - 6) x = x - pw - 28;
+    }
+    pop.style.left = Math.max(6, Math.min(wr.width - pw - 6, x)) + 'px';
+    pop.style.top = Math.max(6, Math.min(wr.height - ph - 6, y)) + 'px';
     refreshValues();
+  }
+  // the bar runs from 0 to the value, in the colour the path gets (as in
+  // FACTOR LAB): blue positive, red negative, stronger for a larger
+  // standardized value
+  function paintSlider() {
+    if (!L.param) return;
+    const { lo, hi, std, kind } = L.param, r = $('pr-range');
+    const pos = (v) => 100 * (Math.max(lo, Math.min(hi, v)) - lo) / (hi - lo);
+    const v = +r.value, z = pos(0), p = pos(v);
+    const sd = std === null || std === undefined ? Math.sign(v) * 0.6 : std;
+    const col = isFinite(sd) ? SN.editor.fade(v >= 0 ? '#0000D5' : '#BF0000', Math.max(0.22, Math.min(1, Math.abs(sd)))) : SN.editor.weightColor(sd);
+    const a = Math.min(z, p), b = Math.max(z, p), base = '#E6E0CF';
+    r.style.setProperty('--pr-track', `linear-gradient(to right, ${base} 0%, ${base} ${a}%, ${col} ${a}%, ${col} ${b}%, ${base} ${b}%, ${base} 100%)`);
+    r.style.setProperty('--pr-col', col);
+    const zero = $('pr-zero');
+    zero.hidden = !(lo < 0 && hi > 0);
+    if (!zero.hidden) zero.style.left = (r.offsetLeft + 10 + (r.offsetWidth - 20) * z / 100 - 1) + 'px';
+    const f2 = (x) => (x < -0.005 ? '\u2212' : '') + Math.abs(x).toFixed(2).replace(/^0\./, '.');
+    $('pr-std').innerHTML = std === null || std === undefined ? '' : !isFinite(std) ? 'standardized: not defined (a negative variance)'
+      : (kind === 'rvar' ? 'standardized (share of the variance): ' : 'standardized: ') + '<b>' + f2(std) + '</b>';
   }
   function closeParam() {
     $('param-pop').classList.add('hidden');
@@ -475,8 +526,12 @@
   }
   function applyParam(v) {
     if (!L.param) return;
-    const ed = L.eds[L.param.side];
-    ed.setValue(L.param.t, v);
+    const ed = L.eds[L.param.side], t = L.param.t;
+    ed.setValue(t, v);
+    // an equality label: all paths with that label share the value
+    const lab = t.type === 'edge' && (ed.edges.find(x => x.id === t.id) || {}).label;
+    if (lab) for (const x of ed.edges) if (x.label === lab && x.id !== t.id) ed.setValue({ type: 'edge', id: x.id }, v);
+    paintSlider();
     cancelAnimationFrame(L.raf);
     L.raf = requestAnimationFrame(refreshValues);
   }

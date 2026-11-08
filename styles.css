@@ -603,12 +603,27 @@ body.mode-learn .learn-only { display: flex !important; }
 .pick-pop.bar { width: auto; display: flex; align-items: center; gap: 12px; padding: 5px 6px 5px 12px; border-radius: 10px; }
 .pick-pop.bar .pp-title, .pick-pop.bar .pp-text { display: none; }
 .pick-pop.bar .pp-row { margin: 0; gap: 10px; white-space: nowrap; }
-.param-pop { width: 250px; }
-.pr-sub { font-size: 12px; color: #56554A; margin: 1px 0 8px; }
-.pr-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; position: relative; }
-.pr-row input[type=range] { flex: 1; accent-color: var(--accent); }
+.param-pop { width: 260px; }
+.pr-sub { font-size: 12px; color: #56554A; margin: 1px 0 8px; line-height: 1.35; }
+/* value slider (as in FACTOR LAB): the bar runs from 0 to the value, blue
+   positive and red negative, in the colour the path gets */
+.pr-row { display: flex; align-items: center; gap: 8px; position: relative; }
+.pr-row input[type=range] {
+  flex: 1; min-width: 0; -webkit-appearance: none; appearance: none; height: 10px; border-radius: 5px; margin: 8px 0;
+  background: var(--pr-track, #E6E0CF); cursor: pointer;
+}
+.pr-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; border: 3px solid var(--pr-col, #25261F); box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+.pr-row input[type=range]::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 3px solid var(--pr-col, #25261F);
+}
+.pr-row input[type=range]::-moz-range-track { background: transparent; }
+.pr-zero { position: absolute; top: 3px; width: 2px; height: 20px; background: #56554A; border-radius: 1px; pointer-events: none; }
 .pr-row input[type=number] { width: 66px; font-family: var(--f-mono); font-size: 13px; padding: 4px 5px; border: 1px solid #DAD3BE; border-radius: 7px; background: #fff; color: #25261F; }
-.pr-zero { display: none; }
+.pr-std { font-size: 12px; color: #868272; min-height: 17px; margin: 4px 0 8px; }
+.pr-std b { font-family: var(--f-mono); color: #25261F; }
 #toast {
   position: fixed; left: 50%; bottom: 18px; transform: translate(-50%, 10px); max-width: min(92%, 520px);
   background: #25261F; color: #fff; padding: 9px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.4;

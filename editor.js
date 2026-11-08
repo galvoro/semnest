@@ -14,12 +14,26 @@
 // the item itself. Coordinates are normalised to
 // the canvas (0..1) so the diagram survives resizes. In "Values" mode the
 // paths show numbers: the model's own values, or values fitted to the other
-// model (setDisplay).
+// model (setDisplay). As in FACTOR LAB (semPlot / qgraph theme = "colorblind")
+// the paths are then blue (+) or red (-), with colour strength and width
+// following the standardized value; the labels show the raw values.
 (function (global) {
   'use strict';
   const SN = global.SN = global.SN || {};
   const NS = 'http://www.w3.org/2000/svg';
   const INK = '#2B2F36';
+  // qgraph theme = "colorblind" edge colours, faded into the canvas paper
+  const POS = '#0000D5', NEG = '#BF0000', PAPER = '#FFFCF3';
+  function fade(col, alpha, bg) {
+    const rgb = (h) => { const v = parseInt(h.slice(1), 16); return [(v >> 16) & 255, (v >> 8) & 255, v & 255]; };
+    const c = rgb(col), b = rgb(bg || PAPER), a = Math.max(0, Math.min(1, alpha));
+    return '#' + c.map((x, k) => Math.round(x * a + b[k] * (1 - a)).toString(16).padStart(2, '0')).join('');
+  }
+  // colour of a standardized value (also used for the value slider)
+  function weightColor(std) {
+    if (!isFinite(std)) return '#868272';
+    return fade(std >= 0 ? POS : NEG, Math.max(0.22, Math.min(1, Math.abs(std))));
+  }
 
   function el(name, attrs, parent) {
     const e = document.createElementNS(NS, name);
@@ -360,7 +374,13 @@
       const r = Math.round(v * 100) / 100;
       return (r < 0 ? '−' : '') + Math.abs(r).toFixed(2).replace(/^0\./, '.');
     }
-    function edgeStyle(e) { return { color: INK, width: 2, std: null }; }
+    // Values mode: weighted by the standardized value (S.disp.estd)
+    function edgeStyle(e) {
+      const sd = S.disp && S.disp.estd ? S.disp.estd[e.id] : undefined;
+      if (sd === undefined) return { color: INK, width: 2, std: null };
+      if (!isFinite(sd)) return { color: weightColor(sd), width: 2, std: sd };
+      return { color: weightColor(sd), width: pathWidth(Math.min(1, Math.abs(sd))), std: sd };
+    }
 
     // where a covariance / network edge attaches: the residual of an
     // endogenous item, otherwise the node itself
@@ -531,8 +551,13 @@
         el('line', { x1: a.c[0], y1: a.c[1], x2: a.tip[0], y2: a.tip[1], class: 'd-resid-hit line' }, g);
         el('circle', { cx: a.c[0], cy: a.c[1], r: a.rr + 5, class: 'd-resid-hit' }, g);
       }
-      const color = '#A39888', width = 1.4;
-      const head = Math.max(7, d.side * 0.18);
+      const rs = S.disp && S.disp.rstd ? S.disp.rstd[o.id] : undefined;
+      let color = '#A39888', width = 1.4;
+      if (rs !== undefined) {
+        color = weightColor(rs);
+        if (isFinite(rs)) width = pathWidth(Math.min(1, Math.abs(rs)));
+      }
+      const head = Math.max(7, d.side * 0.18) + (rs !== undefined ? width * 0.5 : 0);
       const start = [a.c[0] - a.ux * a.rr, a.c[1] - a.uy * a.rr];
       el('line', { x1: start[0], y1: start[1], x2: a.tip[0] + a.ux * head * 0.8, y2: a.tip[1] + a.uy * head * 0.8,
         stroke: color, 'stroke-width': width, class: 'd-resid-line' }, g);
@@ -554,6 +579,8 @@
       const d = dims();
       // draw edges sorted weakest first so strong paths sit on top
       const es = S.edges.slice();
+      const wt = (e) => { const v = S.disp && S.disp.estd ? S.disp.estd[e.id] : undefined; return isFinite(v) ? Math.abs(v) : 0; };
+      if (S.disp && S.disp.estd) es.sort((a, b) => wt(a) - wt(b));
       for (const o of S.obs) if (isEndo(o.id)) drawResidual(o);
       for (const e of es) drawEdge(e);
       const nmap = names();
@@ -1131,5 +1158,5 @@
     return api;
   }
 
-  SN.editor = { create };
+  SN.editor = { create, weightColor, fade };
 })(window);
