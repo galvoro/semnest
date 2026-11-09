@@ -524,7 +524,7 @@
       const dv = S.disp && S.disp.edge ? S.disp.edge[e.id] : undefined;
       const fs = Math.max(10, Math.min(13, dims().side * 0.3));
       if (dv !== undefined) {
-        const lg = el('g', { class: 'd-elabel' + (S.disp.fitted ? ' fitted' : '') + (dv < 0 ? ' neg' : '') }, gLabels);
+        const lg = el('g', { class: 'd-elabel' + (S.disp.fitted ? ' fitted' : '') + (dv < 0 ? ' neg' : '') + (S.disp.eflag && S.disp.eflag[e.id] ? ' bad' : '') }, gLabels);
         const txt = fmt(dv);
         const w = txt.length * fs * 0.58 + 6;
         el('rect', { x: labelPos[0] - w / 2, y: labelPos[1] - fs * 0.7, width: w, height: fs * 1.4, rx: 3, class: 'd-elabel-bg' }, lg);
@@ -573,6 +573,20 @@
       }
     }
 
+    // Values mode: a dashed ring marks a fitted improper value (a negative
+    // variance of a factor, or of an item's residual: a Heywood case) or a
+    // factor variance that goes to zero (S.disp.flag: id -> 'neg' | 'zero')
+    function drawFlag(g, id, x, y, r, h) {
+      const fl = S.disp && S.disp.flag ? S.disp.flag[id] : undefined;
+      if (!fl) return;
+      // an item: the ring only (its residual shows the negative value)
+      if (!r) { el('rect', { x: x - h - 4, y: y - h - 4, width: 2 * h + 8, height: 2 * h + 8, rx: 5, class: 'd-flag ' + fl }, g); return; }
+      el('circle', { cx: x, cy: y, r, class: 'd-flag ' + fl }, g);
+      const fs = Math.max(9.5, Math.min(12, dims().side * 0.26));
+      const t = el('text', { x: x + r + 3, y: y - r * 0.55, 'font-size': fs, 'text-anchor': 'start', 'dominant-baseline': 'central', class: 'd-flag-txt ' + fl }, g);
+      t.textContent = fl === 'zero' ? '\u03c3\u00b2\u21920' : '\u03c3\u00b2<0';
+    }
+
     function render() {
       measure();
       while (gEdges.firstChild) gEdges.removeChild(gEdges.firstChild);
@@ -593,6 +607,7 @@
         el('circle', { cx: x, cy: y, r: d.R + 6, class: 'd-halo' }, g);
         el('circle', { cx: x, cy: y, r: d.R, class: 'd-shape' }, g);
         drawName(g, nmap.lat[l.id], x, y, d.R * 0.62, 'd-label lat-label');
+        drawFlag(g, l.id, x, y, d.R + 4, d.R * 0.8);
       }
       for (const o of S.obs) {
         const [x, y] = px(o);
@@ -600,6 +615,7 @@
         el('rect', { x: x - d.half - 5, y: y - d.half - 5, width: d.side + 10, height: d.side + 10, rx: 6, class: 'd-halo' }, g);
         el('rect', { x: x - d.half, y: y - d.half, width: d.side, height: d.side, class: 'd-shape' }, g);
         drawName(g, nmap.obs[o.id], x, y, d.side * 0.42, 'd-label');
+        drawFlag(g, o.id, x, y, 0, d.half);
       }
       svg.classList.toggle('picking', !!pick);
       if (pick) notifyPick();

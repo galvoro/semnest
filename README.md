@@ -119,6 +119,41 @@ item's or residual's value, 1 for a factor) these give the block's covariance
 matrix, and its scaling (the diagonal of the precision matrix) is not shown.
 With *neither*, values cannot be transferred.
 
+The follower is fitted quickly rather than perfectly: exact to about 1e-5 per
+element of the covariance matrix (correlation units), so the values are right
+to two decimals. It starts from its previous solution, so values move
+continuously while dragging. When that does not reproduce the leader exactly,
+it refits with free factor variances (marker scaling), tries flipping the sign
+of one or two factor variances (a sign change passes through infinity in
+std.lv, e.g. a one-factor model with three items when one covariance changes
+sign), and, once the slider rests, follows the path from the last values that
+fitted and tries several starting values (`fitFollower` in `learn.js`). The
+note then says what the follower needs:
+
+* **exact**: a proper solution; "one of many" when the follower is not
+  identified there (Jacobian rank at the solution);
+* **improper**: exact, but only with a negative (residual) variance (a
+  Heywood case for an item), a correlation beyond ±1, or factor covariances
+  that do not fit together. A factor with a negative variance is shown with
+  variance −1 (std.lv with the sign flipped); it and items with a negative
+  residual variance get a dashed red ring, a correlation beyond 1 a red
+  label. For a non-identified follower other solutions may be proper;
+* **boundary**: reached only in the limit where a (residual) factor variance
+  goes to zero, e.g. a one-factor model inside a higher-order model (H26).
+  Those factors are shown scaled to variance 1, so the values show the limit;
+* **not found**: the fitter's limit (rare; P22, the feedback loop, is the
+  hard one).
+
+With equivalent models the follower takes over its shown values when you
+start editing it, so nothing jumps (not when its solution needs a negative
+factor variance, which has no slider).
+
+`node .dev/check_values.js` tests all of this on every nested or equivalent
+library pair: random values for the leader (accuracy, speed, uniqueness of
+identified solutions, continuity) and slider sweeps to the ends of the ranges
+as a student would drag; it also lists, per pair, where the follower needs
+improper or boundary values.
+
 On phones LEARN looks like PLAY: A above B, the relation and the two buttons
 below. Tapping a model opens it in a popup with the drawing tools; tapping the
 relation shows it in full.
@@ -172,7 +207,7 @@ factors is equivalent to three correlated factors.
 (the prompts for the images and the music; `make_title.sh` converts the
 generated images in `.dev/media/`, which is not committed) and headless-Chrome
 tests (`smoke_play.js`, `smoke_learn.js`, `check_library.js`,
-`check_bgm_loop.js`, `gallery.html` for all 236 diagrams).
+`check_values.js`, `check_bgm_loop.js`, `gallery.html` for all 236 diagrams).
 Dot-folders are never uploaded with the capsule.
 
 ## Media

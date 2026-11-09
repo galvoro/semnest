@@ -38,7 +38,8 @@
       body: '<b>LIBRARY</b> loads any pair from PLAY, with its proven relation. Change it and see what happens.' },
     { title: 'GIVE THEM NUMBERS', c: 'var(--twig)',
       body: 'Press <b>Values</b> and move a slider: the other model finds values that give exactly the same covariance matrix. ' +
-        'Paths are blue (+) or red (&minus;), thicker when stronger (standardized).' },
+        'Paths are blue (+) or red (&minus;), thicker when stronger (standardized). ' +
+        'A dashed red ring: the other model needs an improper value there, such as a negative variance (a Heywood case).' },
   ];
 
   let onDone = null;

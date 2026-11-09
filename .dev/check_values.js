@@ -1,10 +1,12 @@
 // LEARN Values mode: for every nested or equivalent library pair, give the
 // leading model random values and let the real LEARN code fit the follower.
-// Checks: exact reproduction, speed of one update (the slider calls it every
-// frame), identification (Jacobian rank of the follower at its solution) and
-// whether the values are unique (cold refits from other starts give the same
-// values up to the sign of a factor) and move continuously while dragging.
-//   node .dev/check_values.js [baseURL] [trials]
+// Reports: how often the follower is exact and proper, improper (a negative
+// variance, a correlation beyond 1), on the boundary (a factor variance of
+// zero) or not found; the time of one update (full, and quick while dragging);
+// whether identified solutions are unique (cold refits agree) and move
+// continuously while dragging; and, per pair, where the follower cannot be
+// fitted properly (the notes LEARN shows).
+//   node .dev/check_values.js [baseURL] [trials] [id,id,...]
 const { launch, sleep } = require('./cdp.js');
 const BASE = process.argv[2] || 'http://127.0.0.1:8811/semnest/';
 const TRIALS = +(process.argv[3] || 3);
@@ -12,7 +14,7 @@ const ONLY = process.argv[4] ? new Set(process.argv[4].split(',')) : null;
 
 const PAGE = `
 window.__cv = async (id, src, trials, seed) => {
-  const L = SN.learn.L, la = SN.la, it = SN.bank.items.find(i => i.id === id);
+  const L = SN.learn.L, it = SN.bank.items.find(i => i.id === id);
   let s = seed >>> 0; const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
   const U = (a, b) => a + (b - a) * rnd(), sg = (p) => (rnd() < p ? -1 : 1);
   SN.learn.loadItem(it);
@@ -32,54 +34,82 @@ window.__cv = async (id, src, trials, seed) => {
     for (const r of ed.toSyntax().resid) ed.setValue({ type: 'obs', id: r.id }, U(0.3, 1.0));
   };
   const note = () => document.getElementById('lnote').textContent;
-  const kindOf = (n) => /exactly with these/.test(n) ? (/not identified/.test(n) ? 'exact-nonid' : 'exact')
-    : /zero or below/.test(n) ? 'improper' : /impossible/.test(n) ? 'notPD' : /misfit/.test(n) ? 'misfit' : 'other';
+  const absd = (a, b) => Math.max(0, ...a.map((v, i) => Math.abs(Math.abs(v) - Math.abs(b[i]))));
   const out = [];
+  // as in the app: Values starts from the loaded (default) values, then the leader changes
   L.fitPrev = {};
+  SN.learn.refreshValues();
   for (let t = 0; t < trials; t++) {
-    let n, ms, tries = 0;
-    do { randomize(); const t0 = performance.now(); SN.learn.refreshValues(); ms = performance.now() - t0; n = note(); } while (/impossible/.test(n) && ++tries < 15);
-    const k = kindOf(n), st = L.eds[tgt].toSyntax();
-    const MT = SN.sem.compile(st.text, st.obs, { stdlv: true });
-    const fp = L.fitPrev[tgt], th = fp && fp.theta;
-    const row = { k, ms: +ms.toFixed(1), q: MT.q, dimT: src === 'A' ? L.res.dimB : L.res.dimA };
-    if (k === 'improper' || k === 'misfit') {
-      // is it genuine? refit both parameterisations hard; the marker solution's latent variances
-      const Sig = L.dbg.Sig, Mm = SN.sem.compile(st.text, st.obs);
-      const rm = SN.sem.bestFitLS(Mm, Sig, { starts: 40, seed: 9 }), rs = SN.sem.bestFitLS(MT, Sig, { starts: 40, seed: 9 });
-      const mt = SN.sem.matrices(Mm, rm.theta), Ff = SN.sem.impliedFull(Mm, rm.theta);
-      const latv = []; for (let i = Mm.p; i < Mm.n; i++) latv.push(+mt.S[i][i].toFixed(3));
-      Object.assign(row, { F: L.dbg.F, Fm40: rm.F, Fs40: rs.F, latVarMarker: latv });
-    }
-    if (th && (k === 'exact' || k === 'exact-nonid')) {
-      const J = SN.sem.jacobian(MT, th);
-      row.rank = J ? SN.sem.rankOf(J, 1e-9) : -1;
-      // uniqueness: cold refits from other starts (abs values: a factor's sign is arbitrary under std.lv)
-      const Sig = SN.sem.implied(MT, th);
-      let dmax = 0;
-      for (const sd of [101, 202]) {
-        const r = SN.sem.bestFitLS(MT, Sig, { starts: 10, seed: sd });
-        if (r.F < 1e-14) dmax = Math.max(dmax, ...r.theta.map((v, i) => Math.abs(Math.abs(v) - Math.abs(th[i]))));
+    let k, ms, tries = 0;
+    do { randomize(); const t0 = performance.now(); k = SN.learn.refreshValues() || 'notPD'; ms = performance.now() - t0; } while (k === 'notPD' && ++tries < 15);
+    const D = L.dbg, row = { k, ms: +ms.toFixed(1), note: note(), F: D.F, nonid: !!D.nonid };
+    if (k === 'misfit') { const st = L.eds[tgt].toSyntax(); Object.assign(row, { Sig: D.Sig, text: st.text, obs: st.obs }); }
+    if (k === 'exact' || k === 'improper') {
+      // unique? cold refits from other starts, normalized as LEARN does (abs: a factor's sign is arbitrary)
+      if (!D.nonid) {
+        let dmax = 0;
+        for (const sd of [101, 202]) {
+          const r = SN.sem.bestFitLS(D.M, D.Sig, { starts: 10, seed: sd });
+          if (r.F < 1e-10) dmax = Math.max(dmax, absd(SN.learn._test.normalize(D.M, r.theta, D.Sig, true), D.theta));
+        }
+        row.dUniq = +dmax.toFixed(4);
       }
-      row.dUniq = +dmax.toFixed(4);
-      // dragging: sweep one leading value in small steps, largest jump of the follower
+      // dragging (quick updates): sweep one leading value; largest jump of a shown value per step
       if (t === 0 && ed.edges.length) {
         const e = ed.edges[Math.floor(rnd() * ed.edges.length)], v0 = e.v;
-        let prev = [], jump = 0, slow = 0, bad = 0;
+        let prev = null, jump = 0, slow = 0; const kinds = {};
         for (let j = 1; j <= 10; j++) {
           ed.setValue({ type: 'edge', id: e.id }, v0 + 0.02 * j * Math.sign(v0 || 1));
-          const t0 = performance.now(); SN.learn.refreshValues(); slow = Math.max(slow, performance.now() - t0);
-          if (kindOf(note()) !== k) { bad++; continue; }
+          const t0 = performance.now(); const kj = SN.learn.refreshValues(true) || 'notPD'; slow = Math.max(slow, performance.now() - t0);
+          kinds[kj] = (kinds[kj] || 0) + 1;
+          if (kj !== 'exact' && kj !== 'improper') { prev = null; continue; }
           const dv = L.dbg.dT.edge, cur = Object.keys(dv).map(k2 => dv[k2]);
-          if (j > 1) jump = Math.max(jump, ...cur.map((v, i) => Math.abs(v - prev[i])));
-          prev = cur.slice();
+          if (prev && !L.dbg.nonid) jump = Math.max(jump, ...cur.map((v, i) => Math.abs(v - prev[i])));
+          prev = cur;
         }
-        row.jump = +jump.toFixed(3); row.dragMs = +slow.toFixed(1); row.dragOff = bad;
+        Object.assign(row, { jump: +jump.toFixed(3), dragMs: +slow.toFixed(1), dragKinds: kinds });
       }
     }
     out.push(row);
   }
-  return { id, rel: it.rel, src, tgt, tgtText: L.eds[tgt].toSyntax().text, rows: out };
+  return { id, rel: it.rel, level: it.level, src, tgt, rows: out };
+};`;
+
+// slider sweeps, as a student drags: from the loaded values, move a few of the
+// leader's values (paths and residual variances) to an end of the slider's
+// range in steps of .03 (quick updates); at the end of a sweep the full search
+// runs once, as after the slider rests
+const SWEEP = `
+window.__sweep = async (id, src, nsweeps, seed) => {
+  const L = SN.learn.L, it = SN.bank.items.find(i => i.id === id);
+  let s = seed >>> 0; const rnd = () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296);
+  SN.learn.loadItem(it);
+  for (let k = 0; k < 400 && !L.res; k++) await new Promise(r => setTimeout(r, 15));
+  if (!L.res) return { id, err: 'no relation' };
+  L.values = true; L.source = src; L.fitPrev = {};
+  const ed = L.eds[src];
+  SN.learn.refreshValues();
+  const R = { load: [-1.5, 1.5], reg: [-1.2, 1.2], fcov: [-0.95, 0.95], rcov: [-0.7, 0.7], rvar: [0.02, 2], net: [-0.9, 0.9] };
+  const targets = ed.edges.map(e => ({ type: 'edge', id: e.id })).concat(ed.toSyntax().resid.map(r => ({ type: 'obs', id: r.id })));
+  const c = { steps: 0, exact: 0, improper: 0, zero: 0, misfit: 0, notPD: 0, endMisfit: 0, endFixed: 0, maxMs: 0, sweeps: 0 };
+  for (let k = 0; k < nsweeps && targets.length; k++) {
+    const t = targets[Math.floor(rnd() * targets.length)], v = ed.getValue(t), [lo, hi] = R[v.kind];
+    const lab = t.type === 'edge' && ed.edges.find(e => e.id === t.id).label;
+    const goal = rnd() < 0.5 ? lo : hi, n = Math.max(1, Math.round(Math.abs(goal - v.v) / 0.03));
+    let kind;
+    for (let j = 1; j <= n; j++) {
+      const x = v.v + (goal - v.v) * j / n;
+      ed.setValue(t, x);
+      if (lab) for (const e of ed.edges) if (e.label === lab) ed.setValue({ type: 'edge', id: e.id }, x);
+      const t0 = performance.now(); kind = SN.learn.refreshValues(true) || 'notPD'; c.maxMs = Math.max(c.maxMs, performance.now() - t0);
+      c.steps++; c[kind]++;
+      if (kind === 'notPD') break;
+    }
+    c.sweeps++;
+    if (kind === 'misfit') { c.endMisfit++; if (SN.learn.refreshValues() !== 'misfit') c.endFixed++; }
+  }
+  c.maxMs = +c.maxMs.toFixed(1);
+  return { id, src, c };
 };`;
 
 (async () => {
@@ -97,36 +127,57 @@ window.__cv = async (id, src, trials, seed) => {
       for (const src of sides) {
         const sd = seed++ * 7919;
         if (ONLY && !ONLY.has(id)) continue;
-        const r = await b.eval(`window.__cv(${JSON.stringify(id)}, '${src}', ${TRIALS}, ${sd})`);
-        all.push(r);
+        all.push(await b.eval(`window.__cv(${JSON.stringify(id)}, '${src}', ${TRIALS}, ${sd})`));
         process.stdout.write('.');
       }
     }
+    // slider sweeps
+    await b.eval(SWEEP);
+    seed = 1;
+    const sw = [];
+    for (const [id, rel] of items) {
+      const sides = rel === 'equiv' ? ['A', 'B'] : [rel === 'AinB' ? 'A' : 'B'];
+      for (const src of sides) {
+        const sd = seed++ * 104729;
+        if (ONLY && !ONLY.has(id)) continue;
+        sw.push(await b.eval(`window.__sweep(${JSON.stringify(id)}, '${src}', 6, ${sd})`));
+      }
+    }
+    const tot = {};
+    for (const r of sw) for (const k in r.c) tot[k] = k === 'maxMs' ? Math.max(tot[k] || 0, r.c[k]) : (tot[k] || 0) + r.c[k];
+    console.log('\n\nslider sweeps (' + tot.sweeps + ' sweeps, ' + tot.steps + ' quick updates; max ' + tot.maxMs + ' ms):',
+      ['exact', 'improper', 'zero', 'misfit', 'notPD'].map(k => k + ' ' + tot[k]).join(', '));
+    console.log('  sweeps ending in a misfit:', tot.endMisfit, '| resolved by the full search after the slider rests:', tot.endFixed);
+    console.log('  pairs with quick misfits:', sw.filter(r => r.c.misfit).map(r => r.id + ' ' + r.src + ' (' + r.c.misfit + '/' + r.c.steps + ')').join(', ') || 'none');
+    const errs = b.logs.filter(l => !/favicon|title-/.test(l));
+    if (errs.length) console.log('\nconsole:', errs.join('\n'));
   } catch (e) { console.log('\nERROR', e.message); console.log(b.logs.join('\n')); }
   await b.close();
   console.log('\n');
-  const rows = all.flatMap(r => (r.rows || []).map(x => Object.assign({ id: r.id, src: r.src, rel: r.rel }, x)));
+  const rows = all.flatMap(r => (r.rows || []).map(x => Object.assign({ id: r.id, src: r.src, tgt: r.tgt, rel: r.rel }, x)));
   const count = (f) => rows.filter(f).length;
+  const tag = (x) => x.id + ' ' + x.src + '→' + x.tgt;
   console.log('pairs x leading side:', all.length, '| updates:', rows.length);
-  for (const k of ['exact', 'exact-nonid', 'improper', 'misfit', 'notPD', 'other']) console.log('  ' + k.padEnd(12), count(x => x.k === k));
+  for (const k of ['exact', 'improper', 'zero', 'misfit', 'notPD']) console.log('  ' + k.padEnd(9), count(x => x.k === k));
+  const pct = (a, p) => a.length ? a[Math.min(a.length - 1, Math.floor(p * a.length))] : NaN;
   const ms = rows.map(x => x.ms).sort((a, c) => a - c), dm = rows.filter(x => x.dragMs !== undefined).map(x => x.dragMs).sort((a, c) => a - c);
-  const pct = (a, p) => a[Math.min(a.length - 1, Math.floor(p * a.length))];
-  console.log('update time (ms), first fit of a draw: median', pct(ms, 0.5), 'p90', pct(ms, 0.9), 'max', ms[ms.length - 1]);
-  console.log('update time (ms), while dragging:     median', pct(dm, 0.5), 'p90', pct(dm, 0.9), 'max', dm[dm.length - 1]);
-  const ex = rows.filter(x => x.rank !== undefined);
-  const idf = ex.filter(x => x.rank === x.q), nid = ex.filter(x => x.rank < x.q);
-  console.log('follower identified at its solution (rank = q):', idf.length, '| not identified:', nid.length);
-  console.log('  note says "not identified" but rank = q :', idf.filter(x => x.k === 'exact-nonid').map(x => x.id + x.src).join(' ') || 'none');
-  console.log('  note silent but rank < q               :', nid.filter(x => x.k === 'exact').map(x => x.id + x.src + '(q' + x.q + ' r' + x.rank + ')').join(' ') || 'none');
-  console.log('identified: largest difference to cold refits (2 decimals need < .005):', Math.max(...idf.map(x => x.dUniq)));
-  console.log('  > .005:', idf.filter(x => x.dUniq > 0.005).map(x => x.id + x.src + '=' + x.dUniq).join(' ') || 'none');
-  console.log('identified: largest jump per .02 drag step:', Math.max(...idf.filter(x => x.jump !== undefined).map(x => x.jump)));
-  console.log('  > .15:', idf.filter(x => x.jump > 0.15).map(x => x.id + x.src + '=' + x.jump).join(' ') || 'none');
-  console.log('not identified (q - rank):', [...new Set(nid.map(x => x.id + x.src + '(' + (x.q - x.rank) + ')'))].join(' ') || 'none');
-  console.log('drag steps with a different note:', rows.filter(x => x.dragOff).map(x => x.id + x.src + ':' + x.dragOff).join(' ') || 'none');
-  for (const k of ['improper', 'misfit', 'other']) {
-    const r = rows.filter(x => x.k === k);
-    if (r.length) console.log(k + ':\n' + r.map(x => '  ' + x.id + x.src + ' F ' + (x.F || 0).toExponential(1) + ' | 40 starts: std.lv ' + (x.Fs40 || 0).toExponential(1) + ', markers ' + (x.Fm40 || 0).toExponential(1) + ', latent variances ' + JSON.stringify(x.latVarMarker)).join('\n'));
+  console.log('full update (ms):          median', pct(ms, 0.5), 'p90', pct(ms, 0.9), 'max', ms[ms.length - 1]);
+  console.log('quick update, dragging (ms): median', pct(dm, 0.5), 'p90', pct(dm, 0.9), 'max', dm[dm.length - 1]);
+  const uq = rows.filter(x => x.dUniq !== undefined);
+  console.log('identified solutions: largest difference to cold refits', Math.max(0, ...uq.map(x => x.dUniq)), '(2 decimals need < .005)');
+  console.log('  > .005:', uq.filter(x => x.dUniq > 0.005).map(x => tag(x) + '=' + x.dUniq).join(', ') || 'none');
+  const jr = rows.filter(x => x.jump !== undefined);
+  console.log('dragging: largest change of a shown value per .02 step', Math.max(0, ...jr.map(x => x.jump)));
+  console.log('  > .15:', jr.filter(x => x.jump > 0.15).map(x => tag(x) + '=' + x.jump).join(', ') || 'none');
+  console.log('dragging: steps not exact:', jr.filter(x => Object.keys(x.dragKinds).some(k => k !== 'exact' && k !== 'improper')).map(x => tag(x) + ' ' + JSON.stringify(x.dragKinds)).join(', ') || 'none');
+  console.log('not identified at the solution:', [...new Set(rows.filter(x => x.nonid).map(tag))].join(', ') || 'none');
+  console.log('\nWhere the follower cannot be fitted properly (first note per pair):');
+  const seen = new Set();
+  for (const x of rows) {
+    if (x.k === 'exact' || x.k === 'notPD') continue;
+    const t = tag(x);
+    const n = rows.filter(y => tag(y) === t), c = (k) => n.filter(y => y.k === k).length;
+    if (!seen.has(t)) { seen.add(t); console.log('  ' + t.padEnd(10) + ` [${c('improper')} improper, ${c('zero')} zero, ${c('misfit')} misfit of ${n.length}] ` + x.note.replace(/\s*(Equivalent: you can edit either model\.|Edit model \w; \w follows\.)$/, '')); }
   }
   require('fs').writeFileSync(require('path').join(__dirname, 'out', 'check_values.json'), JSON.stringify(all, null, 1));
 })();

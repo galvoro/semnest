@@ -8,7 +8,9 @@
 // change clears the relation until COMPUTE is pressed again. In "Values" mode
 // the nested model (or either model, if they are equivalent) gets numbers; the
 // other model is fitted to the covariance matrix it implies and shows the
-// values that reproduce it exactly. On phones the two models are shown like in
+// values that reproduce it exactly (fitFollower), or says that it can only do
+// so with improper values (a negative variance, a correlation beyond 1) or in
+// the limit of a variance of zero. On phones the two models are shown like in
 // PLAY; tapping one opens it in a popup with the drawing tools.
 (function (global) {
   'use strict';
@@ -20,7 +22,7 @@
 
   const L = {
     eds: null, res: null, stale: true, proven: null, lib: null, loading: false, values: false, source: 'A',
-    cache: new Map(), fitPrev: {}, lastRel: null, param: null, raf: 0, zside: null,
+    cache: new Map(), fitPrev: {}, lastRel: null, param: null, raf: 0, full: 0, zside: null, shown: null, dbg: null,
   };
   const other = (s) => (s === 'A' ? 'B' : 'A');
   const wrapOf = (side) => $('lsvg-' + side.toLowerCase()).parentElement;
@@ -352,7 +354,7 @@
       wrap.dataset.lock = src === 'none' ? 'values cannot be transferred' : 'fitted to model ' + src + ' (read-only)';
     }
   }
-  function clearValues() { L.eds.A.setDisplay(null); L.eds.B.setDisplay(null); }
+  function clearValues() { L.eds.A.setDisplay(null); L.eds.B.setDisplay(null); L.shown = null; }
   // Network blocks (GGM, RNM, LNM): the values in the editor are the partial
   // correlations of the edges; with the variances of the block's members (an
   // item's or residual's value in the editor, 1 for a factor) they give the
@@ -437,7 +439,7 @@
   }
   function isPD(S) { return !!SN.la.chol(S); }
 
-  function refreshValues() {
+  function refreshValues(quick) {
     if (!L.values) return;
     if (!L.res) { clearValues(); setLocks(null); setNote('Press COMPUTE to see how the models relate; then the values follow.'); return; }
     const rel = L.res.rel;
@@ -462,34 +464,322 @@
       paintSlider();
     }
     if (!Sig || !isPD(Sig)) {
-      L.eds[tgt].setDisplay(null);
+      L.eds[tgt].setDisplay(null); L.shown = null;
       setNote('These values of model ' + src + ' imply an impossible covariance matrix (not positive definite). Lower a covariance or a partial correlation, or raise a residual variance.', true);
       return;
     }
-    const MT = SN.sem.compile(st.text, st.obs, { stdlv: true });
-    const key = st.obs.length + '|' + st.text;
-    const prev = L.fitPrev[tgt] && L.fitPrev[tgt].key === key ? L.fitPrev[tgt].theta : thetaFrom(MT, st);
-    let r = SN.sem.fitLS(MT, Sig, { start: prev });
-    if (!(r.F < 1e-18)) {
-      const r2 = SN.sem.bestFitLS(MT, Sig, { start: prev, starts: 8, seed: 3 });
-      if (r2.F < r.F) r = r2;
+    const res = fitFollower(st, Sig, tgt, quick, { key: ss.obs.length + '|' + ss.text, MS, thS });
+    L.fitPrev[tgt] = res.keep;
+    const z = res.kind === 'zero' ? zeroDisplay(res.M, res.theta, res.zero) : null;
+    const dT = z ? displayFrom(z.M, st, z.theta, true) : displayFrom(res.M, st, res.theta, true);
+    // flags in the diagram: improper values (negative variances, correlations
+    // beyond 1) and variances that go to zero
+    const idOf = {};
+    for (const [id, n] of Object.entries(st.latName)) idOf[n] = id;
+    for (const [id, n] of Object.entries(st.obsName)) idOf[n] = id;
+    const nm = (k) => res.M.vars[k];
+    dT.flag = {}; dT.eflag = {};
+    for (const x of res.list || []) {
+      if (x.kind === 'negvar') dT.flag[idOf[nm(x.k)]] = 'neg';
+      if (x.kind === 'cor') {
+        const e = st.edges.find(y => y.kind === 'cov' && [y.a, y.b].sort().join() === [nm(x.k), nm(x.k2)].sort().join());
+        if (e) dT.eflag[e.id] = true;
+      }
     }
-    L.fitPrev[tgt] = { key, theta: r.theta };
-    const dT = displayFrom(MT, st, r.theta, true);
-    L.dbg = { Sig, dT, F: r.F };               // for .dev/check_values.js
+    for (const k of res.zero || []) dT.flag[idOf[nm(k)]] = 'zero';
+    dT.kind = res.kind;
+    L.shown = { side: tgt, d: dT, Sig };
+    L.dbg = { Sig, dT, F: res.F, kind: res.kind, list: res.list, nonid: res.nonid, M: res.M, theta: res.theta };   // for .dev/check_values.js
     L.eds[tgt].setDisplay(dT);
-    const qT = MT.q, dimT = src === 'A' ? L.res.dimB : L.res.dimA;
-    if (r.F < 1e-14) {
-      setNote('Model ' + tgt + ' reproduces the covariance matrix of model ' + src + ' exactly with these values' +
-        (qT > dimT ? ' (one of many solutions: model ' + tgt + ' is not identified).' : '.') +
-        (rel === 'equiv' ? ' Equivalent: you can edit either model.' : ' Edit model ' + src + '; ' + tgt + ' follows.'));
+    const tail = rel === 'equiv' ? ' Equivalent: you can edit either model.' : ' Edit model ' + src + '; ' + tgt + ' follows.';
+    const ident = res.nonid ? ' These are one of many solutions: model ' + tgt + ' is not identified here.' : '';
+    if (res.kind === 'exact') setNote('Model ' + tgt + ' reproduces the covariance matrix of model ' + src + ' exactly with these values.' + ident + tail);
+    else if (res.kind === 'improper') {
+      const heywood = res.list.some(x => x.kind === 'negvar' && x.k < res.M.p);
+      if (res.nonid) setNote('Model ' + tgt + ' reproduces model ' + src + ' exactly with these values, an improper solution' + (heywood ? ' (a Heywood case)' : '') + ': ' +
+        describe(res.M, res.list) + '. Model ' + tgt + ' is not identified here, so this is one of many solutions; others may be proper.' + tail, true);
+      else setNote('Model ' + tgt + ' reproduces model ' + src + ' exactly, but only with an improper solution' + (heywood ? ' (a Heywood case)' : '') + ': ' +
+        describe(res.M, res.list) + '.' + tail, true);
+    } else if (res.kind === 'zero') {
+      const names = (ks) => ks.length > 1 ? ks.slice(0, -1).join(', ') + ' and ' + ks[ks.length - 1] : ks[0];
+      const en = res.zero.filter(k => endoOf(res.M, res.theta, k)).map(nm), ex = res.zero.filter(k => !endoOf(res.M, res.theta, k)).map(nm);
+      const parts = [];
+      if (en.length) parts.push('the residual variance' + (en.length > 1 ? 's' : '') + ' of ' + names(en));
+      if (ex.length) parts.push('the variance' + (ex.length > 1 ? 's' : '') + ' of ' + names(ex));
+      setNote('Model ' + tgt + ' reaches this covariance matrix only in the limit where ' + parts.join(' and ') + (res.zero.length > 1 ? ' go' : ' goes') +
+        ' to zero (a boundary solution). Shown: the values close to that limit' + (z ? ', with ' + names(res.zero.map(nm)) + ' scaled to variance 1' : '') + '.', true);
+    } else if (quick) {
+      setNote('Looking for an exact solution of model ' + tgt + '\u2026 (shown: the closest values found so far)');
     } else {
-      // perfect only with an improper solution (e.g. a negative factor variance)?
-      const Mm = SN.sem.compile(st.text, st.obs);
-      const rm = SN.sem.bestFitLS(Mm, Sig, { starts: 10, seed: 5 });
-      if (rm.F < 1e-14) setNote('Model ' + tgt + ' can only reproduce this exactly with a factor variance of zero or below. The values shown are the closest proper solution.', true);
-      else setNote('Model ' + tgt + ' does not reproduce these values exactly (misfit ' + r.F.toExponential(1) + '). The nesting check may have been wrong here; try other values.', true);
+      setNote('No exact solution of model ' + tgt + ' found for these values (misfit ' + res.F.toExponential(1) + ').' +
+        (L.proven ? ' The relation is proven, so this is the fitter\'s limit; move the slider a little.' : ' Either the fitter missed it or the computed relation is wrong here; try other values.'), true);
     }
+    return res.kind;
+  }
+
+  // ------------------------------------------------------------------
+  // The follower, fitted to the leading model's covariance matrix. Quick and
+  // good to two decimals rather than a full estimator:
+  //  1. a warm start from the previous solution, so values move continuously
+  //     while dragging (and keep their signs);
+  //  2. a fit with free factor variances (marker scaling), started from the
+  //     closest std.lv solution: finds exact solutions that need a negative or
+  //     zero factor variance, which std.lv (variances fixed to 1) cannot reach;
+  //  3. not while dragging: several starting values.
+  // Solutions are shown in the std.lv metric; a negative factor variance is
+  // shown as -1 (compile option lvSign).
+  // ------------------------------------------------------------------
+  const EXACT = 1e-10;      // squared residuals in correlation units: about 1e-5 per element
+  const latents = (M) => { const r = []; for (let k = M.p; k < M.n; k++) r.push(k); return r; };
+  const endoOf = (M, th, k) => { const mt = SN.sem.matrices(M, th); return !!mt && mt.A[k].some(v => v !== 0); };
+  function fitErr(S, T) {
+    let f = 0;
+    for (let i = 0; i < T.length; i++) for (let j = 0; j <= i; j++) { const r = (S[i][j] - T[i][j]) / Math.sqrt(Math.abs(T[i][i] * T[j][j]) || 1); f += r * r; }
+    return f;
+  }
+  // scale of every latent in the marker metric of Mm, given a solution of M
+  // (variable l becomes d[l] times itself so that its marker path becomes 1)
+  function markerScale(M, th, Mm) {
+    const mt = SN.sem.matrices(M, th), d = new Array(M.n).fill(1);
+    if (!mt) return d;
+    const seen = new Array(M.n).fill(false);
+    const get = (l) => {
+      if (l < M.p || seen[l]) return d[l];
+      seen[l] = true;
+      for (let i = 0; i < M.n; i++) if (Mm.A0[i][l] === 1 && M.A0[i][l] !== 1) {
+        const v = get(i) * mt.A[i][l];
+        if (Math.abs(v) > 1e-6) d[l] = v;
+        break;
+      }
+      return d[l];
+    };
+    for (const l of latents(M)) get(l);
+    return d;
+  }
+  // a boundary solution: in std.lv the values run off to infinity as a
+  // residual variance (fixed to 1) has to become negligible next to the
+  // factor's variance. For display, scale those factors to variance 1: the
+  // values then show the limit (e.g. G -> F1 near 1: F1 is G).
+  function zeroDisplay(M, th, zero) {
+    const F = SN.sem.impliedFull(M, th);
+    if (!F) return null;
+    const d = new Array(M.n).fill(1), S0 = M.S0.map(r => r.slice());
+    for (const l of zero) if (F[l][l] > 0) { d[l] = 1 / Math.sqrt(F[l][l]); S0[l][l] = d[l] * d[l] * M.S0[l][l]; }
+    const M2 = Object.assign({}, M, { S0 }), t2 = SN.sem.rescale(M, th, M2, d);
+    const a = SN.sem.implied(M, th), b = t2 && SN.sem.implied(M2, t2);
+    return b && fitErr(b, a) < 1e-12 ? { M: M2, theta: t2 } : null;
+  }
+  // an exact marker solution in the std.lv metric: every latent rescaled to
+  // (residual) variance +1 or -1; a variance of (almost) zero cannot be
+  const ZERO = 1e-4;        // a variance below this share of the latent's total variance counts as zero
+  function fromMarker(Mm, thm, st, Sig) {
+    const mt = SN.sem.matrices(Mm, thm), F = SN.sem.impliedFull(Mm, thm);
+    const meanVar = Sig.reduce((a, r, i) => a + r[i], 0) / Sig.length;
+    const d = new Array(Mm.n).fill(1), signs = {}, zero = [];
+    for (const l of latents(Mm)) {
+      const v = mt.S[l][l];
+      if (Math.abs(v) < ZERO * Math.max(Math.abs(F[l][l]), meanVar)) { zero.push(l); continue; }
+      d[l] = 1 / Math.sqrt(Math.abs(v));
+      if (v < 0 && Mm.blockOf[l] < 0) signs[Mm.vars[l]] = -1;
+    }
+    if (zero.length) return { zero };
+    const M = SN.sem.compile(st.text, st.obs, { stdlv: true, lvSign: signs });
+    const th = SN.sem.rescale(Mm, thm, M, d);
+    const r = SN.sem.fitLS(M, Sig, { start: th, maxIt: 40 });
+    return { M, theta: r.theta, F: r.F, signs };
+  }
+  // std.lv leaves the scale of a latent in a network block free (its variance
+  // is in K): rescale it to variance +-1. A cold solution also gets each
+  // factor's sign such that its paths are mostly positive.
+  function normalize(M, th, Sig, cold) {
+    const mt = SN.sem.matrices(M, th);
+    if (!mt) return th;
+    const d = new Array(M.n).fill(1);
+    let any = false;
+    for (const l of latents(M)) {
+      if (M.blockOf[l] >= 0) {
+        const v = mt.S[l][l];
+        if (Math.abs(v) > 1e-9 && Math.abs(Math.abs(v) - 1) > 1e-12) { d[l] = 1 / Math.sqrt(Math.abs(v)); any = true; }
+      }
+      if (cold) {
+        let s = 0;
+        for (let i = 0; i < M.n; i++) s += mt.A[i][l];
+        if (s < 0) { d[l] = -d[l]; any = true; }
+      }
+    }
+    if (!any) return th;
+    const t2 = SN.sem.rescale(M, th, M, d), S2 = t2 && SN.sem.implied(M, t2);
+    // equality labels across differently scaled paths would not survive: keep the original then
+    return S2 && fitErr(S2, Sig) < EXACT ? t2 : th;
+  }
+  // what makes a solution improper: a negative (residual) variance (a Heywood
+  // case for an item), a correlation beyond +-1, or covariances of the
+  // factors / residuals that do not fit together (not positive definite)
+  function improperOf(M, th) {
+    const mt = SN.sem.matrices(M, th), F = SN.sem.impliedFull(M, th), out = [];
+    if (!mt || !F) return out;
+    const S = mt.S;
+    // a variance that is zero up to rounding is on the boundary, not improper
+    for (let k = 0; k < M.n; k++) if (S[k][k] < -ZERO * Math.abs(F[k][k])) out.push({ kind: 'negvar', k, v: S[k][k], endo: mt.A[k].some(v => v !== 0) });
+    for (let i = 0; i < M.n; i++) for (let j = 0; j < i; j++) {
+      if (S[i][j] === 0 || S[i][i] <= 0 || S[j][j] <= 0) continue;
+      const r = S[i][j] / Math.sqrt(S[i][i] * S[j][j]);
+      if (Math.abs(r) > 1 + 1e-4) out.push({ kind: 'cor', k: i, k2: j, v: r });
+    }
+    if (!out.length) {
+      const ev = SN.la.eigSym(S).values, mx = Math.max(...ev.map(Math.abs));
+      if (Math.min(...ev) < -1e-6 * mx) out.push({ kind: 'npd' });
+    }
+    return out;
+  }
+  function describe(M, list) {
+    const f2 = (x) => (x < -0.005 ? '−' : '') + Math.abs(x).toFixed(2).replace(/^0\./, '.');
+    const parts = list.map(x => {
+      const n = M.vars[x.k];
+      if (x.kind === 'negvar') return (x.endo ? 'a negative residual variance of ' : 'a negative variance of ') + n + (x.k < M.p ? ' (' + f2(x.v) + ')' : '');
+      if (x.kind === 'cor') return 'a correlation of ' + f2(x.v) + ' between ' + M.vars[x.k2] + ' and ' + n + (x.k < M.p ? ' (their residuals)' : '');
+      return 'covariances of the factors or residuals that do not fit together (not positive definite)';
+    });
+    return parts.length > 1 ? parts.slice(0, -1).join(', ') + ' and ' + parts[parts.length - 1] : parts[0];
+  }
+
+  function fitFollower(st, Sig, tgt, quick, lead) {
+    const key = st.obs.length + '|' + st.text;
+    const prev = L.fitPrev[tgt] && L.fitPrev[tgt].key === key ? L.fitPrev[tgt] : null;
+    const ctx = { st, M0: SN.sem.compile(st.text, st.obs, { stdlv: true }), Mm: null };
+    let res = track(ctx, Sig, prev, quick);
+    // where an exact solution was lost (also while dragging, once): a factor
+    // variance changing sign
+    const streak = prev && prev.kind === 'misfit' ? (prev.streak || 0) + 1 : 0;
+    if (res.kind === 'misfit' && (!quick || streak % 5 === 0)) res = flipSearch(ctx, Sig, res);
+    // path following: move the leading model's values in steps from the last
+    // values where the follower fitted, tracking the solution (it moves
+    // continuously, also through a variance of zero into improper values)
+    const an = prev && prev.anchor;
+    if (res.kind === 'misfit' && !quick && an && an.srcKey === lead.key) {
+      let state = an.state, last = null;
+      for (let j = 1, N = 10; j <= N; j++) {
+        const th = an.thS.map((v, i) => v + (j / N) * (lead.thS[i] - v));
+        const S = j === N ? Sig : SN.sem.implied(lead.MS, th);
+        if (!S || !isPD(S)) continue;
+        last = track(ctx, S, state, true);
+        if (last.kind !== 'misfit') state = last.keep;
+      }
+      if (last && last.kind !== 'misfit') res = last;
+    }
+    // several starting values
+    if (res.kind === 'misfit' && !quick) res = multiStart(ctx, Sig, res);
+    res.keep.kind = res.kind;
+    res.keep.streak = res.kind === 'misfit' ? streak : 0;
+    // remember where the follower last fitted (for path following)
+    res.keep.anchor = res.kind !== 'misfit' ? { srcKey: lead.key, thS: lead.thS.slice(), state: Object.assign({}, res.keep) } : prev && prev.anchor;
+    return res;
+  }
+  // steps 1 and 2: warm start, then free factor variances
+  function track(ctx, Sig, prev, quick) {
+    const { st, M0 } = ctx;
+    const marker = () => ctx.Mm || (ctx.Mm = SN.sem.compile(st.text, st.obs));
+    const keep = (o) => Object.assign({ key: st.obs.length + '|' + st.text }, o);
+    const signs0 = prev ? prev.signs : {};
+    const M1 = Object.keys(signs0).length ? SN.sem.compile(st.text, st.obs, { stdlv: true, lvSign: signs0 }) : M0;
+    const best = SN.sem.fitLS(M1, Sig, { start: prev ? prev.theta : thetaFrom(M0, st), maxIt: quick ? 60 : 150 });
+    if (best.F < EXACT) return solved(ctx, Sig, M1, best.theta, best.F, signs0, !prev, prev && prev.thetaM);
+    let fm = null;
+    if (M0.n > M0.p) {
+      const tryMarker = (start) => {
+        if (!start) return null;
+        const r = SN.sem.fitLS(marker(), Sig, { start, maxIt: quick ? 60 : 150 });
+        return r.F < EXACT ? Object.assign(fromMarker(marker(), r.theta, st, Sig), { thetaM: r.theta }) : null;
+      };
+      if (prev && prev.thetaM) fm = tryMarker(prev.thetaM);
+      if (!fm) fm = tryMarker(SN.sem.rescale(M1, best.theta, marker(), markerScale(M1, best.theta, marker())));
+    }
+    if (fm && fm.zero) return { kind: 'zero', M: M1, theta: best.theta, F: best.F, zero: fm.zero, keep: keep({ theta: best.theta, signs: signs0, thetaM: fm.thetaM }) };
+    if (fm && fm.F < EXACT) return solved(ctx, Sig, fm.M, fm.theta, fm.F, fm.signs, false, fm.thetaM);
+    return { kind: 'misfit', M: M1, theta: best.theta, F: best.F, keep: keep({ theta: best.theta, signs: signs0, thetaM: prev && prev.thetaM }) };
+  }
+  // a factor variance that has to change sign passes through infinity in
+  // std.lv (e.g. a one-factor model with three items when one covariance
+  // changes sign: the loadings blow up), so warm starts cannot follow it. Try
+  // flipping the variance of one factor at a time (+1 <-> -1).
+  function flipSearch(ctx, Sig, res) {
+    const { st, M0 } = ctx;
+    const s0 = res.keep.signs || {};
+    const names = latents(M0).filter(l => M0.blockOf[l] < 0).map(l => M0.vars[l]);
+    // one factor at a time, then two (a higher-order or bifactor model can need both)
+    const sets = names.map(n => [n]);
+    if (names.length <= 5) for (let i = 0; i < names.length; i++) for (let j = i + 1; j < names.length; j++) sets.push([names[i], names[j]]);
+    for (const set of sets) {
+      const signs = Object.assign({}, s0);
+      for (const name of set) { if (signs[name]) delete signs[name]; else signs[name] = -1; }
+      const M = SN.sem.compile(st.text, st.obs, { stdlv: true, lvSign: signs });
+      const r = SN.sem.bestFitLS(M, Sig, { start: res.theta, starts: 2, seed: 7, maxIt: 80 });
+      if (r.F < EXACT) return solved(ctx, Sig, M, r.theta, r.F, signs, false, null);
+    }
+    return res;
+  }
+  // step 3: several starting values: std.lv; then factor variances of -1
+  // (fewest negative first; bifactor models in particular need this); then
+  // free factor variances (which also finds variances of zero)
+  function multiStart(ctx, Sig, res) {
+    const { st, M0 } = ctx;
+    const r = SN.sem.bestFitLS(M0, Sig, { starts: 5, seed: 3 });
+    if (r.F < EXACT) return solved(ctx, Sig, M0, r.theta, r.F, {}, true, null);
+    if (r.F < res.F) res = { kind: 'misfit', M: M0, theta: r.theta, F: r.F, keep: Object.assign(res.keep, { theta: r.theta, signs: {} }) };
+    const lats = latents(M0).filter(l => M0.blockOf[l] < 0).map(l => M0.vars[l]);
+    const masks = [];
+    for (let m = 1; m < 1 << lats.length; m++) masks.push(m);
+    const pop = (m) => { let c = 0; for (; m; m >>= 1) c += m & 1; return c; };
+    masks.sort((a, b) => pop(a) - pop(b) || a - b);
+    for (const m of masks.slice(0, 31)) {
+      const signs = {};
+      lats.forEach((l, i) => { if (m & (1 << i)) signs[l] = -1; });
+      const M = SN.sem.compile(st.text, st.obs, { stdlv: true, lvSign: signs });
+      const rs = SN.sem.bestFitLS(M, Sig, { starts: 2, seed: 7 });
+      if (rs.F < EXACT) return solved(ctx, Sig, M, rs.theta, rs.F, signs, true, null);
+    }
+    if (M0.n === M0.p) return res;
+    const Mm = ctx.Mm || (ctx.Mm = SN.sem.compile(st.text, st.obs));
+    const rm = SN.sem.bestFitLS(Mm, Sig, { starts: 10, seed: 5 });
+    if (!(rm.F < EXACT)) return res;
+    const fm = fromMarker(Mm, rm.theta, st, Sig);
+    if (fm.zero) return { kind: 'zero', M: res.M, theta: res.theta, F: res.F, zero: fm.zero, keep: Object.assign(res.keep, { thetaM: rm.theta }) };
+    return fm.F < EXACT ? solved(ctx, Sig, fm.M, fm.theta, fm.F, fm.signs, false, rm.theta) : res;
+  }
+  // an exact solution: normalized, checked for zero and improper values and identification
+  function solved(ctx, Sig, M, th, F, signs, cold, thetaM) {
+    const keep = (o) => Object.assign({ key: ctx.st.obs.length + '|' + ctx.st.text }, o);
+    th = normalize(M, th, Sig, cold);
+    const mt = SN.sem.matrices(M, th), Ff = SN.sem.impliedFull(M, th);
+    // std.lv can come very close to a zero (residual) variance of a factor, with huge values
+    const zero = latents(M).filter(l => M.blockOf[l] < 0 && Math.abs(mt.S[l][l]) < ZERO * Math.abs(Ff[l][l]));
+    if (zero.length) return { kind: 'zero', M, theta: th, F, zero, keep: keep({ theta: th, signs, thetaM }) };
+    const list = improperOf(M, th);
+    // identified at this solution? The Jacobian's rank (the free scale of a latent in a network block not counted)
+    const nsc = latents(M).filter(l => M.blockOf[l] >= 0).length;
+    const J = SN.sem.jacobian(M, th), rank = J ? SN.sem.rankOf(J, 1e-8) : M.q;
+    return { kind: list.length ? 'improper' : 'exact', M, theta: th, F, list, nonid: rank < M.q - nsc, keep: keep({ theta: th, signs, thetaM }) };
+  }
+
+  // equivalent models: the follower takes the lead with the values it shows,
+  // so nothing jumps. Not possible when those values need a negative factor
+  // variance (std.lv has no slider for it): then the covariance matrix would change.
+  function adopt(side) {
+    const sh = L.shown;
+    if (!sh || sh.side !== side || !sh.d) return true;
+    const ed = L.eds[side], d = sh.d;
+    const before = { e: ed.edges.map(e => [e.id, e.v]), r: ed.toSyntax().resid.map(r => [r.id, r.v]) };
+    for (const id in d.edge) ed.setValue({ type: 'edge', id }, d.edge[id]);
+    for (const id in d.resid) ed.setValue({ type: 'obs', id }, d.resid[id]);
+    const syn = ed.toSyntax(), M = SN.sem.compile(syn.text, syn.obs, { stdlv: true });
+    const S2 = SN.sem.implied(M, thetaFrom(M, syn));
+    if (d.kind === 'improper' && !(S2 && fitErr(S2, sh.Sig) < 1e-8)) {
+      for (const [id, v] of before.e) ed.setValue({ type: 'edge', id }, v);
+      for (const [id, v] of before.r) ed.setValue({ type: 'obs', id }, v);
+      return false;
+    }
+    delete L.fitPrev[other(side)];      // the old leader follows from its own values
+    return true;
   }
 
   // value popup
@@ -502,6 +792,11 @@
     const editable = rel === 'equiv' || (rel === 'AinB' && side === 'A') || (rel === 'BinA' && side === 'B');
     if (!editable) {
       app().toast(rel === 'neither' ? 'Neither model is nested in the other: values cannot be transferred.' : 'Model ' + side + ' follows model ' + other(side) + ' here: its values are fitted. Change model ' + other(side) + '.');
+      L.eds[side].clearSelection();
+      return;
+    }
+    if (rel === 'equiv' && side !== L.source && !adopt(side)) {
+      app().toast('Model ' + side + '\'s solution has a negative factor variance, which its values cannot set. Change model ' + other(side) + ' until the solution is proper, then edit ' + side + '.');
       L.eds[side].clearSelection();
       return;
     }
@@ -573,8 +868,17 @@
     const lab = t.type === 'edge' && (ed.edges.find(x => x.id === t.id) || {}).label;
     if (lab) for (const x of ed.edges) if (x.label === lab && x.id !== t.id) ed.setValue({ type: 'edge', id: x.id }, v);
     paintSlider();
+    // while dragging: quick updates (no search over many starting values);
+    // when that finds no exact solution, a full search once the slider rests
     cancelAnimationFrame(L.raf);
-    L.raf = requestAnimationFrame(refreshValues);
+    L.raf = requestAnimationFrame(() => {
+      const kind = refreshValues(true);
+      clearTimeout(L.full);
+      if (kind === 'misfit') L.full = setTimeout(() => {
+        setNote('Searching for an exact solution\u2026');
+        L.full = setTimeout(() => refreshValues(), 30);
+      }, 250);
+    });
   }
   $('pr-range').addEventListener('input', () => { const v = +$('pr-range').value; $('pr-num').value = v.toFixed(2); applyParam(v); });
   $('pr-num').addEventListener('change', () => { const v = +$('pr-num').value; if (isFinite(v)) { $('pr-range').value = v; applyParam(v); } });
@@ -721,5 +1025,5 @@
 
   window.addEventListener('resize', () => { if (L.eds && document.body.classList.contains('mode-learn')) { L.eds.A.render(); L.eds.B.render(); } });
 
-  SN.learn = { start, stop, L, compute, refreshValues, loadItem, openLibrary, openEdit, closeEdit };
+  SN.learn = { start, stop, L, compute, refreshValues, loadItem, openLibrary, openEdit, closeEdit, _test: { normalize, adopt } };
 })(window);

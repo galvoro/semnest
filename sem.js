@@ -134,7 +134,9 @@
     const covFixed = [];
     for (let k = 0; k < n; k++) {
       if (blockOf[k] >= 0) continue;
-      if (copts.stdlv && k >= p) { S0[k][k] = 1; continue; }
+      // copts.lvSign {name: -1}: that latent's (residual) variance is -1 instead
+      // (LEARN shows an improper solution in the std.lv metric this way)
+      if (copts.stdlv && k >= p) { S0[k][k] = copts.lvSign && copts.lvSign[vars[k]] < 0 ? -1 : 1; continue; }
       const selfFixed = spec.covs.find(c => c.a === vars[k] && c.b === vars[k] && c.fixed !== undefined);
       if (selfFixed) { S0[k][k] = selfFixed.fixed; continue; }
       const selfLab = spec.covs.find(c => c.a === vars[k] && c.b === vars[k]);
@@ -189,6 +191,22 @@
     const B = invSafe(IA);
     if (!B) return null;
     return { A, S, K, Kinv, B };
+  }
+
+  // change of scale: variable k becomes d[k] times itself (d = 1 for items).
+  // Returns the parameters of Mto (a model on the same variables, e.g. the
+  // same syntax in another metric) that give the same covariance matrix; the
+  // fixed values of Mto must agree with the rescaled ones.
+  function rescale(Mfrom, theta, Mto, d) {
+    const mt = matrices(Mfrom, theta);
+    if (!mt) return null;
+    return Mto.groups.map(g => {
+      const e = g.entries[0];
+      if (e.kind === 'A') return d[e.i] * mt.A[e.i][e.j] / d[e.j];
+      if (e.kind === 'S') return d[e.i] * d[e.j] * mt.S[e.i][e.j];
+      const b = Mto.blocks[e.block];
+      return mt.K[e.block][b.indexOf(e.i)][b.indexOf(e.j)] / (d[e.i] * d[e.j]);
+    });
   }
 
   function invSafe(X) {
@@ -632,5 +650,5 @@
     return { rel, dimA: dA, dimB: dB, qA: MA.q, qB: MB.q, ab, ba };
   }
 
-  SN.sem = { parse, compile, implied, impliedFull, matrices, derivs, fit, bestFit, fitLS, bestFitLS, startValues, smartStart, randomTheta, jacobian, rankOf, dimension, nestedIn, relation, fml, invSafe };
+  SN.sem = { parse, compile, implied, impliedFull, matrices, rescale, derivs, fit, bestFit, fitLS, bestFitLS, startValues, smartStart, randomTheta, jacobian, rankOf, dimension, nestedIn, relation, fml, invSafe };
 })(typeof window !== 'undefined' ? window : globalThis);
