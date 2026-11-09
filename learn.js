@@ -475,7 +475,9 @@
       if (r2.F < r.F) r = r2;
     }
     L.fitPrev[tgt] = { key, theta: r.theta };
-    L.eds[tgt].setDisplay(displayFrom(MT, st, r.theta, true));
+    const dT = displayFrom(MT, st, r.theta, true);
+    L.dbg = { Sig, dT, F: r.F };               // for .dev/check_values.js
+    L.eds[tgt].setDisplay(dT);
     const qT = MT.q, dimT = src === 'A' ? L.res.dimB : L.res.dimA;
     if (r.F < 1e-14) {
       setNote('Model ' + tgt + ' reproduces the covariance matrix of model ' + src + ' exactly with these values' +
